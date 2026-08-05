@@ -1,0 +1,22 @@
+{
+  "name": "@shortlink/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./routes": "./src/routes.ts"
+  },
+  "scripts": {
+    "lint": "biome check src/",
+    "format": "biome format --write src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "5.9.2"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  }
+}
