@@ -1,0 +1,11 @@
+@import "./styles/variables.css";
+@import "./styles/global.css";
+@import "./styles/navbar.css";
+@import "./styles/form.css";
+@import "./styles/button.css";
+@import "./styles/card.css";
+@import "./styles/auth.css";
+@import "./styles/modal.css";
+@import "./styles/animations.css";
+@import "./styles/skeleton.css";
+@import "./styles/landing.css";

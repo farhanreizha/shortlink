@@ -1,0 +1,27 @@
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-muted) 25%,
+    var(--color-surface-muted-hover) 50%,
+    var(--color-surface-muted) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: var(--radius-md);
+}
+
+.skeleton--text {
+  height: 16px;
+  width: 60%;
+}
+
+.skeleton--chip {
+  height: 28px;
+  width: 60px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton--button {
+  height: 44px;
+  width: 100px;
+}
