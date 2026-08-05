@@ -1,0 +1,133 @@
+import type {
+  CreateShortlink,
+  Shortlink,
+  ShortlinkQuery,
+  UpdateShortlink,
+} from "@shortlink/shared"
+import { and, desc, eq, ilike, sql } from "drizzle-orm"
+import { db } from "../db"
+import { shortlinks } from "../db/schema"
+import { ConflictError, NotFoundError } from "../lib/errors"
+
+function toShortlink(row: typeof shortlinks.$inferSelect): Shortlink {
+  return {
+    id: String(row.id),
+    slug: row.slug,
+    url: row.url,
+    visits: row.visits,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  }
+}
+
+const sortMap = {
+  createdAt: () => desc(shortlinks.createdAt),
+  visits: () => desc(shortlinks.visits),
+} as const
+
+export async function list(userId: number, query: ShortlinkQuery) {
+  let conditions = eq(shortlinks.userId, userId)
+  if (query.q) {
+    // biome-ignore lint/style/noNonNullAssertion: conditions always defined
+    conditions = and(conditions, ilike(shortlinks.url, `%${query.q}%`))!
+  }
+
+  const rows = await db
+    .select()
+    .from(shortlinks)
+    .where(conditions)
+    .orderBy(sortMap[query.sortBy]?.())
+    .limit(query.limit)
+    .offset(query.offset)
+
+  return rows.map(toShortlink)
+}
+
+export async function getDetail(slug: string, userId: number) {
+  const [link] = await db
+    .select()
+    .from(shortlinks)
+    .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
+    .limit(1)
+  if (!link) throw new NotFoundError("Shortlink not found")
+  return toShortlink(link)
+}
+
+export async function create(input: CreateShortlink, userId: number) {
+  const [existing] = await db
+    .select()
+    .from(shortlinks)
+    .where(eq(shortlinks.slug, input.slug))
+    .limit(1)
+  if (existing) throw new ConflictError("Slug already taken")
+
+  const rows = await db
+    .insert(shortlinks)
+    .values({ slug: input.slug, url: input.url, userId })
+    .returning()
+  // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row
+  return toShortlink(rows[0]!)
+}
+
+export async function getBySlug(slug: string) {
+  const [link] = await db
+    .select()
+    .from(shortlinks)
+    .where(eq(shortlinks.slug, slug))
+    .limit(1)
+  if (!link) throw new NotFoundError("Shortlink not found")
+  return link
+}
+
+export async function update(
+  slug: string,
+  userId: number,
+  input: UpdateShortlink,
+) {
+  const [link] = await db
+    .select()
+    .from(shortlinks)
+    .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
+    .limit(1)
+  if (!link) throw new NotFoundError("Shortlink not found")
+
+  if (input.slug && input.slug !== slug) {
+    const [existing] = await db
+      .select()
+      .from(shortlinks)
+      .where(eq(shortlinks.slug, input.slug))
+      .limit(1)
+    if (existing) throw new ConflictError("Slug already taken")
+  }
+
+  const rows = await db
+    .update(shortlinks)
+    .set({
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+      ...(input.url !== undefined ? { url: input.url } : {}),
+      updatedAt: new Date(),
+    })
+    .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
+    .returning()
+  // biome-ignore lint/style/noNonNullAssertion: returning() always returns updated row
+  return toShortlink(rows[0]!)
+}
+
+export async function incrementVisits(slug: string) {
+  await db
+    .update(shortlinks)
+    .set({ visits: sql`${shortlinks.visits} + 1` })
+    .where(eq(shortlinks.slug, slug))
+}
+
+export async function remove(slug: string, userId: number) {
+  const [link] = await db
+    .select()
+    .from(shortlinks)
+    .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
+    .limit(1)
+  if (!link) throw new NotFoundError("Shortlink not found")
+
+  await db.delete(shortlinks).where(eq(shortlinks.slug, slug))
+  return toShortlink(link)
+}
