@@ -13,7 +13,6 @@ export function useShortlinks() {
     offset: 0,
     limit: 50,
     sortBy: "createdAt",
-    order: "desc",
   })
 
   const fetchLinks = useCallback(async (q: ShortlinkQuery) => {

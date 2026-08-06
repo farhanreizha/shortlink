@@ -1,14 +1,16 @@
 import { z } from "zod"
 
+export const PasswordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[a-z]/, "Password must contain a lowercase letter")
+  .regex(/[A-Z]/, "Password must contain an uppercase letter")
+  .regex(/[0-9]/, "Password must contain a number")
+
 export const RegisterSchema = z.object({
   username: z.string().min(3).max(20),
   email: z.string().email(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[a-z]/, "Password must contain a lowercase letter")
-    .regex(/[A-Z]/, "Password must contain an uppercase letter")
-    .regex(/[0-9]/, "Password must contain a number"),
+  password: PasswordSchema,
 })
 
 export type RegisterInput = z.infer<typeof RegisterSchema>
@@ -59,7 +61,6 @@ export const ShortlinkQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   q: z.string().optional(),
   sortBy: z.enum(["createdAt", "visits"]).default("createdAt"),
-  order: z.enum(["asc", "desc"]).default("desc"),
 })
 
 export type ShortlinkQuery = z.infer<typeof ShortlinkQuerySchema>
@@ -67,13 +68,7 @@ export type ShortlinkQuery = z.infer<typeof ShortlinkQuerySchema>
 export const UpdateUserSchema = z.object({
   email: z.string().email().optional(),
   currentPassword: z.string().optional(),
-  newPassword: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[a-z]/, "Password must contain a lowercase letter")
-    .regex(/[A-Z]/, "Password must contain an uppercase letter")
-    .regex(/[0-9]/, "Password must contain a number")
-    .optional(),
+  newPassword: PasswordSchema.optional(),
 })
 
 export type UpdateUser = z.infer<typeof UpdateUserSchema>

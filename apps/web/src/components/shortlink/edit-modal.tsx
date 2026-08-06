@@ -1,9 +1,8 @@
 import type { Shortlink, UpdateShortlink } from "@shortlink/shared"
 import { useEffect, useState } from "react"
-import { createPortal } from "react-dom"
-import { useEscapeKey } from "../../hooks/use-escape-key"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
+import { Modal } from "../ui/modal"
 
 export function EditModal({
   open,
@@ -28,18 +27,6 @@ export function EditModal({
     setLoading(false)
   }, [link])
 
-  useEffect(() => {
-    if (!open) return
-    document.body.style.overflow = "hidden"
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [open])
-
-  useEscapeKey(open, onClose)
-
-  if (!open) return null
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
@@ -62,59 +49,44 @@ export function EditModal({
     }
   }
 
-  return createPortal(
-    // biome-ignore lint/a11y/noStaticElementInteractions: backdrop click dismisses modal
-    <div
-      className="modal-overlay animate-fade-in"
-      role="presentation"
-      onClick={onClose}
-    >
-      <div
-        className="modal-card animate-scale-in"
-        role="dialog"
-        aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={() => {}}
-      >
-        <h3 className="modal-title">Edit Shortlink</h3>
-        <form className="form" onSubmit={handleSubmit}>
-          <FormField label="URL" htmlFor="edit-url">
-            <input
-              id="edit-url"
-              className="input"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
-          </FormField>
-          <FormField label="Slug" htmlFor="edit-slug">
-            <input
-              id="edit-slug"
-              className="input input--mono"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-            />
-          </FormField>
-          <ErrorBanner message={error} onClose={() => setError("")} />
-          <div className="modal-actions">
-            <button
-              className="btn btn--ghost"
-              type="button"
-              onClick={onClose}
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button
-              className="btn btn--primary"
-              type="submit"
-              disabled={loading || !url}
-            >
-              {loading ? "Saving\u2026" : "Save"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>,
-    document.body,
+  return (
+    <Modal open={open} title="Edit Shortlink" onClose={onClose}>
+      <form className="form" onSubmit={handleSubmit}>
+        <FormField label="URL" htmlFor="edit-url">
+          <input
+            id="edit-url"
+            className="input"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </FormField>
+        <FormField label="Slug" htmlFor="edit-slug">
+          <input
+            id="edit-slug"
+            className="input input--mono"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+          />
+        </FormField>
+        <ErrorBanner message={error} onClose={() => setError("")} />
+        <div className="modal-actions">
+          <button
+            className="btn btn--ghost"
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn--primary"
+            type="submit"
+            disabled={loading || !url}
+          >
+            {loading ? "Saving\u2026" : "Save"}
+          </button>
+        </div>
+      </form>
+    </Modal>
   )
 }

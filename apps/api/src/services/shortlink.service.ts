@@ -5,9 +5,9 @@ import type {
   UpdateShortlink,
 } from "@shortlink/shared"
 import { and, desc, eq, ilike, sql } from "drizzle-orm"
+import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"
 import { shortlinks } from "../db/schema.js"
-import { ConflictError, NotFoundError } from "../lib/errors.js"
 
 function toShortlink(row: typeof shortlinks.$inferSelect): Shortlink {
   return {
@@ -36,7 +36,7 @@ export async function list(userId: number, query: ShortlinkQuery) {
     .select()
     .from(shortlinks)
     .where(conditions)
-    .orderBy(sortMap[query.sortBy]?.())
+    .orderBy(sortMap[query.sortBy]())
     .limit(query.limit)
     .offset(query.offset)
 
@@ -49,7 +49,7 @@ export async function getDetail(slug: string, userId: number) {
     .from(shortlinks)
     .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
     .limit(1)
-  if (!link) throw new NotFoundError("Shortlink not found")
+  if (!link) throw new HTTPException(404, { message: "Shortlink not found" })
   return toShortlink(link)
 }
 
@@ -59,7 +59,7 @@ export async function create(input: CreateShortlink, userId: number) {
     .from(shortlinks)
     .where(eq(shortlinks.slug, input.slug))
     .limit(1)
-  if (existing) throw new ConflictError("Slug already taken")
+  if (existing) throw new HTTPException(409, { message: "Slug already taken" })
 
   const rows = await db
     .insert(shortlinks)
@@ -75,7 +75,7 @@ export async function getBySlug(slug: string) {
     .from(shortlinks)
     .where(eq(shortlinks.slug, slug))
     .limit(1)
-  if (!link) throw new NotFoundError("Shortlink not found")
+  if (!link) throw new HTTPException(404, { message: "Shortlink not found" })
   return link
 }
 
@@ -89,7 +89,7 @@ export async function update(
     .from(shortlinks)
     .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
     .limit(1)
-  if (!link) throw new NotFoundError("Shortlink not found")
+  if (!link) throw new HTTPException(404, { message: "Shortlink not found" })
 
   if (input.slug && input.slug !== slug) {
     const [existing] = await db
@@ -97,7 +97,8 @@ export async function update(
       .from(shortlinks)
       .where(eq(shortlinks.slug, input.slug))
       .limit(1)
-    if (existing) throw new ConflictError("Slug already taken")
+    if (existing)
+      throw new HTTPException(409, { message: "Slug already taken" })
   }
 
   const rows = await db
@@ -126,7 +127,7 @@ export async function remove(slug: string, userId: number) {
     .from(shortlinks)
     .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
     .limit(1)
-  if (!link) throw new NotFoundError("Shortlink not found")
+  if (!link) throw new HTTPException(404, { message: "Shortlink not found" })
 
   await db.delete(shortlinks).where(eq(shortlinks.slug, slug))
   return toShortlink(link)

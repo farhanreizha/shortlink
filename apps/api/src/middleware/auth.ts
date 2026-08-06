@@ -1,7 +1,7 @@
 import type { Context, Next } from "hono"
 import { getCookie } from "hono/cookie"
+import { HTTPException } from "hono/http-exception"
 import { verifyToken } from "../lib/auth.js"
-import { UnauthorizedError } from "../lib/errors.js"
 
 const publicPaths = [
   "/api/auth/register",
@@ -18,13 +18,13 @@ export async function authMiddleware(
   if (publicPaths.includes(c.req.path)) return next()
 
   const token = getCookie(c, "token")
-  if (!token) throw new UnauthorizedError()
+  if (!token) throw new HTTPException(401, { message: "Unauthorized" })
 
   try {
     const payload = await verifyToken(token)
     c.set("userId", Number(payload.sub))
     return next()
   } catch {
-    throw new UnauthorizedError("Invalid token")
+    throw new HTTPException(401, { message: "Invalid token" })
   }
 }
