@@ -6,6 +6,7 @@ import { clearFieldError } from "../../lib/form"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
+import { SocialButtons } from "./social-buttons"
 
 export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
   const [email, setEmail] = useState("")
@@ -49,7 +50,15 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
 
   return (
     <form className="form" onSubmit={handleSubmit}>
-      <FormField label="Email" htmlFor="login-email" error={errors.email}>
+      <SocialButtons />
+      <div className="auth-divider">
+        <span>or continue with email</span>
+      </div>
+      <FormField
+        label="Email address"
+        htmlFor="login-email"
+        error={errors.email}
+      >
         <input
           id="login-email"
           type="email"
@@ -74,6 +83,11 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
         onToggle={() => setShowPassword(!showPassword)}
         showToggle
         error={errors.password}
+        trailing={
+          <button type="button" className="form__label-link">
+            Forgot password?
+          </button>
+        }
       />
       <ErrorBanner message={error} />
       <button

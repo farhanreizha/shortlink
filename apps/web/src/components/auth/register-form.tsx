@@ -7,12 +7,14 @@ import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
 import { PasswordStrength } from "../ui/password-strength"
+import { SocialButtons } from "./social-buttons"
 
 export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [agreed, setAgreed] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [error, setError] = useState("")
@@ -57,6 +59,10 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
 
   return (
     <form className="form" onSubmit={handleSubmit}>
+      <SocialButtons compact />
+      <div className="auth-divider">
+        <span>or</span>
+      </div>
       <FormField
         label="Username"
         htmlFor="reg-username"
@@ -109,15 +115,38 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
         showPassword={showPassword}
       />
       <ErrorBanner message={error} />
+      <label className="auth-checkbox">
+        <input
+          type="checkbox"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+        />
+        <span>
+          I agree to the{" "}
+          <button type="button" className="auth-checkbox__link">
+            Terms of Service
+          </button>{" "}
+          and{" "}
+          <button type="button" className="auth-checkbox__link">
+            Privacy Policy
+          </button>
+          .
+        </span>
+      </label>
       <button
         type="submit"
         className="btn btn--primary"
         style={{ width: "100%" }}
         disabled={
-          loading || !username || !email || !password || !confirmPassword
+          loading ||
+          !username ||
+          !email ||
+          !password ||
+          !confirmPassword ||
+          !agreed
         }
       >
-        {loading ? "Please wait…" : "Create Account"}
+        {loading ? "Please wait…" : "Sign Up"}
       </button>
     </form>
   )

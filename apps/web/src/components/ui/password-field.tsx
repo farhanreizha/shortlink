@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from "lucide-react"
-import type { ChangeEvent } from "react"
+import type { ChangeEvent, ReactNode } from "react"
 import { FormField } from "./form-field"
 
 export function PasswordField({
@@ -12,6 +12,7 @@ export function PasswordField({
   onToggle,
   showToggle = false,
   error,
+  trailing,
 }: {
   id: string
   label: string
@@ -22,9 +23,10 @@ export function PasswordField({
   onToggle?: () => void
   showToggle?: boolean
   error?: string
+  trailing?: ReactNode
 }) {
   return (
-    <FormField label={label} htmlFor={id} error={error}>
+    <FormField label={label} htmlFor={id} error={error} trailing={trailing}>
       <div className="input-wrap">
         <input
           id={id}
