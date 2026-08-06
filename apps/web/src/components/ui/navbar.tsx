@@ -1,3 +1,4 @@
+import { Waypoints } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Link } from "wouter"
 
@@ -28,6 +29,9 @@ export function Navbar({
     <nav className="navbar" ref={ref}>
       <div className="navbar__inner">
         <Link className="navbar__logo" href="/">
+          <span className="navbar__logo-mark">
+            <Waypoints size={18} />
+          </span>
           Knot
         </Link>
         <div className="navbar__spacer" />

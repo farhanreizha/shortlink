@@ -15,7 +15,7 @@
   max-width: 400px;
   width: 100%;
   margin: var(--space-6);
-  box-shadow: var(--shadow-modal);
+  box-shadow: var(--shadow-lift);
 }
 
 .modal-title {

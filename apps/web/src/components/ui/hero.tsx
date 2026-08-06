@@ -1,10 +1,12 @@
-import { Zap } from "lucide-react"
+import { Waypoints } from "lucide-react"
 import { Link } from "wouter"
 
 export function Hero() {
   return (
     <section className="landing-hero">
-      <Zap size={48} className="landing-hero__icon animate-fade-in" />
+      <div className="landing-hero__icon">
+        <Waypoints size={48} />
+      </div>
       <h1
         className="landing-hero__title animate-slide-up"
         style={{ animationDelay: "0.1s" }}

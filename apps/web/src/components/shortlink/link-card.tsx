@@ -33,7 +33,10 @@ export function LinkCard({
       <div className="link-card__row">
         <div className="link-card__slug">
           <span className="chip chip--primary">{link.slug}</span>
-          <span className="chip" style={{ marginLeft: "var(--space-2)" }}>
+          <span
+            className="chip chip--violet"
+            style={{ marginLeft: "var(--space-2)" }}
+          >
             {link.visits} visit{link.visits === 1 ? "" : "s"}
           </span>
         </div>
@@ -48,7 +51,11 @@ export function LinkCard({
           {link.url}
         </div>
         <div className="link-card__actions">
-          <button className="btn btn--ghost" type="button" onClick={handleCopy}>
+          <button
+            className={`btn btn--ghost${copied ? " btn--success" : ""}`}
+            type="button"
+            onClick={handleCopy}
+          >
             {copied ? "Copied!" : "Copy"}
           </button>
           <a

@@ -9,7 +9,9 @@
   cursor: pointer;
   transition:
     background 0.15s,
-    opacity 0.15s;
+    opacity 0.15s,
+    box-shadow 0.15s,
+    transform 0.1s;
   min-width: 100px;
   display: inline-flex;
   align-items: center;
@@ -18,18 +20,23 @@
   white-space: nowrap;
 }
 
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
 .btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
 .btn--primary {
-  background: var(--color-primary);
+  background: var(--gradient-primary);
   color: var(--color-white);
 }
 
 .btn--primary:hover:not(:disabled) {
-  background: var(--color-primary-hover);
+  background: linear-gradient(135deg, #0043d6, #6d28d9);
+  box-shadow: 0 4px 12px rgba(0, 82, 255, 0.3);
 }
 
 .btn--ghost {
@@ -41,6 +48,11 @@
 
 .btn--ghost:hover:not(:disabled) {
   background: var(--color-primary-muted);
+}
+
+.btn--success {
+  background: var(--color-success-muted);
+  color: var(--color-success);
 }
 
 .btn--danger {
