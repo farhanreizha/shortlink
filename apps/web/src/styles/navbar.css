@@ -215,6 +215,19 @@
     display: flex;
   }
 
+  .navbar__menu .btn {
+    width: 100%;
+  }
+
+  .navbar__menu .btn--primary {
+    background: var(--color-white);
+    color: var(--color-primary);
+  }
+
+  .navbar__menu .btn:hover:not(:disabled) {
+    background: var(--color-primary-muted);
+  }
+
   .navbar__hamburger {
     display: block;
   }
