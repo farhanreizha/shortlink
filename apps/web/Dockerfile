@@ -5,6 +5,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 COPY . .
 RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @shortlink/shared build
 RUN pnpm --filter web build
 
 FROM nginx:alpine AS runner
