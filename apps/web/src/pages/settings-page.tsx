@@ -1,5 +1,5 @@
-import type { User } from "@shortlink/shared"
-import { UpdateUserSchema } from "@shortlink/shared"
+import type { User } from "@knot/shared"
+import { UpdateUserSchema } from "@knot/shared"
 import { useState } from "react"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { ErrorBanner } from "../components/ui/error-banner"
@@ -154,8 +154,8 @@ export function SettingsPage({
               color: "var(--color-neutral)",
             }}
           >
-            Delete your account and all associated shortlinks. This action
-            cannot be undone.
+            Delete your account and all associated links. This action cannot be
+            undone.
           </p>
           <button
             type="button"
@@ -169,7 +169,7 @@ export function SettingsPage({
         <ConfirmModal
           open={showDelete}
           title="Delete account?"
-          message="All your shortlinks will be permanently deleted. Are you sure?"
+          message="All your links will be permanently deleted. Are you sure?"
           confirmLabel={deleting ? "Deleting…" : "Delete Account"}
           confirmDisabled={deleting}
           onConfirm={handleDelete}

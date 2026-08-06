@@ -1,4 +1,4 @@
-import type { Shortlink, UpdateShortlink } from "@shortlink/shared"
+import type { Shortlink, UpdateShortlink } from "@knot/shared"
 import { useEffect, useState } from "react"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
@@ -50,7 +50,7 @@ export function EditModal({
   }
 
   return (
-    <Modal open={open} title="Edit Shortlink" onClose={onClose}>
+    <Modal open={open} title="Edit Link" onClose={onClose}>
       <form className="form" onSubmit={handleSubmit}>
         <FormField label="URL" htmlFor="edit-url">
           <input

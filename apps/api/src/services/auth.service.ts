@@ -1,9 +1,4 @@
-import type {
-  LoginInput,
-  RegisterInput,
-  UpdateUser,
-  User,
-} from "@shortlink/shared"
+import type { LoginInput, RegisterInput, UpdateUser, User } from "@knot/shared"
 import { eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"

@@ -3,7 +3,7 @@ import type {
   Shortlink,
   ShortlinkQuery,
   UpdateShortlink,
-} from "@shortlink/shared"
+} from "@knot/shared"
 import { and, desc, eq, ilike, sql } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"

@@ -1,5 +1,5 @@
 {
-  "name": "shortlink",
+  "name": "knot",
   "private": true,
   "scripts": {
     "dev": "turbo run dev",

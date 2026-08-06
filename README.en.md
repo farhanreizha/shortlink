@@ -1,4 +1,4 @@
-# Shortlink — English Documentation
+# Knot — English Documentation
 
 Self-hosted URL shortener built with React, Hono, and PostgreSQL.
 
@@ -76,8 +76,8 @@ Base URL: `/api`
 | GET    | `/api/auth/me`          | Current user |
 | PATCH  | `/api/auth/me`          | Update email/password |
 | DELETE | `/api/auth/me`          | Delete account |
-| GET    | `/api/shortlinks`       | List shortlinks (paginated + searchable) |
-| POST   | `/api/shortlinks`       | Create a shortlink |
+| GET    | `/api/shortlinks`       | List links (paginated + searchable) |
+| POST   | `/api/shortlinks`       | Create a link |
 | GET    | `/api/shortlinks/:slug` | Get a shortlink |
 | PATCH  | `/api/shortlinks/:slug` | Update a shortlink |
 | DELETE | `/api/shortlinks/:slug` | Delete a shortlink |

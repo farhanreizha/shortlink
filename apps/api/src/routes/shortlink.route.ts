@@ -4,7 +4,7 @@ import {
   ShortlinkQuerySchema,
   ShortlinkSchema,
   UpdateShortlinkSchema,
-} from "@shortlink/shared"
+} from "@knot/shared"
 import { ErrorSchema } from "../lib/schemas.js"
 import * as shortlinkService from "../services/shortlink.service.js"
 

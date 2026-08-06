@@ -1,4 +1,4 @@
-import type { Shortlink, UpdateShortlink } from "@shortlink/shared"
+import type { Shortlink, UpdateShortlink } from "@knot/shared"
 import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
 import { ConfirmModal } from "../ui/confirm-modal"

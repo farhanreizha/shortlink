@@ -1,4 +1,4 @@
-import type { AppRoutes } from "@shortlink/shared/routes"
+import type { AppRoutes } from "@knot/shared/routes"
 import type { Hono } from "hono"
 import { hc } from "hono/client"
 

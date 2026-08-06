@@ -4,7 +4,7 @@ import {
   RegisterSchema,
   UpdateUserSchema,
   UserSchema,
-} from "@shortlink/shared"
+} from "@knot/shared"
 import { deleteCookie, setCookie } from "hono/cookie"
 import { ErrorSchema } from "../lib/schemas.js"
 import * as authService from "../services/auth.service.js"

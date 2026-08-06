@@ -1,4 +1,4 @@
-import type { UpdateShortlink, User } from "@shortlink/shared"
+import type { UpdateShortlink, User } from "@knot/shared"
 import { Search } from "lucide-react"
 import { useState } from "react"
 import { CreateForm } from "../components/shortlink/create-form"
@@ -44,7 +44,7 @@ export function DashboardPage({
     <PageLayout user={user} onLogout={onLogout}>
       <main className="main">
         <div className="card">
-          <h1 className="main__title">Create Shortlink</h1>
+          <h1 className="main__title">Create Link</h1>
           <CreateForm onCreate={handleCreate} />
         </div>
 
@@ -64,7 +64,7 @@ export function DashboardPage({
             }}
           >
             <h2 className="main__title" style={{ margin: 0 }}>
-              Your Shortlinks
+              Your Links
             </h2>
             <form
               className="form"
@@ -117,7 +117,7 @@ export function DashboardPage({
               <div className="empty-state__text">
                 {query.q
                   ? "Try a different search term"
-                  : "Create your first shortlink above"}
+                  : "Create your first link above"}
               </div>
             </div>
           ) : (

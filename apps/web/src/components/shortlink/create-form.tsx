@@ -1,4 +1,4 @@
-import { CreateShortlinkSchema } from "@shortlink/shared"
+import { CreateShortlinkSchema } from "@knot/shared"
 import { Dices } from "lucide-react"
 import { useState } from "react"
 import { clearFieldError } from "../../lib/form"

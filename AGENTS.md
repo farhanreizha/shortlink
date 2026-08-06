@@ -1,4 +1,4 @@
-# Shortlink Monorepo
+# Knot Monorepo
 
 ## Structure
 - `apps/web` — React + Vite frontend
@@ -31,7 +31,7 @@
 ## Dev gotchas
 - Vite dev server needs proxy config forwarding `/api` → Hono
 - `@hono/zod-openapi` needs explicit OpenAPI spec generation (separate from route registration)
-- workspace protocol (`"@shortlink/shared": "workspace:*"`) for internal deps
+- workspace protocol (`"@knot/shared": "workspace:*"`) for internal deps
 - `packages/shared/src/routes.ts` must be kept in sync with `apps/api/src/index.ts` routes — adding a route in the API means adding its type in the shared schema
 - Start PostgreSQL first: `docker compose up db -d`; then `pnpm dev`
 - After modifying DB schema: `DATABASE_URL=... pnpm --filter api db:push` to apply

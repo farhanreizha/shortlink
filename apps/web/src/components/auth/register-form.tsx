@@ -1,5 +1,5 @@
-import type { User } from "@shortlink/shared"
-import { RegisterSchema } from "@shortlink/shared"
+import type { User } from "@knot/shared"
+import { RegisterSchema } from "@knot/shared"
 import { useState } from "react"
 import { client } from "../../hono-client"
 import { clearFieldError } from "../../lib/form"

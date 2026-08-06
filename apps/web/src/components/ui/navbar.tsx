@@ -28,7 +28,7 @@ export function Navbar({
     <nav className="navbar" ref={ref}>
       <div className="navbar__inner">
         <Link className="navbar__logo" href="/">
-          Shortlink
+          Knot
         </Link>
         <div className="navbar__spacer" />
 

@@ -1,4 +1,4 @@
-# Shortlink — Dokumentasi Bahasa Indonesia
+# Knot — Dokumentasi Bahasa Indonesia
 
 URL shortener self-host yang dibangun dengan React, Hono, dan PostgreSQL.
 
@@ -76,8 +76,8 @@ Base URL: `/api`
 | GET    | `/api/auth/me`          | Pengguna saat ini |
 | PATCH  | `/api/auth/me`          | Update email/password |
 | DELETE | `/api/auth/me`          | Hapus akun |
-| GET    | `/api/shortlinks`       | List shortlink (paginasi + pencarian) |
-| POST   | `/api/shortlinks`       | Buat shortlink |
+| GET    | `/api/shortlinks`       | List link (paginasi + pencarian) |
+| POST   | `/api/shortlinks`       | Buat link |
 | GET    | `/api/shortlinks/:slug` | Ambil shortlink |
 | PATCH  | `/api/shortlinks/:slug` | Update shortlink |
 | DELETE | `/api/shortlinks/:slug` | Hapus shortlink |

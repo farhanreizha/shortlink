@@ -1,8 +1,4 @@
-import type {
-  Shortlink,
-  ShortlinkQuery,
-  UpdateShortlink,
-} from "@shortlink/shared"
+import type { Shortlink, ShortlinkQuery, UpdateShortlink } from "@knot/shared"
 import { useCallback, useEffect, useState } from "react"
 import { client } from "../hono-client"
 

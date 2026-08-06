@@ -26,7 +26,7 @@ importers:
       '@hono/zod-openapi':
         specifier: ^1.5.1
         version: 1.5.1(hono@4.12.32)(zod@4.4.3)
-      '@shortlink/shared':
+      '@knot/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       bcryptjs:
@@ -75,7 +75,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@shortlink/shared':
+      '@knot/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       hono:

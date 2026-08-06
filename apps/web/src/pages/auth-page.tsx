@@ -1,4 +1,4 @@
-import type { User } from "@shortlink/shared"
+import type { User } from "@knot/shared"
 import { Link } from "wouter"
 import { LoginForm } from "../components/auth/login-form"
 import { RegisterForm } from "../components/auth/register-form"
