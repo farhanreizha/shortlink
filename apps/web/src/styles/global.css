@@ -7,20 +7,15 @@
 }
 
 body {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
   color: var(--color-text-primary);
   background:
     radial-gradient(
-      1200px 600px at 80% -10%,
-      rgba(124, 58, 237, 0.05),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 500px at 10% 0%,
-      rgba(0, 82, 255, 0.05),
+      1000px 600px at 85% -10%,
+      rgba(0, 82, 255, 0.06),
       transparent 60%
     ),
     var(--color-bg);
@@ -28,12 +23,13 @@ body {
 }
 
 .main {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: var(--space-12) var(--space-6);
 }
 
 .main__title {
+  font-family: var(--font-display);
   font-size: 24px;
   font-weight: 700;
   margin-bottom: var(--space-6);

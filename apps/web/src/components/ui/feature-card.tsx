@@ -4,11 +4,13 @@ export function FeatureCard({
   icon,
   title,
   description,
+  tag,
   delay = 0,
 }: {
   icon: ReactNode
   title: string
   description: string
+  tag?: string
   delay?: number
 }) {
   return (
@@ -22,6 +24,7 @@ export function FeatureCard({
     >
       <div className="feature-card__icon">{icon}</div>
       <h3 className="feature-card__title">{title}</h3>
+      {tag && <span className="feature-card__tag">{tag}</span>}
       <p className="feature-card__desc">{description}</p>
     </div>
   )

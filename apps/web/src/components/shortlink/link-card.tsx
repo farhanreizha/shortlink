@@ -34,7 +34,7 @@ export function LinkCard({
         <div className="link-card__slug">
           <span className="chip chip--primary">{link.slug}</span>
           <span
-            className="chip chip--violet"
+            className="chip chip--success"
             style={{ marginLeft: "var(--space-2)" }}
           >
             {link.visits} visit{link.visits === 1 ? "" : "s"}

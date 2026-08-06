@@ -6,10 +6,12 @@ export function Navbar({
   children,
   user,
   onLogout,
+  links,
 }: {
   children?: ReactNode
   user?: { username: string }
   onLogout?: () => void
+  links?: Array<{ label: string; href: string }>
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLElement>(null)
@@ -34,6 +36,17 @@ export function Navbar({
           </span>
           Knot
         </Link>
+
+        {links && (
+          <div className="navbar__links">
+            {links.map((link) => (
+              <Link key={link.href} className="navbar__link" href={link.href}>
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+
         <div className="navbar__spacer" />
 
         {!user && children && (
@@ -48,6 +61,15 @@ export function Navbar({
         )}
 
         <div className={`navbar__menu${open ? " navbar__menu--open" : ""}`}>
+          {links?.map((link) => (
+            <Link
+              key={link.href}
+              className="navbar__link navbar__link--mobile"
+              href={link.href}
+            >
+              {link.label}
+            </Link>
+          ))}
           {children}
           {user && (
             <Link

@@ -65,11 +65,6 @@
   color: var(--color-primary);
 }
 
-.chip--violet {
-  background: var(--color-violet-muted);
-  color: var(--color-violet);
-}
-
 .chip--success {
   background: var(--color-success-muted);
   color: var(--color-success);
@@ -135,7 +130,7 @@
   background: none;
   border: none;
   border-radius: var(--radius-sm);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -220,9 +215,19 @@
 }
 
 .feature-card__title {
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
+}
+
+.feature-card__tag {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-tertiary);
+  background: var(--color-success-muted);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
 }
 
 .feature-card__desc {
