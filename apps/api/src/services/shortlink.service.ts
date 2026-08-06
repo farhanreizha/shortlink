@@ -5,9 +5,9 @@ import type {
   UpdateShortlink,
 } from "@shortlink/shared"
 import { and, desc, eq, ilike, sql } from "drizzle-orm"
-import { db } from "../db"
-import { shortlinks } from "../db/schema"
-import { ConflictError, NotFoundError } from "../lib/errors"
+import { db } from "../db/index.js"
+import { shortlinks } from "../db/schema.js"
+import { ConflictError, NotFoundError } from "../lib/errors.js"
 
 function toShortlink(row: typeof shortlinks.$inferSelect): Shortlink {
   return {

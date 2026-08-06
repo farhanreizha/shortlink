@@ -1,7 +1,7 @@
 import type { Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import type { ContentfulStatusCode } from "hono/utils/http-status"
-import { AppError } from "../lib/errors"
+import { AppError } from "../lib/errors.js"
 
 export async function errorHandler(err: Error, c: Context) {
   if (err instanceof AppError) {

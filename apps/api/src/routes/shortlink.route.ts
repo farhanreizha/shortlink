@@ -5,8 +5,8 @@ import {
   ShortlinkSchema,
   UpdateShortlinkSchema,
 } from "@shortlink/shared"
-import { ErrorSchema } from "../lib/schemas"
-import * as shortlinkService from "../services/shortlink.service"
+import { ErrorSchema } from "../lib/schemas.js"
+import * as shortlinkService from "../services/shortlink.service.js"
 
 const getShortlinksRoute = createRoute({
   method: "get",

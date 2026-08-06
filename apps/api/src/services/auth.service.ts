@@ -5,10 +5,10 @@ import type {
   User,
 } from "@shortlink/shared"
 import { eq } from "drizzle-orm"
-import { db } from "../db"
-import { shortlinks, users } from "../db/schema"
-import { hashPassword, signToken, verifyPassword } from "../lib/auth"
-import { ConflictError, UnauthorizedError } from "../lib/errors"
+import { db } from "../db/index.js"
+import { shortlinks, users } from "../db/schema.js"
+import { hashPassword, signToken, verifyPassword } from "../lib/auth.js"
+import { ConflictError, UnauthorizedError } from "../lib/errors.js"
 
 function toUser(row: typeof users.$inferSelect): User {
   return {
@@ -50,9 +50,6 @@ export async function register(input: RegisterInput) {
 }
 
 export async function login(input: LoginInput) {
-
-  // const user = await db.
-
   const [row] = await db
     .select()
     .from(users)

@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm"
-import app from "../app"
-import { db } from "../db"
-import { resetRateLimitStore } from "../lib/rate-limiter"
+import app from "../app.js"
+import { db } from "../db/index.js"
+import { resetRateLimitStore } from "../lib/rate-limiter.js"
 
 interface TestUser {
   id: number

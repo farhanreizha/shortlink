@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
-import app from "../app"
-import { cleanDatabase, registerUser } from "./helpers"
+import app from "../app.js"
+import { cleanDatabase, registerUser } from "./helpers.js"
 
 beforeEach(cleanDatabase)
 

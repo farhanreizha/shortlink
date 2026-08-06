@@ -7,7 +7,7 @@ import type {
   UpdateShortlink,
   UpdateUser,
   User,
-} from "./index"
+} from "./index.js"
 
 export type AppRoutes = {
   "/api/auth/register": {

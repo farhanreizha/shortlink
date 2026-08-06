@@ -1,7 +1,7 @@
 import type { Context, Next } from "hono"
 import { getCookie } from "hono/cookie"
-import { verifyToken } from "../lib/auth"
-import { UnauthorizedError } from "../lib/errors"
+import { verifyToken } from "../lib/auth.js"
+import { UnauthorizedError } from "../lib/errors.js"
 
 const publicPaths = [
   "/api/auth/register",

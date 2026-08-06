@@ -6,8 +6,8 @@ import {
   UserSchema,
 } from "@shortlink/shared"
 import { deleteCookie, setCookie } from "hono/cookie"
-import { ErrorSchema } from "../lib/schemas"
-import * as authService from "../services/auth.service"
+import { ErrorSchema } from "../lib/schemas.js"
+import * as authService from "../services/auth.service.js"
 
 const registerRoute = createRoute({
   method: "post",

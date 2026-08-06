@@ -1,6 +1,6 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { ErrorSchema } from "../lib/schemas"
-import * as shortlinkService from "../services/shortlink.service"
+import { ErrorSchema } from "../lib/schemas.js"
+import * as shortlinkService from "../services/shortlink.service.js"
 
 const SAFE_SCHEMES = ["http:", "https:"]
 

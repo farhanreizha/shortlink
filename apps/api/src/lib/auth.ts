@@ -1,6 +1,6 @@
 import { compare, hash } from "bcryptjs"
 import { jwtVerify, SignJWT } from "jose"
-import { env } from "../config"
+import { env } from "../config.js"
 
 const JWT_SECRET = new TextEncoder().encode(env.JWT_SECRET)
 

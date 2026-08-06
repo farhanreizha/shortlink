@@ -1,6 +1,6 @@
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi"
 import { sql } from "drizzle-orm"
-import { db } from "../db"
+import { db } from "../db/index.js"
 
 const route = createRoute({
   method: "get",

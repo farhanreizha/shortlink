@@ -1,13 +1,13 @@
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { cors } from "hono/cors"
-import { env } from "./config"
-import { rateLimit } from "./lib/rate-limiter"
-import { authMiddleware } from "./middleware/auth"
-import { errorHandler } from "./middleware/error-handler"
-import authRoutes from "./routes/auth.route"
-import healthRoutes from "./routes/health.route"
-import redirectRoutes from "./routes/redirect.route"
-import shortlinkRoutes from "./routes/shortlink.route"
+import { env } from "./config.js"
+import { rateLimit } from "./lib/rate-limiter.js"
+import { authMiddleware } from "./middleware/auth.js"
+import { errorHandler } from "./middleware/error-handler.js"
+import authRoutes from "./routes/auth.route.js"
+import healthRoutes from "./routes/health.route.js"
+import redirectRoutes from "./routes/redirect.route.js"
+import shortlinkRoutes from "./routes/shortlink.route.js"
 
 const app = new OpenAPIHono<{ Variables: { userId: number } }>()
 
