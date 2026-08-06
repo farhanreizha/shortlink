@@ -4,7 +4,7 @@ import { Modal } from "./modal"
 interface ConfirmModalProps {
   open: boolean
   title: string
-  message: string | ReactNode
+  message: ReactNode
   confirmLabel?: string
   confirmDisabled?: boolean
   onConfirm: () => void
