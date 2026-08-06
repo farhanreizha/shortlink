@@ -11,10 +11,5 @@ export default defineConfig({
       CORS_ORIGIN: "*",
     },
     setupFiles: ["./src/__tests__/setup.ts"],
-    coverage: {
-      provider: "v8",
-      include: ["src/**"],
-      exclude: ["src/__tests__/**", "src/db/**", "src/index.ts"],
-    },
   },
 })

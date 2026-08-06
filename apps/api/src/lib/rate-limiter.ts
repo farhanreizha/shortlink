@@ -7,18 +7,9 @@ interface Entry {
 }
 
 const store = new Map<string, Entry>()
-const MAX_STORE_SIZE = 10000
 
 export function resetRateLimitStore() {
   store.clear()
-}
-
-function cleanExpired() {
-  if (store.size < MAX_STORE_SIZE) return
-  const now = Date.now()
-  for (const [key, entry] of store) {
-    if (now >= entry.resetTime) store.delete(key)
-  }
 }
 
 export function rateLimit(opts: { windowMs: number; max: number }) {
@@ -30,7 +21,6 @@ export function rateLimit(opts: { windowMs: number; max: number }) {
 
     if (!entry || now >= entry.resetTime) {
       store.set(ip, { count: 1, resetTime: now + opts.windowMs })
-      cleanExpired()
       return next()
     }
 
