@@ -14,7 +14,7 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
@@ -43,7 +43,7 @@
 }
 
 .animate-slide-up {
-  animation: slide-up 0.3s ease-out both;
+  animation: slide-up 0.3s ease-out backwards;
 }
 
 .animate-scale-in {

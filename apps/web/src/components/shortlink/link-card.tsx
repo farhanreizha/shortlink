@@ -1,9 +1,9 @@
 import type { Shortlink, UpdateShortlink } from "@shortlink/shared"
-import { Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
 import { ConfirmModal } from "../ui/confirm-modal"
-import { EditButton, EditModal } from "./edit-modal"
+import { EditModal } from "./edit-modal"
+import { LinkCardMenu } from "./link-card-menu"
 
 export function LinkCard({
   link,
@@ -38,6 +38,10 @@ export function LinkCard({
           </span>
         </div>
         <div className="link-card__short-url">{shortUrl}</div>
+        <LinkCardMenu
+          onEdit={() => setShowEdit(true)}
+          onDelete={() => setShowConfirm(true)}
+        />
       </div>
       <div className="link-card__row">
         <div className="link-card__original" title={link.url}>
@@ -55,15 +59,6 @@ export function LinkCard({
           >
             Visit &rarr;
           </a>
-          <EditButton onClick={() => setShowEdit(true)} />
-          <button
-            className="btn btn--ghost"
-            type="button"
-            style={{ color: "var(--color-error)" }}
-            onClick={() => setShowConfirm(true)}
-          >
-            <Trash2 size={16} />
-          </button>
         </div>
       </div>
       <EditModal

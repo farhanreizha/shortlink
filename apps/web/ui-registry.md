@@ -154,3 +154,30 @@ Last updated: 2026-07-30
 - Semi-hidden when password is empty (returns null)
 - Color and label fallback to error/neutral when score is 0
 - Uses all CSS variables (no hardcoded colors)
+
+---
+
+### LinkCardMenu
+
+File: `components/shortlink/link-card-menu.tsx`
+Last updated: 2026-08-06
+
+| Property | Class/Value |
+|---|---|
+| Trigger btn | `btn btn--ghost` + `MoreVertical` icon |
+| Dropdown bg | `--color-surface` |
+| Dropdown border | `1px solid var(--color-border)` |
+| Dropdown radius | `var(--radius-md)` |
+| Dropdown shadow | `var(--shadow-modal)` |
+| Dropdown padding | `var(--space-1)` |
+| Item text | `--color-text-secondary`, 14px, 500 |
+| Item hover bg | `var(--color-primary-muted)` |
+| Item danger text | `var(--color-error)` |
+| Item danger hover bg | `var(--color-error-muted)` |
+
+**Pattern notes:**
+- Kebab trigger with `aria-haspopup="menu"` + `aria-expanded`
+- Click-outside closes via `mousedown` listener (same as Navbar)
+- Escape key via shared `useEscapeKey` hook
+- Closes after item click
+- Same visual tokens as `navbar__dropdown` (surface bg, border, radius-md, shadow-modal)

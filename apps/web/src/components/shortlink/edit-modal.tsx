@@ -1,5 +1,4 @@
 import type { Shortlink, UpdateShortlink } from "@shortlink/shared"
-import { Pencil } from "lucide-react"
 import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { useEscapeKey } from "../../hooks/use-escape-key"
@@ -117,18 +116,5 @@ export function EditModal({
       </div>
     </div>,
     document.body,
-  )
-}
-
-export function EditButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      className="btn btn--ghost"
-      type="button"
-      onClick={onClick}
-      title="Edit shortlink"
-    >
-      <Pencil size={16} />
-    </button>
   )
 }
