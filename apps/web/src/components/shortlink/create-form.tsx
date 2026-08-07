@@ -1,9 +1,7 @@
 import { CreateShortlinkSchema } from "@knot/shared"
-import { Dices } from "lucide-react"
+import { Link as LinkIcon, Scissors } from "lucide-react"
 import { useState } from "react"
-import { clearFieldError } from "../../lib/form"
 import { ErrorBanner } from "../ui/error-banner"
-import { FormField } from "../ui/form-field"
 
 function randomSlug() {
   return Math.random().toString(36).slice(2, 8)
@@ -15,29 +13,22 @@ export function CreateForm({
   onCreate: (slug: string, url: string) => Promise<unknown>
 }) {
   const [url, setUrl] = useState("")
-  const [slug, setSlug] = useState("")
-  const [errors, setErrors] = useState<Record<string, string>>({})
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setErrors({})
     setError("")
+    const slug = randomSlug()
     const result = CreateShortlinkSchema.safeParse({ slug, url })
     if (!result.success) {
-      const field = result.error.flatten().fieldErrors
-      setErrors({
-        slug: field.slug?.[0] ?? "",
-        url: field.url?.[0] ?? "",
-      })
+      setError(result.error.flatten().fieldErrors.url?.[0] ?? "Invalid URL")
       return
     }
     setLoading(true)
     try {
       await onCreate(slug, url)
       setUrl("")
-      setSlug("")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
@@ -46,50 +37,29 @@ export function CreateForm({
   }
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <FormField label="URL" htmlFor="url" error={errors.url}>
+    <form className="dash-hero__form" onSubmit={handleSubmit}>
+      <div className="dash-hero__field">
+        <LinkIcon size={20} className="dash-hero__icon" />
         <input
-          id="url"
-          className="input"
-          placeholder="https://example.com/very/long/url"
+          className="dash-hero__input"
+          type="url"
+          placeholder="https://very-long-url-example.com/some/path"
           value={url}
           onChange={(e) => {
             setUrl(e.target.value)
-            setErrors(clearFieldError("url"))
+            setError("")
           }}
         />
-      </FormField>
-      <div className="form__row">
-        <FormField label="Slug" htmlFor="slug" error={errors.slug}>
-          <input
-            id="slug"
-            className="input input--mono input--slug"
-            placeholder="my-link"
-            value={slug}
-            onChange={(e) => {
-              setSlug(e.target.value)
-              setErrors(clearFieldError("slug"))
-            }}
-          />
-        </FormField>
-        <button
-          type="button"
-          className="btn btn--ghost"
-          style={{ marginTop: "var(--space-5)", minWidth: 40 }}
-          onClick={() => setSlug(randomSlug())}
-          title="Auto-generate slug"
-        >
-          <Dices size={20} />
-        </button>
-        <button
-          type="submit"
-          className="btn btn--primary"
-          style={{ marginTop: "var(--space-5)" }}
-          disabled={loading || !url || !slug}
-        >
-          {loading ? "Creating…" : "Create"}
-        </button>
+        {error && <span className="dash-hero__error">{error}</span>}
       </div>
+      <button
+        className="dash-hero__btn"
+        type="submit"
+        disabled={loading || !url}
+      >
+        <Scissors size={18} />
+        {loading ? "Shortening…" : "Shorten"}
+      </button>
       <ErrorBanner message={error} onClose={() => setError("")} />
     </form>
   )

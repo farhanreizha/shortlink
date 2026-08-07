@@ -1,4 +1,5 @@
 import type { Shortlink, UpdateShortlink } from "@knot/shared"
+import { BarChart3, Check, Copy } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
 import { ConfirmModal } from "../ui/confirm-modal"
@@ -29,44 +30,29 @@ export function LinkCard({
   }
 
   return (
-    <div className="link-card">
-      <div className="link-card__row">
-        <div className="link-card__slug">
-          <span className="chip chip--primary">{link.slug}</span>
-          <span
-            className="chip chip--success"
-            style={{ marginLeft: "var(--space-2)" }}
-          >
-            {link.visits} visit{link.visits === 1 ? "" : "s"}
-          </span>
+    <div className="dash-link">
+      <div className="dash-link__main">
+        <div className="dash-link__top">
+          <span className="dash-link__slug">{shortUrl}</span>
+          <span className="dash-link__status">Active</span>
         </div>
-        <div className="link-card__short-url">{shortUrl}</div>
+        <p className="dash-link__url" title={link.url}>
+          {link.url}
+        </p>
+      </div>
+      <div className="dash-link__side">
+        <span className="dash-link__clicks">
+          <BarChart3 size={16} />
+          {link.visits.toLocaleString()} clicks
+        </span>
+        <button className="dash-link__copy" type="button" onClick={handleCopy}>
+          {copied ? <Check size={16} /> : <Copy size={16} />}
+          {copied ? "Copied" : "Copy"}
+        </button>
         <LinkCardMenu
           onEdit={() => setShowEdit(true)}
           onDelete={() => setShowConfirm(true)}
         />
-      </div>
-      <div className="link-card__row">
-        <div className="link-card__original" title={link.url}>
-          {link.url}
-        </div>
-        <div className="link-card__actions">
-          <button
-            className={`btn btn--ghost${copied ? " btn--success" : ""}`}
-            type="button"
-            onClick={handleCopy}
-          >
-            {copied ? "Copied!" : "Copy"}
-          </button>
-          <a
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn--primary"
-          >
-            Visit &rarr;
-          </a>
-        </div>
       </div>
       <EditModal
         key={`edit-${showEdit}`}
