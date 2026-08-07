@@ -4,10 +4,15 @@ import { Link } from "wouter"
 import { useEscapeKey } from "../../hooks/use-escape-key"
 
 const NAV_LINKS = [
-  { label: "Dashboard", href: "/", active: true },
-  { label: "Analytics", href: "/analytics", disabled: true },
-  { label: "Campaigns", href: "/campaigns", disabled: true },
-  { label: "Custom Links", href: "/custom-links", disabled: true },
+  { key: "dashboard", label: "Dashboard", href: "/" },
+  { key: "analytics", label: "Analytics", href: "/analytics", disabled: true },
+  { key: "campaigns", label: "Campaigns", href: "/campaigns", disabled: true },
+  {
+    key: "custom-links",
+    label: "Custom Links",
+    href: "/custom-links",
+    disabled: true,
+  },
 ]
 
 const FOOTER_LINKS = [
@@ -20,10 +25,14 @@ const FOOTER_LINKS = [
 export function DashboardShell({
   user,
   onLogout,
+  activeNav = "dashboard",
+  onCreateNew,
   children,
 }: {
   user: { username: string }
   onLogout: () => void
+  activeNav?: string
+  onCreateNew?: () => void
   children: ReactNode
 }) {
   const [open, setOpen] = useState(false)
@@ -69,7 +78,7 @@ export function DashboardShell({
                 ) : (
                   <Link
                     key={link.href}
-                    className={`dash-nav__link${link.active ? " dash-nav__link--active" : ""}`}
+                    className={`dash-nav__link${activeNav === link.key ? " dash-nav__link--active" : ""}`}
                     href={link.href}
                   >
                     {link.label}
@@ -97,7 +106,7 @@ export function DashboardShell({
             <button
               className="dash-nav__create"
               type="button"
-              onClick={scrollToHero}
+              onClick={onCreateNew ?? scrollToHero}
             >
               Create New
             </button>
