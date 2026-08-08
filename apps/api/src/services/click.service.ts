@@ -24,7 +24,10 @@ export async function recordClick(shortlinkId: number, headers: Headers) {
   await db.insert(clicks).values({
     shortlinkId,
     device: parseDevice(ua),
-    country: headers.get("cf-ipcountry") ?? headers.get("x-vercel-ip-country") ?? "Unknown",
+    country:
+      headers.get("cf-ipcountry") ??
+      headers.get("x-vercel-ip-country") ??
+      "Unknown",
     referrer: headers.get("referer") ?? "",
     visitor,
   })
