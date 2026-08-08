@@ -22,10 +22,24 @@ export const LoginSchema = z.object({
 
 export type LoginInput = z.infer<typeof LoginSchema>
 
+export const NotificationPrefsSchema = z.object({
+  email: z.object({
+    linkClicks: z.boolean(),
+    campaignReports: z.boolean(),
+    accountUpdates: z.boolean(),
+  }),
+  push: z.object({
+    mobileAlerts: z.boolean(),
+  }),
+})
+
+export type NotificationPrefs = z.infer<typeof NotificationPrefsSchema>
+
 export const UserSchema = z.object({
   id: z.string(),
   username: z.string(),
   email: z.string(),
+  notificationPrefs: NotificationPrefsSchema,
   createdAt: z.string().datetime(),
 })
 
@@ -36,6 +50,7 @@ export const ShortlinkSchema = z.object({
   slug: z.string(),
   url: z.string().url(),
   visits: z.number(),
+  campaignId: z.string().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 })
@@ -45,6 +60,7 @@ export type Shortlink = z.infer<typeof ShortlinkSchema>
 export const CreateShortlinkSchema = z.object({
   slug: z.string().min(1),
   url: z.string().url(),
+  campaignId: z.coerce.number().int().nullable().optional(),
 })
 
 export type CreateShortlink = z.infer<typeof CreateShortlinkSchema>
@@ -52,6 +68,7 @@ export type CreateShortlink = z.infer<typeof CreateShortlinkSchema>
 export const UpdateShortlinkSchema = z.object({
   slug: z.string().min(1).optional(),
   url: z.string().url().optional(),
+  campaignId: z.coerce.number().int().nullable().optional(),
 })
 
 export type UpdateShortlink = z.infer<typeof UpdateShortlinkSchema>
@@ -61,14 +78,92 @@ export const ShortlinkQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   q: z.string().optional(),
   sortBy: z.enum(["createdAt", "visits"]).default("createdAt"),
+  campaignId: z.coerce.number().int().optional(),
 })
 
 export type ShortlinkQuery = z.infer<typeof ShortlinkQuerySchema>
+
+export const CampaignSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  status: z.enum(["active", "archived"]),
+  createdAt: z.string().datetime(),
+})
+
+export type Campaign = z.infer<typeof CampaignSchema>
+
+export const CampaignSummarySchema = CampaignSchema.extend({
+  linksCount: z.number(),
+  clicks: z.number(),
+})
+
+export type CampaignSummary = z.infer<typeof CampaignSummarySchema>
+
+export const CreateCampaignSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().optional(),
+  status: z.enum(["active", "archived"]).optional(),
+})
+
+export type CreateCampaign = z.infer<typeof CreateCampaignSchema>
+
+export const UpdateCampaignSchema = z.object({
+  name: z.string().min(1).optional(),
+  description: z.string().optional(),
+  status: z.enum(["active", "archived"]).optional(),
+})
+
+export type UpdateCampaign = z.infer<typeof UpdateCampaignSchema>
+
+export const CampaignQuerySchema = z.object({
+  status: z.enum(["active", "archived"]).optional(),
+  q: z.string().optional(),
+})
+
+export type CampaignQuery = z.infer<typeof CampaignQuerySchema>
+
+export const AnalyticsQuerySchema = z.object({
+  range: z.enum(["7d", "30d", "month", "custom"]).default("7d"),
+  bucket: z.enum(["daily", "weekly"]).default("daily"),
+  start: z.string().optional(),
+  end: z.string().optional(),
+})
+
+export type AnalyticsQuery = z.infer<typeof AnalyticsQuerySchema>
+
+export const AnalyticsOverviewSchema = z.object({
+  totalClicks: z.number(),
+  uniqueVisitors: z.number(),
+  topReferral: z.string(),
+  avgCtr: z.number().nullable(),
+  clicksByDevice: z.object({
+    mobile: z.number(),
+    desktop: z.number(),
+    tablet: z.number(),
+  }),
+  clicksByLocation: z.array(
+    z.object({ country: z.string(), count: z.number(), pct: z.number() }),
+  ),
+  clicksOverTime: z.array(z.object({ date: z.string(), count: z.number() })),
+  topLinks: z.array(
+    z.object({
+      id: z.string(),
+      slug: z.string(),
+      url: z.string(),
+      clicks: z.number(),
+      unique: z.number(),
+    }),
+  ),
+})
+
+export type AnalyticsOverview = z.infer<typeof AnalyticsOverviewSchema>
 
 export const UpdateUserSchema = z.object({
   email: z.string().email().optional(),
   currentPassword: z.string().optional(),
   newPassword: PasswordSchema.optional(),
+  notificationPrefs: NotificationPrefsSchema.optional(),
 })
 
 export type UpdateUser = z.infer<typeof UpdateUserSchema>

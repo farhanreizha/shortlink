@@ -1,9 +1,16 @@
 import type {
+  AnalyticsOverview,
+  AnalyticsQuery,
+  Campaign,
+  CampaignQuery,
+  CampaignSummary,
+  CreateCampaign,
   CreateShortlink,
   LoginInput,
   RegisterInput,
   Shortlink,
   ShortlinkQuery,
+  UpdateCampaign,
   UpdateShortlink,
   UpdateUser,
   User,
@@ -87,6 +94,42 @@ export type AppRoutes = {
     $patch: {
       input: { param: { slug: string }; json: UpdateShortlink }
       output: Shortlink
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/analytics/overview": {
+    $get: {
+      input: { query: AnalyticsQuery }
+      output: AnalyticsOverview
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/campaigns": {
+    $get: {
+      input: { query: CampaignQuery }
+      output: CampaignSummary[]
+      outputFormat: "json"
+      status: 200
+    }
+    $post: {
+      input: { json: CreateCampaign }
+      output: Campaign
+      outputFormat: "json"
+      status: 201
+    }
+  }
+  "/api/campaigns/:id": {
+    $patch: {
+      input: { param: { id: string }; json: UpdateCampaign }
+      output: Campaign
+      outputFormat: "json"
+      status: 200
+    }
+    $delete: {
+      input: { param: { id: string } }
+      output: { message: string }
       outputFormat: "json"
       status: 200
     }

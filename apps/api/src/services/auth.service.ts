@@ -10,6 +10,7 @@ function toUser(row: typeof users.$inferSelect): User {
     id: String(row.id),
     username: row.username,
     email: row.email,
+    notificationPrefs: row.notificationPrefs,
     createdAt: row.createdAt.toISOString(),
   }
 }
@@ -98,6 +99,10 @@ export async function updateUser(userId: number, input: UpdateUser) {
       throw new HTTPException(401, { message: "Current password is incorrect" })
     }
     updates.password = await hashPassword(input.newPassword)
+  }
+
+  if (input.notificationPrefs) {
+    updates.notificationPrefs = input.notificationPrefs
   }
 
   if (Object.keys(updates).length === 0) return toUser(row)

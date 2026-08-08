@@ -15,6 +15,7 @@ function toShortlink(row: typeof shortlinks.$inferSelect): Shortlink {
     slug: row.slug,
     url: row.url,
     visits: row.visits,
+    campaignId: row.campaignId === null ? null : String(row.campaignId),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   }
@@ -31,16 +32,26 @@ export async function list(userId: number, query: ShortlinkQuery) {
     // biome-ignore lint/style/noNonNullAssertion: conditions always defined
     conditions = and(conditions, ilike(shortlinks.url, `%${query.q}%`))!
   }
+  if (query.campaignId !== undefined) {
+    // biome-ignore lint/style/noNonNullAssertion: conditions always defined
+    conditions = and(conditions, eq(shortlinks.campaignId, query.campaignId))!
+  }
 
-  const rows = await db
-    .select()
-    .from(shortlinks)
-    .where(conditions)
-    .orderBy(sortMap[query.sortBy]())
-    .limit(query.limit)
-    .offset(query.offset)
+  const [rows, [countRow]] = await Promise.all([
+    db
+      .select()
+      .from(shortlinks)
+      .where(conditions)
+      .orderBy(sortMap[query.sortBy]())
+      .limit(query.limit)
+      .offset(query.offset),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(shortlinks)
+      .where(conditions),
+  ])
 
-  return rows.map(toShortlink)
+  return { items: rows.map(toShortlink), total: Number(countRow?.count ?? 0) }
 }
 
 export async function getDetail(slug: string, userId: number) {
@@ -63,7 +74,14 @@ export async function create(input: CreateShortlink, userId: number) {
 
   const rows = await db
     .insert(shortlinks)
-    .values({ slug: input.slug, url: input.url, userId })
+    .values({
+      slug: input.slug,
+      url: input.url,
+      userId,
+      ...(input.campaignId !== undefined && input.campaignId !== null
+        ? { campaignId: input.campaignId }
+        : {}),
+    })
     .returning()
   // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row
   return toShortlink(rows[0]!)
@@ -106,6 +124,9 @@ export async function update(
     .set({
       ...(input.slug !== undefined ? { slug: input.slug } : {}),
       ...(input.url !== undefined ? { url: input.url } : {}),
+      ...(input.campaignId !== undefined
+        ? { campaignId: input.campaignId }
+        : {}),
       updatedAt: new Date(),
     })
     .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))

@@ -127,8 +127,9 @@ const shortlinkRoutes = new OpenAPIHono<{ Variables: { userId: number } }>()
 
 shortlinkRoutes.openapi(getShortlinksRoute, async (c) => {
   const query = c.req.valid("query")
-  const links = await shortlinkService.list(c.get("userId"), query)
-  return c.json(links)
+  const { items, total } = await shortlinkService.list(c.get("userId"), query)
+  c.header("X-Total-Count", String(total))
+  return c.json(items)
 })
 
 shortlinkRoutes.openapi(getShortlinkRoute, async (c) => {
