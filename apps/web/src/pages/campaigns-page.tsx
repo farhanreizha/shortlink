@@ -3,6 +3,7 @@ import { useState } from "react"
 import { CampaignModal } from "../components/campaign/campaign-modal"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
+import { Reveal } from "../components/ui/reveal"
 import { Skeleton } from "../components/ui/skeleton"
 import { useCampaigns } from "../hooks/use-campaigns"
 import { useToast } from "../hooks/use-toast"
@@ -107,46 +108,48 @@ export function CampaignsPage({
           </div>
         ) : (
           <div className="camp-grid">
-            {data.map((campaign) => (
-              <article className="camp-card" key={campaign.id}>
-                <div className="camp-card__top">
-                  <span
-                    className={`camp-card__status camp-card__status--${campaign.status}`}
-                  >
-                    {campaign.status === "active" ? "Active" : "Archived"}
-                  </span>
-                  <div className="camp-card__actions">
-                    <button
-                      type="button"
-                      className="camp-card__btn"
-                      aria-label={`Edit ${campaign.name}`}
-                      onClick={() => setModal({ edit: campaign })}
+            {data.map((campaign, i) => (
+              <Reveal key={campaign.id} delay={i * 0.06}>
+                <article className="camp-card">
+                  <div className="camp-card__top">
+                    <span
+                      className={`camp-card__status camp-card__status--${campaign.status}`}
                     >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="camp-card__btn camp-card__btn--danger"
-                      aria-label={`Delete ${campaign.name}`}
-                      onClick={() => setDeleting(campaign)}
-                    >
-                      Delete
-                    </button>
+                      {campaign.status === "active" ? "Active" : "Archived"}
+                    </span>
+                    <div className="camp-card__actions">
+                      <button
+                        type="button"
+                        className="camp-card__btn"
+                        aria-label={`Edit ${campaign.name}`}
+                        onClick={() => setModal({ edit: campaign })}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="camp-card__btn camp-card__btn--danger"
+                        aria-label={`Delete ${campaign.name}`}
+                        onClick={() => setDeleting(campaign)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <h2 className="camp-card__name">{campaign.name}</h2>
-                <p className="camp-card__desc">
-                  {campaign.description || "No description provided."}
-                </p>
-                <div className="camp-card__stats">
-                  <span>
-                    <strong>{campaign.linksCount}</strong> Links
-                  </span>
-                  <span>
-                    <strong>{campaign.clicks.toLocaleString()}</strong> Clicks
-                  </span>
-                </div>
-              </article>
+                  <h2 className="camp-card__name">{campaign.name}</h2>
+                  <p className="camp-card__desc">
+                    {campaign.description || "No description provided."}
+                  </p>
+                  <div className="camp-card__stats">
+                    <span>
+                      <strong>{campaign.linksCount}</strong> Links
+                    </span>
+                    <span>
+                      <strong>{campaign.clicks.toLocaleString()}</strong> Clicks
+                    </span>
+                  </div>
+                </article>
+              </Reveal>
             ))}
           </div>
         )}
