@@ -4,9 +4,11 @@ import { Skeleton } from "./components/ui/skeleton"
 import { useAuth } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
 import { AuthPage } from "./pages/auth-page"
+import { CustomLinksPage } from "./pages/custom-links-page"
 import { DashboardPage } from "./pages/dashboard-page"
 import { LandingPage } from "./pages/landing-page"
 import { NotFoundPage } from "./pages/not-found-page"
+import { PlaceholderPage } from "./pages/placeholder-page"
 import { SettingsPage } from "./pages/settings-page"
 import "./index.css"
 
@@ -75,6 +77,37 @@ export function App() {
           <Route path="/settings">
             {user ? (
               <SettingsPage user={user} onLogout={logout} />
+            ) : (
+              <Redirect to="/login" />
+            )}
+          </Route>
+          <Route path="/custom-links">
+            {user ? (
+              <CustomLinksPage user={user} onLogout={logout} />
+            ) : (
+              <Redirect to="/login" />
+            )}
+          </Route>
+          <Route path="/analytics">
+            {user ? (
+              <PlaceholderPage
+                user={user}
+                onLogout={logout}
+                title="Analytics"
+                activeNav="analytics"
+              />
+            ) : (
+              <Redirect to="/login" />
+            )}
+          </Route>
+          <Route path="/campaigns">
+            {user ? (
+              <PlaceholderPage
+                user={user}
+                onLogout={logout}
+                title="Campaigns"
+                activeNav="campaigns"
+              />
             ) : (
               <Redirect to="/login" />
             )}

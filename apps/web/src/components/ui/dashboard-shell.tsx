@@ -5,14 +5,9 @@ import { useEscapeKey } from "../../hooks/use-escape-key"
 
 const NAV_LINKS = [
   { key: "dashboard", label: "Dashboard", href: "/" },
-  { key: "analytics", label: "Analytics", href: "/analytics", disabled: true },
-  { key: "campaigns", label: "Campaigns", href: "/campaigns", disabled: true },
-  {
-    key: "custom-links",
-    label: "Custom Links",
-    href: "/custom-links",
-    disabled: true,
-  },
+  { key: "analytics", label: "Analytics", href: "/analytics" },
+  { key: "campaigns", label: "Campaigns", href: "/campaigns" },
+  { key: "custom-links", label: "Custom Links", href: "/custom-links" },
 ]
 
 const FOOTER_LINKS = [
@@ -66,25 +61,15 @@ export function DashboardShell({
               Knot
             </Link>
             <nav className="dash-nav__links" aria-label="Dashboard navigation">
-              {NAV_LINKS.map((link) =>
-                link.disabled ? (
-                  <span
-                    key={link.label}
-                    className="dash-nav__link dash-nav__link--disabled"
-                    aria-disabled="true"
-                  >
-                    {link.label}
-                  </span>
-                ) : (
-                  <Link
-                    key={link.href}
-                    className={`dash-nav__link${activeNav === link.key ? " dash-nav__link--active" : ""}`}
-                    href={link.href}
-                  >
-                    {link.label}
-                  </Link>
-                ),
-              )}
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.key}
+                  className={`dash-nav__link${activeNav === link.key ? " dash-nav__link--active" : ""}`}
+                  href={link.href}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </div>
 

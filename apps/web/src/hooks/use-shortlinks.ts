@@ -4,6 +4,7 @@ import { client } from "../hono-client"
 
 export function useShortlinks() {
   const [links, setLinks] = useState<Shortlink[]>([])
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState<ShortlinkQuery>({
     offset: 0,
@@ -17,6 +18,7 @@ export function useShortlinks() {
       const res = await client.api.shortlinks.$get({ query: q })
       const data = (await res.json()) as Shortlink[]
       setLinks(data)
+      setTotal(Number(res.headers.get("X-Total-Count") ?? data.length))
     } finally {
       setLoading(false)
     }
@@ -61,5 +63,5 @@ export function useShortlinks() {
     setLinks((prev) => prev.map((l) => (l.slug === slug ? link : l)))
   }, [])
 
-  return { links, loading, query, setQuery, create, remove, update }
+  return { links, total, loading, query, setQuery, create, remove, update }
 }
