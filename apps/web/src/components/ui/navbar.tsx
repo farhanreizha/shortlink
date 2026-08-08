@@ -39,11 +39,17 @@ export function Navbar({
 
         {links && (
           <div className="navbar__links">
-            {links.map((link) => (
-              <Link key={link.href} className="navbar__link" href={link.href}>
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) =>
+              link.href.startsWith("#") ? (
+                <a key={link.href} className="navbar__link" href={link.href}>
+                  {link.label}
+                </a>
+              ) : (
+                <Link key={link.href} className="navbar__link" href={link.href}>
+                  {link.label}
+                </Link>
+              ),
+            )}
           </div>
         )}
 
@@ -61,15 +67,27 @@ export function Navbar({
         )}
 
         <div className={`navbar__menu${open ? " navbar__menu--open" : ""}`}>
-          {links?.map((link) => (
-            <Link
-              key={link.href}
-              className="navbar__link navbar__link--mobile"
-              href={link.href}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links?.map((link) =>
+            link.href.startsWith("#") ? (
+              <a
+                key={link.href}
+                className="navbar__link navbar__link--mobile"
+                href={link.href}
+                onClick={() => setOpen(false)}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                className="navbar__link navbar__link--mobile"
+                href={link.href}
+                onClick={() => setOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ),
+          )}
           {children}
           {user && (
             <Link
