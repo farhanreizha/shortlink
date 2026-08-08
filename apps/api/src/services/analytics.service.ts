@@ -88,7 +88,7 @@ export async function overview(
 
   const totalClicks = rows.length
   const uniqueVisitors = new Set(rows.map((r) => r.visitor)).size
-  const topReferral = mode(rows.map((r) => r.referrer).filter(Boolean)) ?? "-"
+  const topReferral = mode(rows.map((r) => r.referrer || "Direct")) ?? "-"
 
   const byDevice: AnalyticsOverview["clicksByDevice"] = {
     mobile: 0,

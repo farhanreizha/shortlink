@@ -3,6 +3,7 @@ import { ErrorBoundary } from "./components/ui/error-boundary"
 import { Skeleton } from "./components/ui/skeleton"
 import { useAuth } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
+import { AnalyticsPage } from "./pages/analytics-page"
 import { AuthPage } from "./pages/auth-page"
 import { CustomLinksPage } from "./pages/custom-links-page"
 import { DashboardPage } from "./pages/dashboard-page"
@@ -90,12 +91,7 @@ export function App() {
           </Route>
           <Route path="/analytics">
             {user ? (
-              <PlaceholderPage
-                user={user}
-                onLogout={logout}
-                title="Analytics"
-                activeNav="analytics"
-              />
+              <AnalyticsPage user={user} onLogout={logout} />
             ) : (
               <Redirect to="/login" />
             )}
