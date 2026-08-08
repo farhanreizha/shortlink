@@ -15,6 +15,7 @@ import { HowItWorksModal } from "../components/shortlink/how-it-works-modal"
 import { NewLinkModal } from "../components/shortlink/new-link-modal"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
+import { Reveal } from "../components/ui/reveal"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
 
@@ -78,32 +79,34 @@ export function CustomLinksPage({
   return (
     <DashboardShell user={user} onLogout={onLogout} activeNav="custom-links">
       <div className="cl-page">
-        <div className="cl-header">
-          <div>
-            <h1 className="cl-header__title">Custom Links</h1>
-            <p className="cl-header__desc">
-              Manage and track your branded shortened URLs.
-            </p>
+        <Reveal>
+          <div className="cl-header">
+            <div>
+              <h1 className="cl-header__title">Custom Links</h1>
+              <p className="cl-header__desc">
+                Manage and track your branded shortened URLs.
+              </p>
+            </div>
+            <div className="cl-header__actions">
+              <button
+                className="btn btn--ghost"
+                type="button"
+                onClick={() => setShowHow(true)}
+              >
+                <Info size={16} />
+                How it Works
+              </button>
+              <button
+                className="btn btn--primary"
+                type="button"
+                onClick={() => setShowNew(true)}
+              >
+                <Plus size={16} />
+                New Custom Link
+              </button>
+            </div>
           </div>
-          <div className="cl-header__actions">
-            <button
-              className="btn btn--ghost"
-              type="button"
-              onClick={() => setShowHow(true)}
-            >
-              <Info size={16} />
-              How it Works
-            </button>
-            <button
-              className="btn btn--primary"
-              type="button"
-              onClick={() => setShowNew(true)}
-            >
-              <Plus size={16} />
-              New Custom Link
-            </button>
-          </div>
-        </div>
+        </Reveal>
 
         <form className="cl-toolbar" onSubmit={search}>
           <div className="cl-search">
@@ -118,70 +121,76 @@ export function CustomLinksPage({
           </div>
         </form>
 
-        <div className="cl-table-wrap">
-          <table className="cl-table">
-            <thead>
-              <tr>
-                <th>Branded URL</th>
-                <th>Original URL</th>
-                <th>Created Date</th>
-                <th>Clicks</th>
-                <th className="cl-table__action-col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {links.map((link) => (
-                <tr key={link.id}>
-                  <td>
-                    <span className="cl-table__brand">
-                      <LinkIcon size={16} />
-                      {window.location.origin}/r/{link.slug}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="cl-table__url" title={link.url}>
-                      {link.url}
-                    </span>
-                  </td>
-                  <td>{formatDate(link.createdAt)}</td>
-                  <td>{link.visits.toLocaleString()}</td>
-                  <td>
-                    <div className="cl-table__actions">
-                      <button
-                        className="btn btn--ghost"
-                        type="button"
-                        aria-label={`Edit ${link.slug}`}
-                        onClick={() => setEditing({ slug: link.slug })}
-                      >
-                        <Pencil size={14} />
-                      </button>
-                      <button
-                        className="btn btn--ghost btn--danger-ghost"
-                        type="button"
-                        aria-label={`Delete ${link.slug}`}
-                        onClick={() => setDeleting({ slug: link.slug })}
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {!loading && links.length === 0 && (
+        <Reveal delay={0.1}>
+          <div className="cl-table-wrap">
+            <table className="cl-table">
+              <thead>
                 <tr>
-                  <td colSpan={5}>
-                    <div className="empty-state">
-                      <div className="empty-state__title">No links found</div>
-                      <div className="empty-state__text">
-                        Create a custom link above or adjust your search
-                      </div>
-                    </div>
-                  </td>
+                  <th>Branded URL</th>
+                  <th>Original URL</th>
+                  <th>Created Date</th>
+                  <th>Clicks</th>
+                  <th className="cl-table__action-col">Action</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {links.map((link, i) => (
+                  <tr
+                    key={link.id}
+                    className="cl-table__row"
+                    style={{ animationDelay: `${i * 0.04}s` }}
+                  >
+                    <td>
+                      <span className="cl-table__brand">
+                        <LinkIcon size={16} />
+                        {window.location.origin}/r/{link.slug}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="cl-table__url" title={link.url}>
+                        {link.url}
+                      </span>
+                    </td>
+                    <td>{formatDate(link.createdAt)}</td>
+                    <td>{link.visits.toLocaleString()}</td>
+                    <td>
+                      <div className="cl-table__actions">
+                        <button
+                          className="btn btn--ghost"
+                          type="button"
+                          aria-label={`Edit ${link.slug}`}
+                          onClick={() => setEditing({ slug: link.slug })}
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          className="btn btn--ghost btn--danger-ghost"
+                          type="button"
+                          aria-label={`Delete ${link.slug}`}
+                          onClick={() => setDeleting({ slug: link.slug })}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {!loading && links.length === 0 && (
+                  <tr>
+                    <td colSpan={5}>
+                      <div className="empty-state">
+                        <div className="empty-state__title">No links found</div>
+                        <div className="empty-state__text">
+                          Create a custom link above or adjust your search
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Reveal>
 
         <div className="cl-pagination">
           <span className="cl-pagination__info">
