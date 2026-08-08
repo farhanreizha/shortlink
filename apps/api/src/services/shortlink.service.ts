@@ -7,7 +7,16 @@ import type {
 import { and, desc, eq, ilike, sql } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"
-import { shortlinks } from "../db/schema.js"
+import { campaigns, shortlinks } from "../db/schema.js"
+
+async function assertCampaignOwned(campaignId: number, userId: number) {
+  const [campaign] = await db
+    .select({ id: campaigns.id })
+    .from(campaigns)
+    .where(and(eq(campaigns.id, campaignId), eq(campaigns.userId, userId)))
+    .limit(1)
+  if (!campaign) throw new HTTPException(400, { message: "Invalid campaign" })
+}
 
 function toShortlink(row: typeof shortlinks.$inferSelect): Shortlink {
   return {
@@ -72,6 +81,10 @@ export async function create(input: CreateShortlink, userId: number) {
     .limit(1)
   if (existing) throw new HTTPException(409, { message: "Slug already taken" })
 
+  if (input.campaignId != null) {
+    await assertCampaignOwned(input.campaignId, userId)
+  }
+
   const rows = await db
     .insert(shortlinks)
     .values({
@@ -117,6 +130,10 @@ export async function update(
       .limit(1)
     if (existing)
       throw new HTTPException(409, { message: "Slug already taken" })
+  }
+
+  if (input.campaignId != null) {
+    await assertCampaignOwned(input.campaignId, userId)
   }
 
   const rows = await db
