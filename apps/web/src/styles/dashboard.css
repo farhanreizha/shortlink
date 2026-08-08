@@ -194,6 +194,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
+  animation: dash-enter 0.35s ease-out;
 }
 
 .dash-hero {
@@ -527,6 +528,8 @@
 
 .set-nav__item {
   display: flex;
+  background: transparent;
+  border: none;
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
@@ -549,6 +552,10 @@
   opacity: 0.55;
   cursor: default;
   pointer-events: none;
+}
+
+.set-nav__item:hover {
+  cursor: pointer;
 }
 
 .set-canvas {
@@ -988,6 +995,14 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.an-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
 }
 .an-stat__label {
   font-size: 13px;
@@ -1087,6 +1102,7 @@
   );
   border-radius: 6px 6px 0 0;
   transition: height 0.25s ease;
+  animation: grow-bar 0.5s ease-out;
 }
 .an-bars__label {
   font-size: 10px;
@@ -1127,6 +1143,7 @@
   height: 100%;
   border-radius: 999px;
   transition: width 0.3s ease;
+  animation: grow-x 0.5s ease-out;
 }
 .an-location__flag {
   margin-right: 6px;
@@ -1249,6 +1266,14 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.camp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
 }
 .camp-card__top {
   display: flex;
@@ -1470,4 +1495,56 @@
   color: var(--color-success);
   font-weight: 600;
   font-size: 12px;
+}
+
+@keyframes dash-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes grow-bar {
+  from {
+    height: 0;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cl-table__row {
+  animation: row-in 0.35s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-main,
+  .an-bars__bar,
+  .an-device__fill,
+  .cl-table__row {
+    animation: none;
+  }
+
+  .an-stat,
+  .camp-card {
+    transition: none;
+  }
 }
