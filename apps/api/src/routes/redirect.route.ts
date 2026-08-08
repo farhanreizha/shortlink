@@ -1,5 +1,6 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { ErrorSchema } from "../lib/schemas.js"
+import { recordClick } from "../services/click.service.js"
 import * as shortlinkService from "../services/shortlink.service.js"
 
 const SAFE_SCHEMES = ["http:", "https:"]
@@ -26,7 +27,9 @@ const redirectRoutes = new OpenAPIHono()
 redirectRoutes.openapi(redirectRoute, async (c) => {
   const { slug } = c.req.valid("param")
   const link = await shortlinkService.getBySlug(slug)
+  // ponytail: fire-and-forget, redirect latency must not wait on click log
   shortlinkService.incrementVisits(slug).catch(() => {})
+  recordClick(link.id, c.req.raw.headers).catch(() => {})
 
   try {
     const url = new URL(link.url)
