@@ -1,6 +1,8 @@
 import type { User } from "@knot/shared"
 import { useMemo, useState } from "react"
+import { CountUp } from "../components/ui/count-up"
 import { DashboardShell } from "../components/ui/dashboard-shell"
+import { Reveal } from "../components/ui/reveal"
 import { Skeleton } from "../components/ui/skeleton"
 import { useAnalytics } from "../hooks/use-analytics"
 
@@ -152,37 +154,49 @@ export function AnalyticsPage({
           data && (
             <>
               <div className="an-stats">
-                <div className="an-stat">
-                  <span className="an-stat__label">Total Clicks</span>
-                  <span className="an-stat__value">
-                    {data.totalClicks.toLocaleString()}
-                  </span>
-                </div>
-                <div className="an-stat">
-                  <span className="an-stat__label">Unique Visitors</span>
-                  <span className="an-stat__value">
-                    {data.uniqueVisitors.toLocaleString()}
-                  </span>
-                </div>
-                <div className="an-stat">
-                  <span className="an-stat__label">Top Referral</span>
-                  <span
-                    className="an-stat__value an-stat__value--sm"
-                    title={data.topReferral}
-                  >
-                    {data.topReferral}
-                  </span>
-                </div>
-                <div className="an-stat">
-                  <span className="an-stat__label">Avg. CTR</span>
-                  <span className="an-stat__value">
-                    {data.avgCtr === null ? "—" : `${data.avgCtr}%`}
-                  </span>
-                </div>
+                <Reveal delay={0}>
+                  <div className="an-stat">
+                    <span className="an-stat__label">Total Clicks</span>
+                    <span className="an-stat__value">
+                      <CountUp value={data.totalClicks} />
+                    </span>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.06}>
+                  <div className="an-stat">
+                    <span className="an-stat__label">Unique Visitors</span>
+                    <span className="an-stat__value">
+                      <CountUp value={data.uniqueVisitors} />
+                    </span>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.12}>
+                  <div className="an-stat">
+                    <span className="an-stat__label">Top Referral</span>
+                    <span
+                      className="an-stat__value an-stat__value--sm"
+                      title={data.topReferral}
+                    >
+                      {data.topReferral}
+                    </span>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.18}>
+                  <div className="an-stat">
+                    <span className="an-stat__label">Avg. CTR</span>
+                    <span className="an-stat__value">
+                      {data.avgCtr === null ? (
+                        "—"
+                      ) : (
+                        <CountUp value={data.avgCtr} suffix="%" />
+                      )}
+                    </span>
+                  </div>
+                </Reveal>
               </div>
 
               <div className="an-grid">
-                <section className="an-card an-card--wide">
+                <Reveal className="an-card an-card--wide" delay={0.1}>
                   <div className="an-card__header">
                     <h2 className="an-card__title">Clicks Over Time</h2>
                     <div className="an-toggle">
@@ -206,7 +220,7 @@ export function AnalyticsPage({
                     <div className="an-empty">No clicks in this period</div>
                   ) : (
                     <div className="an-bars">
-                      {data.clicksOverTime.map((d) => (
+                      {data.clicksOverTime.map((d, i) => (
                         <div
                           className="an-bars__col"
                           key={d.date}
@@ -216,6 +230,7 @@ export function AnalyticsPage({
                             className="an-bars__bar"
                             style={{
                               height: `${Math.max(4, (d.count / maxBar) * 100)}%`,
+                              animationDelay: `${i * 0.015}s`,
                             }}
                           />
                           <span className="an-bars__label">
@@ -225,15 +240,15 @@ export function AnalyticsPage({
                       ))}
                     </div>
                   )}
-                </section>
+                </Reveal>
 
-                <section className="an-card">
+                <Reveal className="an-card" delay={0.2}>
                   <h2 className="an-card__title">Clicks by Device</h2>
                   {deviceTotal === 0 ? (
                     <div className="an-empty">No clicks in this period</div>
                   ) : (
                     <div className="an-devices">
-                      {DEVICES.map((d) => {
+                      {DEVICES.map((d, i) => {
                         const count = data.clicksByDevice[d.key]
                         const pct = Math.round((count / deviceTotal) * 100)
                         return (
@@ -250,6 +265,7 @@ export function AnalyticsPage({
                                 style={{
                                   width: `${pct}%`,
                                   background: d.color,
+                                  animationDelay: `${0.3 + i * 0.1}s`,
                                 }}
                               />
                             </div>
@@ -258,15 +274,15 @@ export function AnalyticsPage({
                       })}
                     </div>
                   )}
-                </section>
+                </Reveal>
 
-                <section className="an-card">
+                <Reveal className="an-card" delay={0.3}>
                   <h2 className="an-card__title">Clicks by Location</h2>
                   {data.clicksByLocation.length === 0 ? (
                     <div className="an-empty">No clicks in this period</div>
                   ) : (
                     <div className="an-locations">
-                      {data.clicksByLocation.map((l) => (
+                      {data.clicksByLocation.map((l, i) => (
                         <div className="an-location" key={l.country}>
                           <div className="an-location__row">
                             <span>
@@ -283,6 +299,7 @@ export function AnalyticsPage({
                               style={{
                                 width: `${Math.round((l.count / maxLocation) * 100)}%`,
                                 background: "var(--color-primary)",
+                                animationDelay: `${0.3 + i * 0.1}s`,
                               }}
                             />
                           </div>
@@ -290,10 +307,10 @@ export function AnalyticsPage({
                       ))}
                     </div>
                   )}
-                </section>
+                </Reveal>
               </div>
 
-              <section className="an-card">
+              <Reveal className="an-card" delay={0.1}>
                 <h2 className="an-card__title">Top Performing Links</h2>
                 {data.topLinks.length === 0 ? (
                   <div className="an-empty">No clicks in this period</div>
@@ -328,7 +345,7 @@ export function AnalyticsPage({
                     </tbody>
                   </table>
                 )}
-              </section>
+              </Reveal>
             </>
           )
         )}
