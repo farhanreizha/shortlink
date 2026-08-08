@@ -70,7 +70,7 @@ export function SettingsPage({
           </nav>
         </aside>
 
-        <div className="set-canvas">
+        <div className="set-canvas animate-slide-up">
           {tab === "profile" && <ProfileForm user={user} />}
           {tab === "security" && <SecurityForm />}
           {tab === "notifications" && <NotificationForm user={user} />}
