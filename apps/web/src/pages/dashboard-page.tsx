@@ -48,7 +48,7 @@ export function DashboardPage({
           <button
             className="dash-recent__viewall"
             type="button"
-            onClick={() => setQuery({ ...query, limit: 1000, offset: 0 })}
+            onClick={() => setQuery({ ...query, limit: 100, offset: 0 })}
           >
             View All
           </button>
