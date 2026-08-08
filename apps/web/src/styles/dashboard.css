@@ -1163,3 +1163,169 @@
   white-space: nowrap;
   max-width: 260px;
 }
+
+.camp-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.camp-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.camp-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.camp-header__desc {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+.camp-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.camp-search {
+  max-width: 320px;
+  width: 100%;
+}
+.camp-filters {
+  display: flex;
+  gap: 4px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 4px;
+}
+.camp-filters__btn {
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.camp-filters__btn--active {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.camp-error {
+  color: var(--color-danger);
+  font-size: 14px;
+}
+.camp-empty {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 60px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.camp-empty p {
+  margin: 0;
+}
+.camp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.camp-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.camp-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.camp-card__status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.camp-card__status--active {
+  background: rgba(0, 128, 96, 0.12);
+  color: var(--color-success);
+}
+.camp-card__status--archived {
+  background: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+}
+.camp-card__actions {
+  display: flex;
+  gap: 4px;
+}
+.camp-card__btn {
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.camp-card__btn:hover {
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+}
+.camp-card__btn--danger:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--color-danger);
+}
+.camp-card__name {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+}
+.camp-card__desc {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  flex: 1;
+}
+.camp-card__stats {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+}
+.camp-card__stats strong {
+  color: var(--color-text);
+}
+.cm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cm-form__desc {
+  min-height: 84px;
+  resize: vertical;
+}
+.cm-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}

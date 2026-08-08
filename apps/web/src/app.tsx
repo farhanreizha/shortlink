@@ -5,11 +5,11 @@ import { useAuth } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
 import { AnalyticsPage } from "./pages/analytics-page"
 import { AuthPage } from "./pages/auth-page"
+import { CampaignsPage } from "./pages/campaigns-page"
 import { CustomLinksPage } from "./pages/custom-links-page"
 import { DashboardPage } from "./pages/dashboard-page"
 import { LandingPage } from "./pages/landing-page"
 import { NotFoundPage } from "./pages/not-found-page"
-import { PlaceholderPage } from "./pages/placeholder-page"
 import { SettingsPage } from "./pages/settings-page"
 import "./index.css"
 
@@ -98,12 +98,7 @@ export function App() {
           </Route>
           <Route path="/campaigns">
             {user ? (
-              <PlaceholderPage
-                user={user}
-                onLogout={logout}
-                title="Campaigns"
-                activeNav="campaigns"
-              />
+              <CampaignsPage user={user} onLogout={logout} />
             ) : (
               <Redirect to="/login" />
             )}
