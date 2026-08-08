@@ -2,6 +2,7 @@ import type { UpdateShortlink, User } from "@knot/shared"
 import { CreateForm } from "../components/shortlink/create-form"
 import { LinkCard } from "../components/shortlink/link-card"
 import { DashboardShell } from "../components/ui/dashboard-shell"
+import { Reveal } from "../components/ui/reveal"
 import { Skeleton } from "../components/ui/skeleton"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
@@ -43,16 +44,18 @@ export function DashboardPage({
       </section>
 
       <section className="dash-recent">
-        <div className="dash-recent__header">
-          <h2 className="dash-recent__title">Recent Links</h2>
-          <button
-            className="dash-recent__viewall"
-            type="button"
-            onClick={() => setQuery({ ...query, limit: 100, offset: 0 })}
-          >
-            View All
-          </button>
-        </div>
+        <Reveal delay={0.05}>
+          <div className="dash-recent__header">
+            <h2 className="dash-recent__title">Recent Links</h2>
+            <button
+              className="dash-recent__viewall"
+              type="button"
+              onClick={() => setQuery({ ...query, limit: 100, offset: 0 })}
+            >
+              View All
+            </button>
+          </div>
+        </Reveal>
 
         {loading ? (
           <div className="dash-recent__list">
@@ -64,21 +67,24 @@ export function DashboardPage({
             ))}
           </div>
         ) : links.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-state__title">No links yet</div>
-            <div className="empty-state__text">
-              Create your first link above
+          <Reveal>
+            <div className="empty-state">
+              <div className="empty-state__title">No links yet</div>
+              <div className="empty-state__text">
+                Create your first link above
+              </div>
             </div>
-          </div>
+          </Reveal>
         ) : (
           <div className="dash-recent__list">
-            {links.map((link) => (
-              <LinkCard
-                key={link.id}
-                link={link}
-                onDelete={handleDelete}
-                onUpdate={handleUpdate}
-              />
+            {links.map((link, i) => (
+              <Reveal key={link.id} delay={0.15 + i * 0.05}>
+                <LinkCard
+                  link={link}
+                  onDelete={handleDelete}
+                  onUpdate={handleUpdate}
+                />
+              </Reveal>
             ))}
           </div>
         )}
