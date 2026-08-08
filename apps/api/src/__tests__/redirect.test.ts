@@ -6,6 +6,15 @@ import { authedRequest, cleanDatabase, registerUser } from "./helpers.js"
 
 beforeEach(cleanDatabase)
 
+async function waitForClick() {
+  for (let i = 0; i < 40; i++) {
+    const rows = await db.select().from(clicks)
+    if (rows.length > 0) return rows[0]!
+    await new Promise((r) => setTimeout(r, 50))
+  }
+  return undefined
+}
+
 describe("GET /r/:slug", () => {
   it("redirects to the original URL", async () => {
     const { token } = await registerUser({
@@ -39,8 +48,8 @@ describe("GET /r/:slug", () => {
       },
     })
     expect(res.status).toBe(302)
-    await new Promise((r) => setTimeout(r, 50))
-    const [click] = await db.select().from(clicks)
+    const click = await waitForClick()
+    if (!click) throw new Error("click not recorded")
     expect(click).toMatchObject({
       device: "mobile",
       referrer: "https://twitter.com",
@@ -58,8 +67,8 @@ describe("GET /r/:slug", () => {
       body: JSON.stringify({ slug: "anon", url: "https://example.com" }),
     })
     await app.request("/r/anon")
-    await new Promise((r) => setTimeout(r, 50))
-    const [click] = await db.select().from(clicks)
+    const click = await waitForClick()
+    if (!click) throw new Error("click not recorded")
     expect(click.visitor).toBe("anon")
   })
 

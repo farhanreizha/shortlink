@@ -4,6 +4,7 @@ import { env } from "./config.js"
 import { rateLimit } from "./lib/rate-limiter.js"
 import { authMiddleware } from "./middleware/auth.js"
 import { errorHandler } from "./middleware/error-handler.js"
+import analyticsRoutes from "./routes/analytics.route.js"
 import authRoutes from "./routes/auth.route.js"
 import healthRoutes from "./routes/health.route.js"
 import redirectRoutes from "./routes/redirect.route.js"
@@ -31,6 +32,7 @@ app.use("/api/*", authMiddleware)
 
 app.route("/api/auth", authRoutes)
 app.route("/api/shortlinks", shortlinkRoutes)
+app.route("/api/analytics", analyticsRoutes)
 app.route("/r", redirectRoutes)
 
 app.doc("/api/doc", {
