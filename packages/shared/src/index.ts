@@ -74,18 +74,29 @@ const SlugSchema = z
     "Slug may only contain letters, numbers, underscores and hyphens",
   )
 
+const HttpUrlSchema = z
+  .string()
+  .url()
+  .refine((value) => {
+    try {
+      const protocol = new URL(value).protocol
+      return protocol === "http:" || protocol === "https:"
+    } catch {
+      return false
+    }
+  }, "URL must use the http or https scheme")
 
 export const CreateShortlinkSchema = z.object({
-  url: z.string().url(),
   slug: SlugSchema,
+  url: HttpUrlSchema,
   campaignId: z.coerce.number().int().nullable().optional(),
 })
 
 export type CreateShortlink = z.infer<typeof CreateShortlinkSchema>
 
 export const UpdateShortlinkSchema = z.object({
-  url: z.string().url().optional(),
   slug: SlugSchema.optional(),
+  url: HttpUrlSchema.optional(),
   campaignId: z.coerce.number().int().nullable().optional(),
 })
 

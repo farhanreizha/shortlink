@@ -1,9 +1,8 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import { ErrorSchema } from "../lib/schemas.js"
+import { isBlockedRedirectUrl } from "../lib/url-safety.js"
 import { recordClick } from "../services/click.service.js"
 import * as shortlinkService from "../services/shortlink.service.js"
-
-const SAFE_SCHEMES = ["http:", "https:"]
 
 const redirectRoute = createRoute({
   method: "get",
@@ -31,14 +30,8 @@ redirectRoutes.openapi(redirectRoute, async (c) => {
   shortlinkService.incrementVisits(slug).catch(() => {})
   recordClick(link.id, c.req.raw.headers).catch(() => {})
 
-  try {
-    const url = new URL(link.url)
-    if (!SAFE_SCHEMES.includes(url.protocol)) {
-      return c.json({ message: "Invalid URL scheme" }, 400)
-    }
-  } catch {
-    return c.json({ message: "Invalid URL" }, 400)
-  }
+  const blocked = isBlockedRedirectUrl(link.url)
+  if (blocked) return c.json({ message: blocked }, 400)
 
   return c.redirect(link.url, 302)
 })

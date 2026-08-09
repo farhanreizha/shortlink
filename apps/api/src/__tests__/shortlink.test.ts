@@ -51,6 +51,40 @@ describe("POST /api/shortlinks", () => {
     expect(res.status).toBe(400)
   })
 
+  it("rejects unsafe url schemes", async () => {
+    const { token } = await registerUser({
+      email: "scheme@test.com",
+      username: "schemeuser",
+    })
+    for (const url of ["javascript:alert(1)", "ftp://evil.com/x"]) {
+      const res = await authedRequest(token, "/api/shortlinks", {
+        method: "POST",
+        body: JSON.stringify({ slug: `schemelink-${url.length}`, url }),
+      })
+      expect(res.status).toBe(400)
+    }
+  })
+
+  it("rejects redirects to private and local addresses", async () => {
+    const { token } = await registerUser({
+      email: "ssrf@test.com",
+      username: "ssrfuser",
+    })
+    for (const url of [
+      "http://169.254.169.254/latest/meta-data/",
+      "http://localhost:5173",
+      "http://127.0.0.1/x",
+      "http://10.0.0.5/x",
+      "http://192.168.1.1/x",
+    ]) {
+      const res = await authedRequest(token, "/api/shortlinks", {
+        method: "POST",
+        body: JSON.stringify({ slug: `ssrf-${url.length}`, url }),
+      })
+      expect(res.status).toBe(400)
+    }
+  })
+
   it("rejects unauthenticated request", async () => {
     const res = await app.request("/api/shortlinks", {
       method: "POST",

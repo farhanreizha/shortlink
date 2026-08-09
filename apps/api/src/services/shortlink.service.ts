@@ -8,6 +8,7 @@ import { and, desc, eq, ilike, sql } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"
 import { campaigns, shortlinks } from "../db/schema.js"
+import { isBlockedRedirectUrl } from "../lib/url-safety.js"
 import * as referralService from "./referral.service.js"
 
 async function assertCampaignOwned(campaignId: number, userId: number) {
@@ -75,6 +76,9 @@ export async function getDetail(slug: string, userId: number) {
 }
 
 export async function create(input: CreateShortlink, userId: number) {
+  const blocked = isBlockedRedirectUrl(input.url)
+  if (blocked) throw new HTTPException(400, { message: blocked })
+
   const [existing] = await db
     .select()
     .from(shortlinks)
@@ -124,6 +128,11 @@ export async function update(
     .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
     .limit(1)
   if (!link) throw new HTTPException(404, { message: "Shortlink not found" })
+
+  if (input.url) {
+    const blocked = isBlockedRedirectUrl(input.url)
+    if (blocked) throw new HTTPException(400, { message: blocked })
+  }
 
   if (input.slug && input.slug !== slug) {
     const [existing] = await db

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import app from "../app.js"
 import { db } from "../db/index.js"
-import { clicks } from "../db/schema.js"
+import { clicks, shortlinks } from "../db/schema.js"
 import { authedRequest, cleanDatabase, registerUser } from "./helpers.js"
 
 beforeEach(cleanDatabase)
@@ -78,32 +78,28 @@ describe("GET /r/:slug", () => {
   })
 
   it("rejects javascript: URLs", async () => {
-    const { token } = await registerUser({
+    const { user } = await registerUser({
       email: "jsredir@test.com",
       username: "jsredir",
     })
-    await authedRequest(token, "/api/shortlinks", {
-      method: "POST",
-      body: JSON.stringify({
-        slug: "xss",
-        url: "javascript:alert(1)",
-      }),
+    await db.insert(shortlinks).values({
+      slug: "xss",
+      url: "javascript:alert(1)",
+      userId: user.id,
     })
     const res = await app.request("/r/xss")
     expect(res.status).toBe(400)
   })
 
   it("rejects data: URLs", async () => {
-    const { token } = await registerUser({
+    const { user } = await registerUser({
       email: "dataredir@test.com",
       username: "dataredir",
     })
-    await authedRequest(token, "/api/shortlinks", {
-      method: "POST",
-      body: JSON.stringify({
-        slug: "dataurl",
-        url: "data:text/html,<script>alert(1)</script>",
-      }),
+    await db.insert(shortlinks).values({
+      slug: "dataurl",
+      url: "data:text/html,<script>alert(1)</script>",
+      userId: user.id,
     })
     const res = await app.request("/r/dataurl")
     expect(res.status).toBe(400)
