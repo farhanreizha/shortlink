@@ -4,6 +4,7 @@ import { env } from "./config.js"
 import { rateLimit } from "./lib/rate-limiter.js"
 import { authMiddleware } from "./middleware/auth.js"
 import { errorHandler } from "./middleware/error-handler.js"
+import { securityHeaders } from "./middleware/security-headers.js"
 import analyticsRoutes from "./routes/analytics.route.js"
 import authRoutes from "./routes/auth.route.js"
 import campaignRoutes from "./routes/campaign.route.js"
@@ -22,6 +23,9 @@ const origin =
     ? "*"
     : env.CORS_ORIGIN.split(",").map((s) => s.trim())
 app.use("/api/*", cors({ origin, credentials: true }))
+
+app.use("/api/*", securityHeaders)
+app.use("/r/*", securityHeaders)
 
 app.route("/api", healthRoutes)
 
