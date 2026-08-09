@@ -210,6 +210,12 @@ export const UpdateUserSchema = z.object({
 
 export type UpdateUser = z.infer<typeof UpdateUserSchema>
 
+export const DeleteAccountSchema = z.object({
+  password: z.string().min(1),
+})
+
+export type DeleteAccount = z.infer<typeof DeleteAccountSchema>
+
 export const NotificationSchema = z.object({
   id: z.string(),
   type: z.enum(["welcome", "new_feature", "referral"]),

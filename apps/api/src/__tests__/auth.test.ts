@@ -281,14 +281,18 @@ describe("PATCH /api/auth/me", () => {
 })
 
 describe("DELETE /api/auth/me", () => {
-  it("deletes own account", async () => {
+  it("deletes own account with correct password", async () => {
     const { token } = await registerUser({
       email: "delacct@test.com",
       username: "delacct",
     })
     const res = await app.request("/api/auth/me", {
       method: "DELETE",
-      headers: { Cookie: `token=${token}` },
+      headers: {
+        Cookie: `token=${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: "Test1234" }),
     })
     expect(res.status).toBe(200)
 
@@ -296,5 +300,37 @@ describe("DELETE /api/auth/me", () => {
       headers: { Cookie: `token=${token}` },
     })
     expect(me.status).toBe(401)
+  })
+
+  it("rejects deletion without password", async () => {
+    const { token } = await registerUser({
+      email: "nopass@test.com",
+      username: "nopassdel",
+    })
+    const res = await app.request("/api/auth/me", {
+      method: "DELETE",
+      headers: {
+        Cookie: `token=${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it("rejects deletion with wrong password", async () => {
+    const { token } = await registerUser({
+      email: "wrongdel@test.com",
+      username: "wrongdel",
+    })
+    const res = await app.request("/api/auth/me", {
+      method: "DELETE",
+      headers: {
+        Cookie: `token=${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: "WrongPass1" }),
+    })
+    expect(res.status).toBe(401)
   })
 })

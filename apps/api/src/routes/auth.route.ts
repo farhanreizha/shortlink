@@ -1,5 +1,6 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import {
+  DeleteAccountSchema,
   LoginSchema,
   RegisterSchema,
   UpdateUserSchema,
@@ -102,6 +103,11 @@ const updateMeRoute = createRoute({
 const deleteMeRoute = createRoute({
   method: "delete",
   path: "/me",
+  request: {
+    body: {
+      content: { "application/json": { schema: DeleteAccountSchema } },
+    },
+  },
   responses: {
     200: {
       content: {
@@ -110,6 +116,10 @@ const deleteMeRoute = createRoute({
         },
       },
       description: "Account deleted",
+    },
+    401: {
+      content: { "application/json": { schema: ErrorSchema } },
+      description: "Incorrect password",
     },
   },
 })
@@ -157,7 +167,8 @@ authRoutes.openapi(updateMeRoute, async (c) => {
 })
 
 authRoutes.openapi(deleteMeRoute, async (c) => {
-  await authService.deleteAccount(c.get("userId"))
+  const input = c.req.valid("json")
+  await authService.deleteAccount(c.get("userId"), input.password)
   deleteCookie(c, "token", { path: "/" })
   return c.json({ message: "Account deleted" })
 })

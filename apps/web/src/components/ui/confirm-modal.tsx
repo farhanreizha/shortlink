@@ -10,6 +10,7 @@ interface ConfirmModalProps {
   confirmDisabled?: boolean
   onConfirm: () => void
   onCancel: () => void
+  children?: ReactNode
 }
 
 export function ConfirmModal({
@@ -20,11 +21,13 @@ export function ConfirmModal({
   confirmDisabled,
   onConfirm,
   onCancel,
+  children,
 }: ConfirmModalProps) {
   const { t } = useI18n()
   return (
     <Modal open={open} title={title} onClose={onCancel}>
       <p className="modal-message">{message}</p>
+      {children}
       <div className="modal-actions">
         <button className="btn btn--ghost" type="button" onClick={onCancel}>
           {t("common.cancel")}

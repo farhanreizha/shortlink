@@ -364,6 +364,8 @@ export const id: Record<MessageKey, string> = {
   "set.deleting": "Menghapus…",
   "set.accountDeleted": "Akun dihapus",
   "set.deleteFailed": "Gagal menghapus akun",
+  "set.deletePassword": "Masukkan kata sandi Anda",
+  "set.deletePasswordHint": "Diperlukan untuk mengonfirmasi penghapusan",
 
   "pf.title": "Informasi Umum",
   "pf.desc": "Perbarui detail profil dasar dan avatar publik Anda.",

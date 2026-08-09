@@ -125,13 +125,16 @@ export async function updateUser(userId: number, input: UpdateUser) {
   return toUser(updated!)
 }
 
-export async function deleteAccount(userId: number) {
+export async function deleteAccount(userId: number, password: string) {
   const [row] = await db
     .select()
     .from(users)
     .where(eq(users.id, userId))
     .limit(1)
   if (!row) throw new HTTPException(401, { message: "User not found" })
+  if (!(await verifyPassword(password, row.password))) {
+    throw new HTTPException(401, { message: "Current password is incorrect" })
+  }
 
   await db.delete(shortlinks).where(eq(shortlinks.userId, userId))
   await db.delete(users).where(eq(users.id, userId))

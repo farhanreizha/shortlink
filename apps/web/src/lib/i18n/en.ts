@@ -361,6 +361,8 @@ export const en = {
   "set.deleting": "Deleting…",
   "set.accountDeleted": "Account deleted",
   "set.deleteFailed": "Failed to delete account",
+  "set.deletePassword": "Enter your password",
+  "set.deletePasswordHint": "Required to confirm deletion",
 
   "pf.title": "General Information",
   "pf.desc": "Update your basic profile details and public avatar.",

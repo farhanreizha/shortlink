@@ -6,6 +6,7 @@ import type {
   CampaignSummary,
   CreateCampaign,
   CreateShortlink,
+  DeleteAccount,
   LoginInput,
   Notification,
   Referral,
@@ -59,8 +60,7 @@ export type AppRoutes = {
       status: 200
     }
     $delete: {
-      // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
-      input: {}
+      input: { json: DeleteAccount }
       output: { message: string }
       outputFormat: "json"
       status: 200
