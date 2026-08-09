@@ -3,13 +3,10 @@ import { Link as LinkIcon } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
 import { useI18n } from "../../lib/i18n"
+import { randomSlug } from "../../lib/slug"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
-
-function randomSlug() {
-  return Math.random().toString(36).slice(2, 8)
-}
 
 export function NewLinkModal({
   open,

@@ -2,11 +2,8 @@ import { CreateShortlinkSchema } from "@knot/shared"
 import { Link as LinkIcon, Scissors } from "lucide-react"
 import { useState } from "react"
 import { useI18n } from "../../lib/i18n"
+import { randomSlug } from "../../lib/slug"
 import { ErrorBanner } from "../ui/error-banner"
-
-function randomSlug() {
-  return Math.random().toString(36).slice(2, 8)
-}
 
 export function CreateForm({
   onCreate,
