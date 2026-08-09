@@ -33,6 +33,7 @@ redirectRoutes.openapi(redirectRoute, async (c) => {
   const blocked = isBlockedRedirectUrl(link.url)
   if (blocked) return c.json({ message: blocked }, 400)
 
+  c.header("Referrer-Policy", "no-referrer")
   return c.redirect(link.url, 302)
 })
 

@@ -28,6 +28,7 @@ describe("GET /r/:slug", () => {
     const res = await app.request("/r/go")
     expect(res.status).toBe(302)
     expect(res.headers.get("Location")).toBe("https://example.com")
+    expect(res.headers.get("Referrer-Policy")).toBe("no-referrer")
   })
 
   it("records a click with device and referrer", async () => {
