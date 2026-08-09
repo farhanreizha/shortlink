@@ -7,6 +7,7 @@ import {
   UserSchema,
 } from "@knot/shared"
 import { deleteCookie, setCookie } from "hono/cookie"
+import { env } from "../config.js"
 import { ErrorSchema } from "../lib/schemas.js"
 import * as authService from "../services/auth.service.js"
 
@@ -131,6 +132,7 @@ authRoutes.openapi(registerRoute, async (c) => {
   const { token, user } = await authService.register(input)
   setCookie(c, "token", token, {
     httpOnly: true,
+    secure: env.NODE_ENV === "production",
     sameSite: "Lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
@@ -143,6 +145,7 @@ authRoutes.openapi(loginRoute, async (c) => {
   const { token, user } = await authService.login(input)
   setCookie(c, "token", token, {
     httpOnly: true,
+    secure: env.NODE_ENV === "production",
     sameSite: "Lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
