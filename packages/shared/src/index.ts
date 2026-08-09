@@ -11,6 +11,7 @@ export const RegisterSchema = z.object({
   username: z.string().min(3).max(20),
   email: z.string().email(),
   password: PasswordSchema,
+  ref: z.string().optional(),
 })
 
 export type RegisterInput = z.infer<typeof RegisterSchema>
@@ -179,13 +180,16 @@ export const NotificationSchema = z.object({
 export type Notification = z.infer<typeof NotificationSchema>
 export type NotificationType = Notification["type"]
 
+export const ReferralUserSchema = z.object({
   id: z.string(),
   username: z.string(),
   createdAt: z.string().datetime(),
   rewarded: z.boolean(),
 })
 
+export type ReferralUser = z.infer<typeof ReferralUserSchema>
 
+export const ReferralSchema = z.object({
   code: z.string(),
   proUntil: z.string().datetime().nullable(),
   stats: z.object({
@@ -193,5 +197,7 @@ export type NotificationType = Notification["type"]
     rewarded: z.number(),
     proMonths: z.number(),
   }),
+  referredUsers: z.array(ReferralUserSchema),
 })
 
+export type Referral = z.infer<typeof ReferralSchema>

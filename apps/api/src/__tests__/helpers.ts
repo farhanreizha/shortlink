@@ -31,6 +31,7 @@ export async function registerUser(
     email: string
     username: string
     password: string
+    ref: string
   }> = {},
 ): Promise<AuthResult> {
   const res = await app.request("/api/auth/register", {

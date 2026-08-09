@@ -4,6 +4,7 @@ import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"
 import { shortlinks, users } from "../db/schema.js"
 import { hashPassword, signToken, verifyPassword } from "../lib/auth.js"
+import * as referralService from "./referral.service.js"
 
 function toUser(row: typeof users.$inferSelect): User {
   return {
@@ -33,12 +34,20 @@ export async function register(input: RegisterInput) {
     throw new HTTPException(409, { message: "Username already taken" })
 
   const hashed = await hashPassword(input.password)
+  const referralCode = await referralService.generateUniqueCode()
+  let referrerId: number | undefined
+  if (input.ref) {
+    const referrer = await referralService.findByCode(input.ref)
+    if (referrer) referrerId = referrer.id
+  }
   const rows = await db
     .insert(users)
     .values({
       username: input.username,
       email: input.email,
       password: hashed,
+      referralCode,
+      ...(referrerId !== undefined ? { referrerId } : {}),
     })
     .returning()
   // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row

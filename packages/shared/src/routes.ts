@@ -8,6 +8,7 @@ import type {
   CreateShortlink,
   LoginInput,
   Notification,
+  Referral,
   RegisterInput,
   Shortlink,
   ShortlinkQuery,
@@ -125,9 +126,11 @@ export type AppRoutes = {
       status: 200
     }
   }
+  "/api/referral": {
     $get: {
       // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
       input: {}
+      output: Referral
       outputFormat: "json"
       status: 200
     }

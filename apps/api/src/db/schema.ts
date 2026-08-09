@@ -1,5 +1,6 @@
 import {
   boolean,
+  foreignKey,
   index,
   integer,
   jsonb,
@@ -7,29 +8,50 @@ import {
   serial,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core"
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  email: text("email").notNull().unique(),
-  password: text("password").notNull(),
-  notificationPrefs: jsonb("notification_prefs")
-    .$type<{
-      email: {
-        linkClicks: boolean
-        campaignReports: boolean
-        accountUpdates: boolean
-      }
-      push: { mobileAlerts: boolean }
-    }>()
-    .notNull()
-    .default({
-      email: { linkClicks: true, campaignReports: true, accountUpdates: true },
-      push: { mobileAlerts: true },
-    }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-})
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    username: text("username").notNull().unique(),
+    email: text("email").notNull().unique(),
+    password: text("password").notNull(),
+    notificationPrefs: jsonb("notification_prefs")
+      .$type<{
+        email: {
+          linkClicks: boolean
+          campaignReports: boolean
+          accountUpdates: boolean
+        }
+        push: { mobileAlerts: boolean }
+      }>()
+      .notNull()
+      .default({
+        email: {
+          linkClicks: true,
+          campaignReports: true,
+          accountUpdates: true,
+        },
+        push: { mobileAlerts: true },
+      }),
+    referralCode: text("referral_code"),
+    referrerId: integer("referrer_id"),
+    proUntil: timestamp("pro_until"),
+    referralRewarded: boolean("referral_rewarded").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    referralCodeIdx: uniqueIndex("users_referral_code_idx").on(
+      table.referralCode,
+    ),
+    referrerIdFk: foreignKey({
+      columns: [table.referrerId],
+      foreignColumns: [table.id],
+    }).onDelete("set null"),
+  }),
+)
 
 export const campaigns = pgTable(
   "campaigns",

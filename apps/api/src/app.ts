@@ -10,6 +10,7 @@ import campaignRoutes from "./routes/campaign.route.js"
 import healthRoutes from "./routes/health.route.js"
 import notificationRoutes from "./routes/notification.route.js"
 import redirectRoutes from "./routes/redirect.route.js"
+import referralRoutes from "./routes/referral.route.js"
 import shortlinkRoutes from "./routes/shortlink.route.js"
 
 const app = new OpenAPIHono<{ Variables: { userId: number } }>()
@@ -37,6 +38,7 @@ app.route("/api/shortlinks", shortlinkRoutes)
 app.route("/api/analytics", analyticsRoutes)
 app.route("/api/campaigns", campaignRoutes)
 app.route("/api/notifications", notificationRoutes)
+app.route("/api/referral", referralRoutes)
 app.route("/r", redirectRoutes)
 
 app.doc("/api/doc", {

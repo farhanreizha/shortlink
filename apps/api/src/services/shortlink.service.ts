@@ -8,6 +8,7 @@ import { and, desc, eq, ilike, sql } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"
 import { campaigns, shortlinks } from "../db/schema.js"
+import * as referralService from "./referral.service.js"
 
 async function assertCampaignOwned(campaignId: number, userId: number) {
   const [campaign] = await db
@@ -97,7 +98,9 @@ export async function create(input: CreateShortlink, userId: number) {
     })
     .returning()
   // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row
-  return toShortlink(rows[0]!)
+  const row = rows[0]!
+  await referralService.creditReferrer(userId)
+  return toShortlink(row)
 }
 
 export async function getBySlug(slug: string) {
