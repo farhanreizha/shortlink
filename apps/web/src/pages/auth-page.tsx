@@ -16,7 +16,7 @@ export function AuthPage({
   const isLogin = mode === "login"
 
   return (
-    <div className="auth-page">
+    <div className="auth-page" key={isLogin ? "login" : "register"}>
       <aside className="auth-brand animate-fade-in">
         <Link className="auth-brand__logo" href="/">
           <span className="auth-brand__logo-mark">
