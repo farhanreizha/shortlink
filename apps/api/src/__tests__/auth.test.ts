@@ -74,6 +74,32 @@ describe("POST /api/auth/register", () => {
     })
     expect(res.status).toBe(400)
   })
+
+  it("rejects a common password", async () => {
+    const res = await app.request("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "common@test.com",
+        username: "commonuser",
+        password: "Password123",
+      }),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it("rejects password containing the username", async () => {
+    const res = await app.request("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "contain@test.com",
+        username: "alice",
+        password: "AlicePass123",
+      }),
+    })
+    expect(res.status).toBe(400)
+  })
 })
 
 describe("POST /api/auth/login", () => {

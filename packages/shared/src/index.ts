@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { COMMON_PASSWORDS } from "./common-passwords.js"
 
 const PasswordSchema = z
   .string()
@@ -6,20 +7,32 @@ const PasswordSchema = z
   .regex(/[a-z]/, "Password must contain a lowercase letter")
   .regex(/[A-Z]/, "Password must contain an uppercase letter")
   .regex(/[0-9]/, "Password must contain a number")
+  .refine(
+    (value) => !COMMON_PASSWORDS.has(value.toLowerCase()),
+    "Password is too common",
+  )
 
-export const RegisterSchema = z.object({
-  username: z
-    .string()
-    .min(3)
-    .max(20)
-    .regex(
-      /^[a-zA-Z0-9_.-]+$/,
-      "Username may only contain letters, numbers, dots, underscores and hyphens",
-    ),
-  email: z.string().email(),
-  password: PasswordSchema,
-  ref: z.string().optional(),
-})
+export const RegisterSchema = z
+  .object({
+    username: z
+      .string()
+      .min(3)
+      .max(20)
+      .regex(
+        /^[a-zA-Z0-9_.-]+$/,
+        "Username may only contain letters, numbers, dots, underscores and hyphens",
+      ),
+    email: z.string().email(),
+    password: PasswordSchema,
+    ref: z.string().optional(),
+  })
+  .refine(({ username, email, password }) => {
+    const lower = password.toLowerCase()
+    const parts = [username, email.split("@")[0]].filter(
+      (part): part is string => part !== undefined && part !== "",
+    )
+    return !parts.some((part) => lower.includes(part.toLowerCase()))
+  }, "Password must not contain your username or email")
 
 export type RegisterInput = z.infer<typeof RegisterSchema>
 
