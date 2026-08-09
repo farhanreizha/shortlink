@@ -16,6 +16,7 @@ export function useShortlinks() {
     setLoading(true)
     try {
       const res = await client.api.shortlinks.$get({ query: q })
+      if (!res.ok) return
       const data = (await res.json()) as Shortlink[]
       setLinks(data)
       setTotal(Number(res.headers.get("X-Total-Count") ?? data.length))
