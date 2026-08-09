@@ -8,7 +8,14 @@ const PasswordSchema = z
   .regex(/[0-9]/, "Password must contain a number")
 
 export const RegisterSchema = z.object({
-  username: z.string().min(3).max(20),
+  username: z
+    .string()
+    .min(3)
+    .max(20)
+    .regex(
+      /^[a-zA-Z0-9_.-]+$/,
+      "Username may only contain letters, numbers, dots, underscores and hyphens",
+    ),
   email: z.string().email(),
   password: PasswordSchema,
   ref: z.string().optional(),

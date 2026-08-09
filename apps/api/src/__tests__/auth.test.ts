@@ -61,6 +61,19 @@ describe("POST /api/auth/register", () => {
     })
     expect(res.status).toBe(400)
   })
+
+  it("rejects username containing HTML payload", async () => {
+    const res = await app.request("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "xss@test.com",
+        username: "<svg onload=alert(1)>",
+        password: "Test1234",
+      }),
+    })
+    expect(res.status).toBe(400)
+  })
 })
 
 describe("POST /api/auth/login", () => {
