@@ -188,7 +188,6 @@ export const id: Record<MessageKey, string> = {
   "dash.notifications": "Notifikasi",
   "dash.help": "Bantuan",
   "dash.faq": "FAQ",
-  "dash.createNew": "Buat Baru",
   "dash.accountMenu": "Menu akun",
   "dash.toggleNav": "Buka/tutup menu navigasi",
   "dash.privacy": "Kebijakan Privasi",

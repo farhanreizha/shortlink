@@ -25,13 +25,11 @@ export function DashboardShell({
   user,
   onLogout,
   activeNav = "dashboard",
-  onCreateNew,
   children,
 }: {
   user: { username: string }
   onLogout: () => void
   activeNav?: string
-  onCreateNew?: () => void
   children: ReactNode
 }) {
   const [open, setOpen] = useState(false)
@@ -74,12 +72,6 @@ export function DashboardShell({
   useEscapeKey(bellOpen, () => setBellOpen(false))
   useEscapeKey(helpOpen, () => setHelpOpen(false))
   useEscapeKey(faqOpen, () => setFaqOpen(false))
-
-  function scrollToHero() {
-    document
-      .getElementById("dash-create")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }
 
   return (
     <div className="dash-shell animate-fade-in">
@@ -140,13 +132,6 @@ export function DashboardShell({
               </button>
               {helpOpen && <HelpDropdown onOpenFaq={() => setFaqOpen(true)} />}
             </div>
-            <button
-              className="dash-nav__create"
-              type="button"
-              onClick={onCreateNew ?? scrollToHero}
-            >
-              {t("dash.createNew")}
-            </button>
             <div className="dash-nav__avatar" ref={ref}>
               <button
                 className="dash-nav__avatar-btn"

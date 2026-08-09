@@ -1,7 +1,6 @@
 import type { User } from "@knot/shared"
 import { Bell, CreditCard, Gift, Lock, User as UserIcon } from "lucide-react"
 import { useState } from "react"
-import { useLocation } from "wouter"
 import { BillingForm } from "../components/settings/billing-form"
 import { NotificationForm } from "../components/settings/notification-form"
 import { ProfileForm } from "../components/settings/profile-form"
@@ -32,7 +31,6 @@ export function SettingsPage({
 }) {
   const { toast } = useToast()
   const { t } = useI18n()
-  const [, navigate] = useLocation()
   const [tab, setTab] = useState<SettingsTab>("profile")
   const [showDelete, setShowDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -50,12 +48,7 @@ export function SettingsPage({
   }
 
   return (
-    <DashboardShell
-      user={user}
-      onLogout={onLogout}
-      activeNav=""
-      onCreateNew={() => navigate("/")}
-    >
+    <DashboardShell user={user} onLogout={onLogout} activeNav="">
       <div className="set-layout">
         <aside className="set-sidebar">
           <h1 className="set-sidebar__title">{t("set.title")}</h1>

@@ -182,23 +182,6 @@
   margin-top: 4px;
 }
 
-.dash-nav__create {
-  background: var(--color-primary);
-  color: var(--color-white);
-  border: none;
-  border-radius: var(--radius-btn);
-  padding: var(--space-2) var(--space-4);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-
-.dash-nav__create:hover {
-  opacity: 0.9;
-}
-
 .dash-nav__avatar {
   position: relative;
 }

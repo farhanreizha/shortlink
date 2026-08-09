@@ -184,7 +184,6 @@ export const en = {
   "dash.notifications": "Notifications",
   "dash.help": "Help",
   "dash.faq": "FAQ",
-  "dash.createNew": "Create New",
   "dash.accountMenu": "Account menu",
   "dash.toggleNav": "Toggle navigation menu",
   "dash.privacy": "Privacy Policy",
