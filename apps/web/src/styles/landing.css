@@ -336,12 +336,24 @@
   }
 
   .landing-hero__form {
-    flex-direction: column;
-    border-radius: var(--radius-lg);
+    padding: 6px;
+    gap: var(--space-1);
+  }
+
+  .landing-hero__prefix {
+    width: 40px;
+    height: 40px;
   }
 
   .landing-hero__input {
-    height: 48px;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .landing-hero__submit {
+    height: 40px;
+    min-width: 96px;
+    font-size: 14px;
   }
 
   .landing-footer__inner {
