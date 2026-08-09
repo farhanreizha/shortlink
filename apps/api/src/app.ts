@@ -47,12 +47,14 @@ app.route("/api/notifications", notificationRoutes)
 app.route("/api/referral", referralRoutes)
 app.route("/r", redirectRoutes)
 
-app.doc("/api/doc", {
-  openapi: "3.0.0",
-  info: {
-    title: "Shortlink API",
-    version: "1.0.0",
-  },
-})
+if (env.NODE_ENV !== "production") {
+  app.doc("/api/doc", {
+    openapi: "3.0.0",
+    info: {
+      title: "Shortlink API",
+      version: "1.0.0",
+    },
+  })
+}
 
 export default app
