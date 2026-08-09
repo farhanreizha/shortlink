@@ -16,6 +16,7 @@
     "hono": "^4.12.32",
     "lucide-react": "^1.27.0",
     "react": "^19.2.0",
+    "react-day-picker": "^10.0.1",
     "react-dom": "^19.2.0",
     "wouter": "^3.10.0"
   },

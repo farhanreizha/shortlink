@@ -940,6 +940,11 @@
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.an-range::-webkit-scrollbar {
+  display: none;
 }
 .an-range__btn {
   border: 0;
@@ -951,27 +956,76 @@
   border-radius: 7px;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .an-range__btn--active {
   background: var(--color-surface);
   color: var(--color-text);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
-.an-range__custom {
+.an-range-wrap {
+  position: relative;
+  min-width: 0;
+  flex: 1 1 auto;
+  max-width: 100%;
+}
+
+.an-range-wrap .an-range {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.an-cal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: default;
+}
+
+.an-cal-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 41;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  padding: 12px;
+  --rdp-accent-color: var(--color-primary);
+  --rdp-background-color: var(--color-surface-alt);
+  --rdp-day-height: 36px;
+  --rdp-day-width: 36px;
+  --rdp-selected-border: 0;
+}
+
+.an-cal-popover .rdp {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+}
+
+.an-cal-popover__footer {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  width: 100%;
+  margin-top: 10px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
 }
-.an-range__custom input {
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 7px 10px;
-  font-size: 13px;
-  background: var(--color-surface);
-  color: var(--color-text);
-  flex: 1;
-  max-width: 200px;
+
+.an-cal-popover__summary {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.an-cal-popover__actions {
+  display: flex;
+  gap: 8px;
 }
 .an-error {
   color: var(--color-danger);
