@@ -195,7 +195,7 @@
 .navbar__menu {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-4);
 }
 
 .navbar__hamburger {
