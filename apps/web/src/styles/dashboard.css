@@ -1172,6 +1172,12 @@
   max-width: 100%;
 }
 
+@media (width >= 768px) {
+  .an-range-wrap .an-range {
+    margin-left: auto;
+  }
+}
+
 .an-cal-backdrop {
   position: fixed;
   inset: 0;
