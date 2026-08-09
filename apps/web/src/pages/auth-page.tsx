@@ -17,7 +17,7 @@ export function AuthPage({
 
   return (
     <div className="auth-page">
-      <aside className="auth-brand">
+      <aside className="auth-brand animate-fade-in">
         <Link className="auth-brand__logo" href="/">
           <span className="auth-brand__logo-mark">
             <Waypoints size={18} />
@@ -36,24 +36,35 @@ export function AuthPage({
 
       <main className="auth-main">
         <div className="auth-main__wrap">
-          <Link className="auth-main__logo" href="/">
+          <Link className="auth-main__logo animate-slide-up" href="/">
             <span className="auth-main__logo-mark">
               <Waypoints size={18} />
             </span>
             Knot
           </Link>
-          <h1 className="auth-main__title">
+          <h1
+            className="auth-main__title animate-slide-up"
+            style={{ animationDelay: "60ms" }}
+          >
             {isLogin ? t("auth.welcomeBack") : t("auth.createAccount")}
           </h1>
-          <p className="auth-main__subtitle">
+          <p
+            className="auth-main__subtitle animate-slide-up"
+            style={{ animationDelay: "120ms" }}
+          >
             {isLogin ? t("auth.loginSub") : t("auth.registerSub")}
           </p>
-          {isLogin ? (
-            <LoginForm onAuth={onAuth} />
-          ) : (
-            <RegisterForm onAuth={onAuth} />
-          )}
-          <div className="auth-toggle">
+          <div className="animate-slide-up" style={{ animationDelay: "180ms" }}>
+            {isLogin ? (
+              <LoginForm onAuth={onAuth} />
+            ) : (
+              <RegisterForm onAuth={onAuth} />
+            )}
+          </div>
+          <div
+            className="auth-toggle animate-slide-up"
+            style={{ animationDelay: "240ms" }}
+          >
             {isLogin ? (
               <>
                 {t("auth.noAccount")}{" "}
