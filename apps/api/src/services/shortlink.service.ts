@@ -113,7 +113,7 @@ export async function getBySlug(slug: string) {
     .from(shortlinks)
     .where(eq(shortlinks.slug, slug))
     .limit(1)
-  if (!link) throw new HTTPException(404, { message: "Shortlink not found" })
+  if (!link) throw new HTTPException(404, { message: "Not found" })
   return link
 }
 
