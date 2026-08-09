@@ -36,6 +36,21 @@ describe("POST /api/shortlinks", () => {
     expect(res.status).toBe(409)
   })
 
+  it("rejects slug containing HTML payload", async () => {
+    const { token } = await registerUser({
+      email: "slugxss@test.com",
+      username: "slugxssuser",
+    })
+    const res = await authedRequest(token, "/api/shortlinks", {
+      method: "POST",
+      body: JSON.stringify({
+        slug: "><script>alert('xss')</script>",
+        url: "https://example.com",
+      }),
+    })
+    expect(res.status).toBe(400)
+  })
+
   it("rejects unauthenticated request", async () => {
     const res = await app.request("/api/shortlinks", {
       method: "POST",

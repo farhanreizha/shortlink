@@ -65,17 +65,27 @@ export const ShortlinkSchema = z.object({
 
 export type Shortlink = z.infer<typeof ShortlinkSchema>
 
+const SlugSchema = z
+  .string()
+  .min(1)
+  .max(64)
+  .regex(
+    /^[a-zA-Z0-9_-]+$/,
+    "Slug may only contain letters, numbers, underscores and hyphens",
+  )
+
+
 export const CreateShortlinkSchema = z.object({
-  slug: z.string().min(1),
   url: z.string().url(),
+  slug: SlugSchema,
   campaignId: z.coerce.number().int().nullable().optional(),
 })
 
 export type CreateShortlink = z.infer<typeof CreateShortlinkSchema>
 
 export const UpdateShortlinkSchema = z.object({
-  slug: z.string().min(1).optional(),
   url: z.string().url().optional(),
+  slug: SlugSchema.optional(),
   campaignId: z.coerce.number().int().nullable().optional(),
 })
 
