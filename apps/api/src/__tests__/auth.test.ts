@@ -117,6 +117,24 @@ describe("POST /api/auth/login", () => {
     expect(res.headers.get("Set-Cookie")).toMatch(/^token=.+/)
   })
 
+  it("rate limits login attempts and exposes limit headers", async () => {
+    let last: Response | undefined
+    for (let i = 0; i < 11; i++) {
+      last = await app.request("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Forwarded-For": "198.51.100.7",
+        },
+        body: JSON.stringify({ email: "x@test.com", password: "WrongPass1" }),
+      })
+    }
+    expect(last?.status).toBe(429)
+    expect(last?.headers.get("Retry-After")).toBeTruthy()
+    expect(last?.headers.get("X-RateLimit-Limit")).toBe("10")
+    expect(last?.headers.get("X-RateLimit-Remaining")).toBe("0")
+  })
+
   it("rejects wrong password", async () => {
     await registerUser({ email: "wrongpw@test.com", username: "wrongpw" })
     const res = await app.request("/api/auth/login", {

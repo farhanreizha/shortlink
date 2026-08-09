@@ -31,6 +31,8 @@ app.use("/api/auth/login", rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }))
 
 app.use("/api/shortlinks", rateLimit({ windowMs: 60 * 1000, max: 30 }))
 
+app.use("/r/*", rateLimit({ windowMs: 60 * 1000, max: 120 }))
+
 app.use("/api/*", authMiddleware)
 
 app.route("/api/auth", authRoutes)
