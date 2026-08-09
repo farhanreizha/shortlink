@@ -3,11 +3,12 @@ import { useEffect, useState } from "react"
 import { useReferral } from "../../hooks/use-referral"
 import { useToast } from "../../hooks/use-toast"
 import { useI18n } from "../../lib/i18n"
+import { Skeleton } from "../ui/skeleton"
 
 export function ReferralForm() {
   const { t } = useI18n()
   const { toast } = useToast()
-  const { referral } = useReferral()
+  const { referral, loading } = useReferral()
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -15,6 +16,88 @@ export function ReferralForm() {
     const id = setTimeout(() => setCopied(false), 2000)
     return () => clearTimeout(id)
   }, [copied])
+
+  if (loading) {
+    return (
+      <section className="set-card set-card--referral" aria-busy="true">
+        <div className="set-card__header">
+          <Skeleton
+            style={{
+              height: 26,
+              width: 220,
+              marginBottom: "var(--space-2)",
+            }}
+          />
+          <Skeleton style={{ height: 16, width: "80%" }} />
+        </div>
+
+        <div className="ref-link">
+          <Skeleton
+            style={{ height: 14, width: 140, marginBottom: "var(--space-3)" }}
+          />
+          <div className="ref-link__row">
+            <Skeleton style={{ height: 44, flex: 1 }} />
+            <Skeleton style={{ height: 44, width: 96 }} />
+          </div>
+        </div>
+
+        <div className="ref-stats">
+          {[0, 1, 2].map((i) => (
+            <div className="ref-stats__item" key={i}>
+              <Skeleton
+                style={{ height: 28, width: 48, margin: "0 auto 6px" }}
+              />
+              <Skeleton
+                className="skeleton--text"
+                style={{ width: "70%", margin: "0 auto" }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="set-bill__divider" />
+
+        <div>
+          <Skeleton
+            style={{ height: 14, width: 120, marginBottom: "var(--space-3)" }}
+          />
+          {[0, 1, 2].map((i) => (
+            <div className="ref-steps__item" key={i}>
+              <Skeleton
+                className="skeleton--chip"
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  flexShrink: 0,
+                }}
+              />
+              <div style={{ flex: 1 }}>
+                <Skeleton
+                  style={{ height: 14, width: "60%", marginBottom: 6 }}
+                />
+                <Skeleton style={{ height: 12, width: "90%" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="set-bill__divider" />
+
+        <div>
+          <Skeleton
+            style={{ height: 14, width: 140, marginBottom: "var(--space-3)" }}
+          />
+          {[0, 1, 2].map((i) => (
+            <Skeleton
+              key={i}
+              style={{ height: 32, marginBottom: "var(--space-2)" }}
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   if (!referral) return null
 
