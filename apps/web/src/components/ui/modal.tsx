@@ -7,11 +7,13 @@ export function Modal({
   title,
   onClose,
   children,
+  wide = false,
 }: {
   open: boolean
   title: string
   onClose: () => void
   children: ReactNode
+  wide?: boolean
 }) {
   useEffect(() => {
     if (!open) return
@@ -33,7 +35,7 @@ export function Modal({
       onClick={onClose}
     >
       <div
-        className="modal-card animate-scale-in"
+        className={`modal-card animate-scale-in${wide ? " modal-card--wide" : ""}`}
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}

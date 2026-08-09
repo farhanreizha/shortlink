@@ -1,21 +1,25 @@
-import { Bell, HelpCircle } from "lucide-react"
+import { Bell, HelpCircle, Menu, X } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Link } from "wouter"
 import { useEscapeKey } from "../../hooks/use-escape-key"
+import { useNotifications } from "../../hooks/use-notifications"
+import { useI18n } from "../../lib/i18n"
+import { FaqModal, HelpDropdown, NotificationsDropdown } from "./dash-dropdowns"
+import { LanguageSwitcher } from "./language-switcher"
 
 const NAV_LINKS = [
-  { key: "dashboard", label: "Dashboard", href: "/" },
-  { key: "analytics", label: "Analytics", href: "/analytics" },
-  { key: "campaigns", label: "Campaigns", href: "/campaigns" },
-  { key: "custom-links", label: "Custom Links", href: "/custom-links" },
-]
+  { key: "dashboard", labelKey: "dash.dashboard", href: "/" },
+  { key: "analytics", labelKey: "dash.analytics", href: "/analytics" },
+  { key: "campaigns", labelKey: "dash.campaigns", href: "/campaigns" },
+  { key: "custom-links", labelKey: "dash.customLinks", href: "/custom-links" },
+] as const
 
 const FOOTER_LINKS = [
-  "Privacy Policy",
-  "Terms of Service",
-  "API Documentation",
-  "Support",
-]
+  "dash.privacy",
+  "dash.terms",
+  "dash.apiDocs",
+  "dash.support",
+] as const
 
 export function DashboardShell({
   user,
@@ -31,20 +35,45 @@ export function DashboardShell({
   children: ReactNode
 }) {
   const [open, setOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [bellOpen, setBellOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
+  const [faqOpen, setFaqOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const hamburgerRef = useRef<HTMLButtonElement>(null)
+  const bellRef = useRef<HTMLDivElement>(null)
+  const helpRef = useRef<HTMLDivElement>(null)
+  const { t } = useI18n()
+  const { notifications, unread, markAllRead } = useNotifications()
 
   useEffect(() => {
-    if (!open) return
+    if (!open && !menuOpen && !bellOpen && !helpOpen) return
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      const target = e.target as Node
+      const inside = Boolean(
+        ref.current?.contains(target) ||
+          menuRef.current?.contains(target) ||
+          hamburgerRef.current?.contains(target) ||
+          bellRef.current?.contains(target) ||
+          helpRef.current?.contains(target),
+      )
+      if (!inside) {
         setOpen(false)
+        setMenuOpen(false)
+        setBellOpen(false)
+        setHelpOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClick)
     return () => document.removeEventListener("mousedown", handleClick)
-  }, [open])
+  }, [open, menuOpen, bellOpen, helpOpen])
 
   useEscapeKey(open, () => setOpen(false))
+  useEscapeKey(menuOpen, () => setMenuOpen(false))
+  useEscapeKey(bellOpen, () => setBellOpen(false))
+  useEscapeKey(helpOpen, () => setHelpOpen(false))
+  useEscapeKey(faqOpen, () => setFaqOpen(false))
 
   function scrollToHero() {
     document
@@ -60,40 +89,63 @@ export function DashboardShell({
             <Link className="dash-nav__logo" href="/">
               Knot
             </Link>
-            <nav className="dash-nav__links" aria-label="Dashboard navigation">
+            <nav className="dash-nav__links" aria-label={t("dash.navAria")}>
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.key}
                   className={`dash-nav__link${activeNav === link.key ? " dash-nav__link--active" : ""}`}
                   href={link.href}
                 >
-                  {link.label}
+                  {t(link.labelKey)}
                 </Link>
               ))}
             </nav>
           </div>
 
           <div className="dash-nav__right">
-            <button
-              className="dash-nav__icon-btn"
-              type="button"
-              aria-label="Notifications"
-            >
-              <Bell size={20} />
-            </button>
-            <button
-              className="dash-nav__icon-btn"
-              type="button"
-              aria-label="Help"
-            >
-              <HelpCircle size={20} />
-            </button>
+            <LanguageSwitcher />
+            <div className="dash-nav__icon" ref={bellRef}>
+              <button
+                className="dash-nav__icon-btn"
+                type="button"
+                aria-label={t("dash.notifications")}
+                aria-expanded={bellOpen}
+                onClick={() => {
+                  if (!bellOpen) markAllRead()
+                  setBellOpen(!bellOpen)
+                  setHelpOpen(false)
+                }}
+              >
+                <Bell size={20} />
+                {unread > 0 && (
+                  <span className="dash-nav__badge">{unread}</span>
+                )}
+              </button>
+              {bellOpen && (
+                <NotificationsDropdown notifications={notifications} />
+              )}
+            </div>
+            <div className="dash-nav__icon" ref={helpRef}>
+              <button
+                className="dash-nav__icon-btn"
+                type="button"
+                aria-label={t("dash.help")}
+                aria-expanded={helpOpen}
+                onClick={() => {
+                  setHelpOpen(!helpOpen)
+                  setBellOpen(false)
+                }}
+              >
+                <HelpCircle size={20} />
+              </button>
+              {helpOpen && <HelpDropdown onOpenFaq={() => setFaqOpen(true)} />}
+            </div>
             <button
               className="dash-nav__create"
               type="button"
               onClick={onCreateNew ?? scrollToHero}
             >
-              Create New
+              {t("dash.createNew")}
             </button>
             <div className="dash-nav__avatar" ref={ref}>
               <button
@@ -101,7 +153,7 @@ export function DashboardShell({
                 type="button"
                 aria-haspopup="menu"
                 aria-expanded={open}
-                aria-label="Account menu"
+                aria-label={t("dash.accountMenu")}
                 onClick={() => setOpen(!open)}
               >
                 {user.username[0]?.toUpperCase()}
@@ -113,7 +165,7 @@ export function DashboardShell({
                     href="/settings"
                     role="menuitem"
                   >
-                    Settings
+                    {t("common.settings")}
                   </Link>
                   <div className="dash-nav__dropdown-divider" />
                   <button
@@ -122,32 +174,92 @@ export function DashboardShell({
                     role="menuitem"
                     onClick={onLogout}
                   >
-                    Logout
+                    {t("common.logout")}
                   </button>
                 </div>
               )}
             </div>
+            <button
+              className="dash-nav__hamburger"
+              type="button"
+              ref={hamburgerRef}
+              aria-expanded={menuOpen}
+              aria-label={t("dash.toggleNav")}
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </div>
+        <div
+          className={`dash-nav__mobile${menuOpen ? " dash-nav__mobile--open" : ""}`}
+          ref={menuRef}
+        >
+          <div className="dash-nav__mobile-profile">
+            <span className="dash-nav__avatar-btn">
+              {user.username[0]?.toUpperCase()}
+            </span>
+            <span className="dash-nav__mobile-name">{user.username}</span>
+          </div>
+          <nav
+            className="dash-nav__mobile-links"
+            aria-label={t("dash.mobileNavAria")}
+          >
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.key}
+                className={`dash-nav__link${activeNav === link.key ? " dash-nav__link--active" : ""}`}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+              >
+                {t(link.labelKey)}
+              </Link>
+            ))}
+          </nav>
+          <div className="dash-nav__mobile-account">
+            <Link
+              className="dash-nav__dropdown-item"
+              href="/settings"
+              onClick={() => setMenuOpen(false)}
+            >
+              {t("common.settings")}
+            </Link>
+            <div className="dash-nav__dropdown-divider" />
+            <button
+              className="dash-nav__dropdown-item dash-nav__dropdown-item--danger"
+              type="button"
+              onClick={() => {
+                setMenuOpen(false)
+                onLogout()
+              }}
+            >
+              {t("common.logout")}
+            </button>
           </div>
         </div>
       </header>
 
       <main className="dash-main">{children}</main>
 
+      <FaqModal open={faqOpen} onClose={() => setFaqOpen(false)} />
+
       <footer className="dash-footer">
         <div className="dash-footer__inner">
           <Link className="dash-footer__logo" href="/">
             Knot
           </Link>
-          <nav className="dash-footer__nav" aria-label="Footer navigation">
-            {FOOTER_LINKS.map((label) => (
-              <span key={label} className="dash-footer__link">
-                {label}
+          <nav
+            className="dash-footer__nav"
+            aria-label={t("dash.footerNavAria")}
+          >
+            {FOOTER_LINKS.map((key) => (
+              <span key={key} className="dash-footer__link">
+                {t(key)}
               </span>
             ))}
           </nav>
           <div className="dash-footer__copy">
-            &copy; {new Date().getFullYear()} Knot URL Shortener. All rights
-            reserved.
+            {t("dash.rights", { year: new Date().getFullYear() })}
           </div>
         </div>
       </footer>
