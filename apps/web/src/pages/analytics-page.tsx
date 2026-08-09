@@ -1,22 +1,25 @@
 import type { User } from "@knot/shared"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { type DateRange, DayPicker } from "react-day-picker"
+import "react-day-picker/style.css"
 import { CountUp } from "../components/ui/count-up"
 import { DashboardShell } from "../components/ui/dashboard-shell"
 import { Reveal } from "../components/ui/reveal"
 import { Skeleton } from "../components/ui/skeleton"
 import { useAnalytics } from "../hooks/use-analytics"
+import { useI18n } from "../lib/i18n"
 
 const RANGES = [
-  { key: "7d", label: "Last 7 Days" },
-  { key: "30d", label: "Last 30 Days" },
-  { key: "month", label: "This Month" },
-  { key: "custom", label: "Custom Range…" },
+  { key: "7d", labelKey: "an.range7d" },
+  { key: "30d", labelKey: "an.range30d" },
+  { key: "month", labelKey: "an.rangeMonth" },
+  { key: "custom", labelKey: "an.rangeCustom" },
 ] as const
 
 const DEVICES = [
-  { key: "mobile", label: "Mobile", color: "#0052ff" },
-  { key: "desktop", label: "Desktop", color: "#00c1fd" },
-  { key: "tablet", label: "Tablet", color: "#007462" },
+  { key: "mobile", labelKey: "an.deviceMobile", color: "#0052ff" },
+  { key: "desktop", labelKey: "an.deviceDesktop", color: "#00c1fd" },
+  { key: "tablet", labelKey: "an.deviceTablet", color: "#007462" },
 ] as const
 
 function countryFlag(country: string) {
@@ -34,6 +37,20 @@ function formatCompact(n: number) {
   return String(n)
 }
 
+function fmtDate(d: Date) {
+  const m = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return `${d.getFullYear()}-${m}-${day}`
+}
+
+function parseDate(s: string) {
+  const [y = 0, m = 1, d = 1] = s.split("-").map(Number)
+  return new Date(y, m - 1, d)
+}
+
+const fmtShort = (d: Date) =>
+  d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+
 export function AnalyticsPage({
   user,
   onLogout,
@@ -42,7 +59,9 @@ export function AnalyticsPage({
   onLogout: () => void
 }) {
   const { data, loading, error, query, setQuery } = useAnalytics()
-  const [custom, setCustom] = useState({ start: "", end: "" })
+  const { t } = useI18n()
+  const [customRange, setCustomRange] = useState<DateRange>()
+  const [customOpen, setCustomOpen] = useState(false)
 
   const maxBar = useMemo(
     () => Math.max(1, ...(data?.clicksOverTime.map((d) => d.count) ?? [1])),
@@ -53,19 +72,39 @@ export function AnalyticsPage({
     [data],
   )
 
+  useEffect(() => {
+    if (!customOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setCustomOpen(false)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [customOpen])
+
   function selectRange(key: (typeof RANGES)[number]["key"]) {
     if (key === "custom") {
-      if (custom.start && custom.end) {
-        setQuery({
-          ...query,
-          range: "custom",
-          start: custom.start,
-          end: custom.end,
+      if (query.range === "custom" && query.start && query.end) {
+        setCustomRange({
+          from: parseDate(query.start),
+          to: parseDate(query.end),
         })
       }
+      setCustomOpen(true)
       return
     }
+    setCustomOpen(false)
     setQuery({ ...query, range: key, start: undefined, end: undefined })
+  }
+
+  function applyCustom() {
+    if (!customRange?.from || !customRange?.to) return
+    setCustomOpen(false)
+    setQuery({
+      ...query,
+      range: "custom",
+      start: fmtDate(customRange.from),
+      end: fmtDate(customRange.to),
+    })
   }
 
   const deviceTotal = data
@@ -79,58 +118,69 @@ export function AnalyticsPage({
       <div className="an-page">
         <div className="an-header">
           <div>
-            <h1 className="an-header__title">Analytics Overview</h1>
-            <p className="an-header__desc">
-              Track your link performance and audience engagement.
-            </p>
+            <h1 className="an-header__title">{t("an.title")}</h1>
+            <p className="an-header__desc">{t("an.desc")}</p>
           </div>
-          <div className="an-range">
-            {RANGES.map((r) => (
-              <button
-                key={r.key}
-                type="button"
-                className={`an-range__btn${query.range === r.key ? " an-range__btn--active" : ""}`}
-                onClick={() => selectRange(r.key)}
-              >
-                {r.label}
-              </button>
-            ))}
-          </div>
-          {query.range === "custom" && (
-            <div className="an-range__custom">
-              <input
-                type="date"
-                aria-label="Start date"
-                value={custom.start}
-                onChange={(e) =>
-                  setCustom({ ...custom, start: e.target.value })
-                }
-              />
-              <span>to</span>
-              <input
-                type="date"
-                aria-label="End date"
-                value={custom.end}
-                onChange={(e) => setCustom({ ...custom, end: e.target.value })}
-              />
-              <button
-                className="btn btn--primary"
-                type="button"
-                onClick={() =>
-                  custom.start &&
-                  custom.end &&
-                  setQuery({
-                    ...query,
-                    range: "custom",
-                    start: custom.start,
-                    end: custom.end,
-                  })
-                }
-              >
-                Apply
-              </button>
+          <div className="an-range-wrap">
+            <div className="an-range">
+              {RANGES.map((r) => (
+                <button
+                  key={r.key}
+                  type="button"
+                  className={`an-range__btn${query.range === r.key || (r.key === "custom" && customOpen) ? " an-range__btn--active" : ""}`}
+                  onClick={() => selectRange(r.key)}
+                >
+                  {t(r.labelKey)}
+                </button>
+              ))}
             </div>
-          )}
+            {customOpen && (
+              <>
+                <button
+                  type="button"
+                  className="an-cal-backdrop"
+                  aria-label={t("an.closePicker")}
+                  onClick={() => setCustomOpen(false)}
+                />
+                <div
+                  className="an-cal-popover"
+                  role="dialog"
+                  aria-label={t("an.selectRange")}
+                >
+                  <DayPicker
+                    mode="range"
+                    selected={customRange}
+                    onSelect={setCustomRange}
+                    disabled={{ after: new Date() }}
+                  />
+                  <div className="an-cal-popover__footer">
+                    <span className="an-cal-popover__summary">
+                      {customRange?.from && customRange?.to
+                        ? `${fmtShort(customRange.from)} – ${fmtShort(customRange.to)}`
+                        : t("an.selectDates")}
+                    </span>
+                    <div className="an-cal-popover__actions">
+                      <button
+                        type="button"
+                        className="btn btn--ghost"
+                        onClick={() => setCustomOpen(false)}
+                      >
+                        {t("an.cancel")}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn--primary"
+                        disabled={!customRange?.from || !customRange?.to}
+                        onClick={applyCustom}
+                      >
+                        {t("an.apply")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {error && <div className="an-error">{error}</div>}
@@ -156,7 +206,9 @@ export function AnalyticsPage({
               <div className="an-stats">
                 <Reveal delay={0}>
                   <div className="an-stat">
-                    <span className="an-stat__label">Total Clicks</span>
+                    <span className="an-stat__label">
+                      {t("an.totalClicks")}
+                    </span>
                     <span className="an-stat__value">
                       <CountUp value={data.totalClicks} />
                     </span>
@@ -164,7 +216,9 @@ export function AnalyticsPage({
                 </Reveal>
                 <Reveal delay={0.06}>
                   <div className="an-stat">
-                    <span className="an-stat__label">Unique Visitors</span>
+                    <span className="an-stat__label">
+                      {t("an.uniqueVisitors")}
+                    </span>
                     <span className="an-stat__value">
                       <CountUp value={data.uniqueVisitors} />
                     </span>
@@ -172,7 +226,9 @@ export function AnalyticsPage({
                 </Reveal>
                 <Reveal delay={0.12}>
                   <div className="an-stat">
-                    <span className="an-stat__label">Top Referral</span>
+                    <span className="an-stat__label">
+                      {t("an.topReferral")}
+                    </span>
                     <span
                       className="an-stat__value an-stat__value--sm"
                       title={data.topReferral}
@@ -183,7 +239,7 @@ export function AnalyticsPage({
                 </Reveal>
                 <Reveal delay={0.18}>
                   <div className="an-stat">
-                    <span className="an-stat__label">Avg. CTR</span>
+                    <span className="an-stat__label">{t("an.avgCtr")}</span>
                     <span className="an-stat__value">
                       {data.avgCtr === null ? (
                         "—"
@@ -198,26 +254,26 @@ export function AnalyticsPage({
               <div className="an-grid">
                 <Reveal className="an-card an-card--wide" delay={0.1}>
                   <div className="an-card__header">
-                    <h2 className="an-card__title">Clicks Over Time</h2>
+                    <h2 className="an-card__title">{t("an.clicksOverTime")}</h2>
                     <div className="an-toggle">
                       <button
                         type="button"
                         className={`an-toggle__btn${query.bucket === "daily" ? " an-toggle__btn--active" : ""}`}
                         onClick={() => setQuery({ ...query, bucket: "daily" })}
                       >
-                        Daily
+                        {t("an.daily")}
                       </button>
                       <button
                         type="button"
                         className={`an-toggle__btn${query.bucket === "weekly" ? " an-toggle__btn--active" : ""}`}
                         onClick={() => setQuery({ ...query, bucket: "weekly" })}
                       >
-                        Weekly
+                        {t("an.weekly")}
                       </button>
                     </div>
                   </div>
                   {data.clicksOverTime.length === 0 ? (
-                    <div className="an-empty">No clicks in this period</div>
+                    <div className="an-empty">{t("an.noClicks")}</div>
                   ) : (
                     <div className="an-bars">
                       {data.clicksOverTime.map((d, i) => (
@@ -243,9 +299,9 @@ export function AnalyticsPage({
                 </Reveal>
 
                 <Reveal className="an-card" delay={0.2}>
-                  <h2 className="an-card__title">Clicks by Device</h2>
+                  <h2 className="an-card__title">{t("an.byDevice")}</h2>
                   {deviceTotal === 0 ? (
-                    <div className="an-empty">No clicks in this period</div>
+                    <div className="an-empty">{t("an.noClicks")}</div>
                   ) : (
                     <div className="an-devices">
                       {DEVICES.map((d, i) => {
@@ -254,7 +310,7 @@ export function AnalyticsPage({
                         return (
                           <div className="an-device" key={d.key}>
                             <div className="an-device__row">
-                              <span>{d.label}</span>
+                              <span>{t(d.labelKey)}</span>
                               <span>
                                 {pct}% · {formatCompact(count)}
                               </span>
@@ -277,9 +333,9 @@ export function AnalyticsPage({
                 </Reveal>
 
                 <Reveal className="an-card" delay={0.3}>
-                  <h2 className="an-card__title">Clicks by Location</h2>
+                  <h2 className="an-card__title">{t("an.byLocation")}</h2>
                   {data.clicksByLocation.length === 0 ? (
-                    <div className="an-empty">No clicks in this period</div>
+                    <div className="an-empty">{t("an.noClicks")}</div>
                   ) : (
                     <div className="an-locations">
                       {data.clicksByLocation.map((l, i) => (
@@ -311,17 +367,17 @@ export function AnalyticsPage({
               </div>
 
               <Reveal className="an-card" delay={0.1}>
-                <h2 className="an-card__title">Top Performing Links</h2>
+                <h2 className="an-card__title">{t("an.topLinks")}</h2>
                 {data.topLinks.length === 0 ? (
-                  <div className="an-empty">No clicks in this period</div>
+                  <div className="an-empty">{t("an.noClicks")}</div>
                 ) : (
                   <table className="an-table">
                     <thead>
                       <tr>
-                        <th>Link Details</th>
-                        <th>Clicks</th>
-                        <th>Unique</th>
-                        <th>Status</th>
+                        <th>{t("an.colDetails")}</th>
+                        <th>{t("an.colClicks")}</th>
+                        <th>{t("an.colUnique")}</th>
+                        <th>{t("common.status")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -338,7 +394,9 @@ export function AnalyticsPage({
                           <td>{link.clicks.toLocaleString()}</td>
                           <td>{link.unique.toLocaleString()}</td>
                           <td>
-                            <span className="dash-link__status">Active</span>
+                            <span className="dash-link__status">
+                              {t("common.active")}
+                            </span>
                           </td>
                         </tr>
                       ))}

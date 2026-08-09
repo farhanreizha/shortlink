@@ -2,11 +2,13 @@ import type { User } from "@knot/shared"
 import { useState } from "react"
 import { client } from "../../hono-client"
 import { useToast } from "../../hooks/use-toast"
+import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 
 export function ProfileForm({ user }: { user: User }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const [email, setEmail] = useState(user.email)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -19,12 +21,12 @@ export function ProfileForm({ user }: { user: User }) {
       const res = await client.api.auth.me.$patch({ json: { email } })
       if (!res.ok) {
         const body = (await res.json()) as { message?: string }
-        setError(body.message ?? "Update failed")
+        setError(body.message ?? t("pf.updateFailed"))
         return
       }
-      toast("Profile updated!")
+      toast(t("pf.updated"))
     } catch {
-      setError("Something went wrong")
+      setError(t("common.error"))
     } finally {
       setLoading(false)
     }
@@ -33,13 +35,11 @@ export function ProfileForm({ user }: { user: User }) {
   return (
     <section className="set-card">
       <div className="set-card__header">
-        <h2 className="set-card__title">General Information</h2>
-        <p className="set-card__desc">
-          Update your basic profile details and public avatar.
-        </p>
+        <h2 className="set-card__title">{t("pf.title")}</h2>
+        <p className="set-card__desc">{t("pf.desc")}</p>
       </div>
       <form className="set-form" onSubmit={handleSubmit}>
-        <FormField label="Email Address" htmlFor="settings-email" error={error}>
+        <FormField label={t("pf.email")} htmlFor="settings-email" error={error}>
           <input
             id="settings-email"
             type="email"
@@ -59,7 +59,7 @@ export function ProfileForm({ user }: { user: User }) {
             className="btn btn--primary"
             disabled={loading || !email}
           >
-            {loading ? "Saving…" : "Save Changes"}
+            {loading ? t("common.saving") : t("pf.save")}
           </button>
         </div>
       </form>

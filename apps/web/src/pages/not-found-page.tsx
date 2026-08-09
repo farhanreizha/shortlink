@@ -1,7 +1,9 @@
 import { Link } from "wouter"
 import { Navbar } from "../components/ui/navbar"
+import { useI18n } from "../lib/i18n"
 
 export function NotFoundPage() {
+  const { t } = useI18n()
   return (
     <div className="animate-fade-in">
       <Navbar />
@@ -16,10 +18,10 @@ export function NotFoundPage() {
               color: "var(--color-neutral)",
             }}
           >
-            Page not found
+            {t("common.pageNotFound")}
           </p>
           <Link href="/" className="btn btn--primary">
-            Go Home
+            {t("common.goHome")}
           </Link>
         </div>
       </main>

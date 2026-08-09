@@ -1,6 +1,7 @@
 import type { Campaign, CampaignSummary } from "@knot/shared"
 import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
+import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
@@ -19,6 +20,7 @@ export function CampaignModal({
   onClose: () => void
 }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const [name, setName] = useState(campaign?.name ?? "")
   const [description, setDescription] = useState(campaign?.description ?? "")
   const [status, setStatus] = useState<"active" | "archived">(
@@ -41,51 +43,51 @@ export function CampaignModal({
     })
     setSubmitting(false)
     if (saved) {
-      toast(campaign ? "Campaign updated" : "Campaign created")
+      toast(campaign ? t("cm.updated") : t("cm.created"))
       onClose()
     } else {
-      setError("Failed to save campaign")
-      toast("Failed to save campaign", "error")
+      setError(t("cm.saveFailed"))
+      toast(t("cm.saveFailed"), "error")
     }
   }
 
   return (
     <Modal
       open
-      title={campaign ? "Edit Campaign" : "Create Campaign"}
+      title={campaign ? t("cm.editTitle") : t("cm.createTitle")}
       onClose={onClose}
     >
       <form onSubmit={handleSubmit} className="cm-form">
-        <FormField label="Name" htmlFor="campaign-name">
+        <FormField label={t("cm.name")} htmlFor="campaign-name">
           <input
             className="input"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Summer Sale"
+            placeholder={t("cm.namePlaceholder")}
           />
         </FormField>
-        <FormField label="Description" htmlFor="campaign-desc">
+        <FormField label={t("cm.desc")} htmlFor="campaign-desc">
           <textarea
             className="input cm-form__desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What is this campaign about?"
+            placeholder={t("cm.descPlaceholder")}
           />
         </FormField>
-        <FormField label="Status" htmlFor="campaign-status">
+        <FormField label={t("cm.status")} htmlFor="campaign-status">
           <select
             className="input"
             value={status}
             onChange={(e) => setStatus(e.target.value as "active" | "archived")}
           >
-            <option value="active">Active</option>
-            <option value="archived">Archived</option>
+            <option value="active">{t("common.active")}</option>
+            <option value="archived">{t("common.archived")}</option>
           </select>
         </FormField>
         {error && <ErrorBanner message={error} />}
         <div className="cm-form__actions">
           <button type="button" className="btn btn--ghost" onClick={onClose}>
-            Cancel
+            {t("cm.cancel")}
           </button>
           <button
             type="submit"
@@ -93,10 +95,10 @@ export function CampaignModal({
             disabled={!canSubmit}
           >
             {submitting
-              ? "Saving…"
+              ? t("cm.saving")
               : campaign
-                ? "Save Changes"
-                : "Create Campaign"}
+                ? t("cm.saveChanges")
+                : t("cm.createCampaign")}
           </button>
         </div>
       </form>

@@ -3,12 +3,14 @@ import { LoginSchema } from "@knot/shared"
 import { useState } from "react"
 import { client } from "../../hono-client"
 import { clearFieldError } from "../../lib/form"
+import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
 import { SocialButtons } from "./social-buttons"
 
 export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
+  const { t } = useI18n()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -36,13 +38,13 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
       })
       if (!res.ok) {
         const body = (await res.json()) as { message?: string }
-        setError(body.message ?? "Invalid email or password")
+        setError(body.message ?? t("auth.invalidLogin"))
         return
       }
       const user = (await res.json()) as User
       onAuth(user)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
+      setError(err instanceof Error ? err.message : t("common.error"))
     } finally {
       setLoading(false)
     }
@@ -52,10 +54,10 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
     <form className="form" onSubmit={handleSubmit}>
       <SocialButtons />
       <div className="auth-divider">
-        <span>or continue with email</span>
+        <span>{t("auth.orContinue")}</span>
       </div>
       <FormField
-        label="Email address"
+        label={t("auth.email")}
         htmlFor="login-email"
         error={errors.email}
       >
@@ -63,7 +65,7 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
           id="login-email"
           type="email"
           className="input"
-          placeholder="you@example.com"
+          placeholder={t("auth.emailPlaceholder")}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value)
@@ -73,7 +75,7 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
       </FormField>
       <PasswordField
         id="login-password"
-        label="Password"
+        label={t("auth.password")}
         value={password}
         onChange={(v) => {
           setPassword(v)
@@ -85,7 +87,7 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
         error={errors.password}
         trailing={
           <button type="button" className="form__label-link">
-            Forgot password?
+            {t("auth.forgot")}
           </button>
         }
       />
@@ -96,7 +98,7 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
         style={{ width: "100%" }}
         disabled={loading || !email || !password}
       >
-        {loading ? "Please wait…" : "Sign In"}
+        {loading ? t("common.loading") : t("auth.signIn")}
       </button>
     </form>
   )

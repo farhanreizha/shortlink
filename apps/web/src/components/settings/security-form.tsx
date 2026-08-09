@@ -3,11 +3,13 @@ import { useState } from "react"
 import { client } from "../../hono-client"
 import { useToast } from "../../hooks/use-toast"
 import { clearFieldError } from "../../lib/form"
+import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { PasswordField } from "../ui/password-field"
 
 export function SecurityForm() {
   const { toast } = useToast()
+  const { t } = useI18n()
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -22,7 +24,7 @@ export function SecurityForm() {
     setError("")
 
     if (newPassword !== confirmPassword) {
-      setErrors({ confirmPassword: "Passwords do not match" })
+      setErrors({ confirmPassword: t("sec.mismatch") })
       return
     }
 
@@ -44,15 +46,15 @@ export function SecurityForm() {
       const res = await client.api.auth.me.$patch({ json: result.data })
       if (!res.ok) {
         const body = (await res.json()) as { message?: string }
-        setError(body.message ?? "Update failed")
+        setError(body.message ?? t("pf.updateFailed"))
         return
       }
-      toast("Password updated!")
+      toast(t("sec.updated"))
       setCurrentPassword("")
       setNewPassword("")
       setConfirmPassword("")
     } catch {
-      setError("Something went wrong")
+      setError(t("common.error"))
     } finally {
       setLoading(false)
     }
@@ -61,15 +63,13 @@ export function SecurityForm() {
   return (
     <section className="set-card set-card--security">
       <div className="set-card__header">
-        <h2 className="set-card__title">Security</h2>
-        <p className="set-card__desc">
-          Manage your password and authentication methods.
-        </p>
+        <h2 className="set-card__title">{t("sec.title")}</h2>
+        <p className="set-card__desc">{t("sec.desc")}</p>
       </div>
       <form className="set-form" onSubmit={handleSubmit}>
         <PasswordField
           id="settings-current"
-          label="Current Password"
+          label={t("sec.current")}
           value={currentPassword}
           onChange={(v) => {
             setCurrentPassword(v)
@@ -83,7 +83,7 @@ export function SecurityForm() {
 
         <PasswordField
           id="settings-new"
-          label="New Password"
+          label={t("sec.new")}
           value={newPassword}
           onChange={(v) => {
             setNewPassword(v)
@@ -94,13 +94,11 @@ export function SecurityForm() {
           showToggle
           error={errors.newPassword}
         />
-        <div className="set-form__hint">
-          Must be at least 8 characters long.
-        </div>
+        <div className="set-form__hint">{t("sec.hint")}</div>
 
         <PasswordField
           id="settings-confirm"
-          label="Confirm New Password"
+          label={t("sec.confirm")}
           value={confirmPassword}
           onChange={(v) => {
             setConfirmPassword(v)
@@ -119,7 +117,7 @@ export function SecurityForm() {
             className="btn btn--primary"
             disabled={loading || !currentPassword || !newPassword}
           >
-            {loading ? "Saving…" : "Save Changes"}
+            {loading ? t("common.saving") : t("pf.save")}
           </button>
         </div>
       </form>

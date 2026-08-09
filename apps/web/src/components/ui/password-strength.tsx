@@ -1,3 +1,5 @@
+import { type MessageKey, useI18n } from "../../lib/i18n"
+
 function scorePassword(password: string): number {
   let score = 0
   if (password.length >= 8) score++
@@ -7,7 +9,12 @@ function scorePassword(password: string): number {
   return score
 }
 
-const labels = ["Weak", "Fair", "Good", "Strong"]
+const keys: MessageKey[] = [
+  "strength.weak",
+  "strength.fair",
+  "strength.good",
+  "strength.strong",
+]
 const colors = [
   "var(--color-error)",
   "var(--color-warning)",
@@ -16,9 +23,11 @@ const colors = [
 ]
 
 export function PasswordStrength({ password }: { password: string }) {
+  const { t } = useI18n()
   if (!password) return null
   const score = scorePassword(password)
   const width = `${((score + 1) / 5) * 100}%`
+  const labelKey = keys[score - 1]
 
   return (
     <div style={{ marginTop: "var(--space-1)" }}>
@@ -48,7 +57,7 @@ export function PasswordStrength({ password }: { password: string }) {
           fontWeight: 500,
         }}
       >
-        {labels[score - 1] ?? ""}
+        {labelKey ? t(labelKey) : ""}
       </div>
     </div>
   )

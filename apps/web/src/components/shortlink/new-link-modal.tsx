@@ -1,7 +1,8 @@
 import { CreateShortlinkSchema } from "@knot/shared"
-import { Link as LinkIcon, Scissors } from "lucide-react"
+import { Link as LinkIcon } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
+import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
@@ -20,6 +21,7 @@ export function NewLinkModal({
   onClose: () => void
 }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const [url, setUrl] = useState("")
   const [slug, setSlug] = useState("")
   const [error, setError] = useState("")
@@ -31,7 +33,9 @@ export function NewLinkModal({
     const finalSlug = slug || randomSlug()
     const result = CreateShortlinkSchema.safeParse({ slug: finalSlug, url })
     if (!result.success) {
-      setError(result.error.flatten().fieldErrors.url?.[0] ?? "Invalid URL")
+      setError(
+        result.error.flatten().fieldErrors.url?.[0] ?? t("form.invalidUrl"),
+      )
       return
     }
     setLoading(true)
@@ -42,21 +46,21 @@ export function NewLinkModal({
       setSlug("")
       onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
+      setError(err instanceof Error ? err.message : t("common.error"))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <Modal open={open} title="New Custom Link" onClose={onClose}>
+    <Modal open={open} title={t("modal.newLink")} onClose={onClose}>
       <form className="form" onSubmit={handleSubmit}>
-        <FormField label="Original URL" htmlFor="new-link-url">
+        <FormField label={t("modal.originalUrl")} htmlFor="new-link-url">
           <input
             id="new-link-url"
             className="input"
             type="url"
-            placeholder="https://example.com/very/long/path"
+            placeholder={t("modal.urlPlaceholder")}
             value={url}
             onChange={(e) => {
               setUrl(e.target.value)
@@ -64,11 +68,11 @@ export function NewLinkModal({
             }}
           />
         </FormField>
-        <FormField label="Branded Slug" htmlFor="new-link-slug">
+        <FormField label={t("modal.brandedSlug")} htmlFor="new-link-slug">
           <input
             id="new-link-slug"
             className="input input--mono"
-            placeholder="sale"
+            placeholder={t("modal.slugPlaceholder")}
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
           />
@@ -81,7 +85,7 @@ export function NewLinkModal({
             onClick={onClose}
             disabled={loading}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             className="btn btn--primary"
@@ -89,7 +93,7 @@ export function NewLinkModal({
             disabled={loading || !url}
           >
             <LinkIcon size={16} />
-            {loading ? "Creating…" : "Create Link"}
+            {loading ? t("modal.creating") : t("modal.createLink")}
           </button>
         </div>
       </form>

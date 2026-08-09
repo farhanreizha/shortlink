@@ -10,12 +10,13 @@ import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
 import { client } from "../hono-client"
 import { useToast } from "../hooks/use-toast"
+import { useI18n } from "../lib/i18n"
 
 const SETTINGS_NAV = [
-  { key: "profile", label: "Profile", icon: UserIcon },
-  { key: "security", label: "Security", icon: Lock },
-  { key: "notifications", label: "Notifications", icon: Bell },
-  { key: "billing", label: "Billing", icon: CreditCard },
+  { key: "profile", labelKey: "set.profile", icon: UserIcon },
+  { key: "security", labelKey: "set.security", icon: Lock },
+  { key: "notifications", labelKey: "set.notifications", icon: Bell },
+  { key: "billing", labelKey: "set.billing", icon: CreditCard },
 ] as const
 
 type SettingsTab = (typeof SETTINGS_NAV)[number]["key"]
@@ -28,6 +29,7 @@ export function SettingsPage({
   onLogout: () => void
 }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const [, navigate] = useLocation()
   const [tab, setTab] = useState<SettingsTab>("profile")
   const [showDelete, setShowDelete] = useState(false)
@@ -37,10 +39,10 @@ export function SettingsPage({
     setDeleting(true)
     try {
       await client.api.auth.me.$delete()
-      toast("Account deleted")
+      toast(t("set.accountDeleted"))
       onLogout()
     } catch {
-      toast("Failed to delete account", "error")
+      toast(t("set.deleteFailed"), "error")
       setDeleting(false)
     }
   }
@@ -54,8 +56,8 @@ export function SettingsPage({
     >
       <div className="set-layout">
         <aside className="set-sidebar">
-          <h1 className="set-sidebar__title">Settings</h1>
-          <nav className="set-nav" aria-label="Settings navigation">
+          <h1 className="set-sidebar__title">{t("set.title")}</h1>
+          <nav className="set-nav" aria-label={t("set.navAria")}>
             {SETTINGS_NAV.map((item) => (
               <button
                 key={item.key}
@@ -64,7 +66,7 @@ export function SettingsPage({
                 onClick={() => setTab(item.key)}
               >
                 <item.icon size={20} />
-                {item.label}
+                {t(item.labelKey)}
               </button>
             ))}
           </nav>
@@ -79,11 +81,8 @@ export function SettingsPage({
           {tab === "profile" && (
             <section className="set-card set-card--danger">
               <div className="set-card__header">
-                <h2 className="set-card__title">Danger Zone</h2>
-                <p className="set-card__desc">
-                  Delete your account and all associated links. This action
-                  cannot be undone.
-                </p>
+                <h2 className="set-card__title">{t("set.dangerZone")}</h2>
+                <p className="set-card__desc">{t("set.dangerDesc")}</p>
               </div>
               <div className="set-form__footer">
                 <button
@@ -91,7 +90,7 @@ export function SettingsPage({
                   className="btn btn--danger"
                   onClick={() => setShowDelete(true)}
                 >
-                  Delete Account
+                  {t("set.deleteAccount")}
                 </button>
               </div>
             </section>
@@ -101,9 +100,9 @@ export function SettingsPage({
 
       <ConfirmModal
         open={showDelete}
-        title="Delete account?"
-        message="All your links will be permanently deleted. Are you sure?"
-        confirmLabel={deleting ? "Deleting…" : "Delete Account"}
+        title={t("set.deleteTitle")}
+        message={t("set.deleteMessage")}
+        confirmLabel={deleting ? t("set.deleting") : t("set.deleteAccount")}
         confirmDisabled={deleting}
         onConfirm={handleDelete}
         onCancel={() => setShowDelete(false)}

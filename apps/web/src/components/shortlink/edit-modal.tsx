@@ -1,5 +1,6 @@
 import type { Shortlink, UpdateShortlink } from "@knot/shared"
 import { useEffect, useState } from "react"
+import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
@@ -15,6 +16,7 @@ export function EditModal({
   onSave: (slug: string, data: UpdateShortlink) => Promise<void>
   onClose: () => void
 }) {
+  const { t } = useI18n()
   const [slug, setSlug] = useState(link.slug)
   const [url, setUrl] = useState(link.url)
   const [error, setError] = useState("")
@@ -43,16 +45,16 @@ export function EditModal({
       await onSave(link.slug, data)
       onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
+      setError(err instanceof Error ? err.message : t("common.error"))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <Modal open={open} title="Edit Link" onClose={onClose}>
+    <Modal open={open} title={t("modal.editLink")} onClose={onClose}>
       <form className="form" onSubmit={handleSubmit}>
-        <FormField label="URL" htmlFor="edit-url">
+        <FormField label={t("modal.url")} htmlFor="edit-url">
           <input
             id="edit-url"
             className="input"
@@ -60,7 +62,7 @@ export function EditModal({
             onChange={(e) => setUrl(e.target.value)}
           />
         </FormField>
-        <FormField label="Slug" htmlFor="edit-slug">
+        <FormField label={t("modal.slug")} htmlFor="edit-slug">
           <input
             id="edit-slug"
             className="input input--mono"
@@ -76,14 +78,14 @@ export function EditModal({
             onClick={onClose}
             disabled={loading}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             className="btn btn--primary"
             type="submit"
             disabled={loading || !url}
           >
-            {loading ? "Saving\u2026" : "Save"}
+            {loading ? t("modal.saving") : t("modal.save")}
           </button>
         </div>
       </form>

@@ -18,6 +18,7 @@ import { DashboardShell } from "../components/ui/dashboard-shell"
 import { Reveal } from "../components/ui/reveal"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
+import { useI18n } from "../lib/i18n"
 
 const PAGE_SIZE = 10
 
@@ -37,6 +38,7 @@ export function CustomLinksPage({
   onLogout: () => void
 }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const { links, total, loading, query, setQuery, create, remove, update } =
     useShortlinks()
   const [q, setQ] = useState("")
@@ -61,12 +63,12 @@ export function CustomLinksPage({
 
   async function handleUpdate(slug: string, data: UpdateShortlink) {
     await update(slug, data)
-    toast("Link updated!")
+    toast(t("dash.linkUpdated"))
   }
 
   async function handleDelete(slug: string) {
     await remove(slug)
-    toast("Link deleted")
+    toast(t("dash.linkDeleted"))
   }
 
   const editLink = editing
@@ -82,10 +84,8 @@ export function CustomLinksPage({
         <Reveal>
           <div className="cl-header">
             <div>
-              <h1 className="cl-header__title">Custom Links</h1>
-              <p className="cl-header__desc">
-                Manage and track your branded shortened URLs.
-              </p>
+              <h1 className="cl-header__title">{t("cl.title")}</h1>
+              <p className="cl-header__desc">{t("cl.desc")}</p>
             </div>
             <div className="cl-header__actions">
               <button
@@ -94,7 +94,7 @@ export function CustomLinksPage({
                 onClick={() => setShowHow(true)}
               >
                 <Info size={16} />
-                How it Works
+                {t("cl.how")}
               </button>
               <button
                 className="btn btn--primary"
@@ -102,7 +102,7 @@ export function CustomLinksPage({
                 onClick={() => setShowNew(true)}
               >
                 <Plus size={16} />
-                New Custom Link
+                {t("cl.new")}
               </button>
             </div>
           </div>
@@ -114,7 +114,7 @@ export function CustomLinksPage({
             <input
               className="cl-search__input"
               type="search"
-              placeholder="Search links…"
+              placeholder={t("cl.searchPlaceholder")}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
@@ -126,11 +126,11 @@ export function CustomLinksPage({
             <table className="cl-table">
               <thead>
                 <tr>
-                  <th>Branded URL</th>
-                  <th>Original URL</th>
-                  <th>Created Date</th>
-                  <th>Clicks</th>
-                  <th className="cl-table__action-col">Action</th>
+                  <th>{t("cl.colBranded")}</th>
+                  <th>{t("cl.colOriginal")}</th>
+                  <th>{t("cl.colCreated")}</th>
+                  <th>{t("cl.colClicks")}</th>
+                  <th className="cl-table__action-col">{t("cl.colAction")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -158,7 +158,7 @@ export function CustomLinksPage({
                         <button
                           className="btn btn--ghost"
                           type="button"
-                          aria-label={`Edit ${link.slug}`}
+                          aria-label={t("cl.editAria", { slug: link.slug })}
                           onClick={() => setEditing({ slug: link.slug })}
                         >
                           <Pencil size={14} />
@@ -166,7 +166,7 @@ export function CustomLinksPage({
                         <button
                           className="btn btn--ghost btn--danger-ghost"
                           type="button"
-                          aria-label={`Delete ${link.slug}`}
+                          aria-label={t("cl.deleteAria", { slug: link.slug })}
                           onClick={() => setDeleting({ slug: link.slug })}
                         >
                           <Trash2 size={14} />
@@ -179,9 +179,11 @@ export function CustomLinksPage({
                   <tr>
                     <td colSpan={5}>
                       <div className="empty-state">
-                        <div className="empty-state__title">No links found</div>
+                        <div className="empty-state__title">
+                          {t("cl.noLinks")}
+                        </div>
                         <div className="empty-state__text">
-                          Create a custom link above or adjust your search
+                          {t("cl.noLinksText")}
                         </div>
                       </div>
                     </td>
@@ -194,13 +196,13 @@ export function CustomLinksPage({
 
         <div className="cl-pagination">
           <span className="cl-pagination__info">
-            Showing {from} to {to} of {total} links
+            {t("cl.showing", { from, to, total })}
           </span>
           <div className="cl-pagination__controls">
             <button
               className="btn btn--ghost"
               type="button"
-              aria-label="Previous page"
+              aria-label={t("cl.prev")}
               disabled={page === 0 || loading}
               onClick={() => goToPage(page - 1)}
             >
@@ -209,7 +211,7 @@ export function CustomLinksPage({
             <button
               className="btn btn--ghost"
               type="button"
-              aria-label="Next page"
+              aria-label={t("cl.next")}
               disabled={page >= pageCount - 1 || loading}
               onClick={() => goToPage(page + 1)}
             >
@@ -236,8 +238,8 @@ export function CustomLinksPage({
       {deleteLink && (
         <ConfirmModal
           open={deleting !== null}
-          title="Delete shortlink?"
-          message={`Are you sure you want to delete "${deleteLink.slug}"? This action cannot be undone.`}
+          title={t("link.deleteTitle")}
+          message={t("link.deleteMessage", { slug: deleteLink.slug })}
           onConfirm={() => {
             handleDelete(deleteLink.slug)
             setDeleting(null)

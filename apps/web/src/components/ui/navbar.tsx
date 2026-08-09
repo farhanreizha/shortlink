@@ -1,6 +1,8 @@
 import { Waypoints } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Link } from "wouter"
+import { useI18n } from "../../lib/i18n"
+import { LanguageSwitcher } from "./language-switcher"
 
 export function Navbar({
   children,
@@ -15,6 +17,7 @@ export function Navbar({
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLElement>(null)
+  const { t } = useI18n()
 
   useEffect(() => {
     if (!open) return
@@ -64,12 +67,14 @@ export function Navbar({
 
         <div className="navbar__spacer" />
 
+        <LanguageSwitcher />
+
         {!user && children && (
           <button
             className="navbar__hamburger"
             type="button"
             onClick={() => setOpen(!open)}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t("nav.closeMenu") : t("nav.openMenu")}
           >
             {open ? "✕" : "☰"}
           </button>
@@ -103,7 +108,7 @@ export function Navbar({
               className="navbar__link navbar__link--mobile"
               href="/settings"
             >
-              Settings
+              {t("common.settings")}
             </Link>
           )}
           {user && onLogout && (
@@ -112,7 +117,7 @@ export function Navbar({
               type="button"
               onClick={onLogout}
             >
-              Logout
+              {t("common.logout")}
             </button>
           )}
         </div>
@@ -133,7 +138,7 @@ export function Navbar({
             {open && (
               <div className="navbar__dropdown">
                 <Link className="navbar__dropdown-item" href="/settings">
-                  Settings
+                  {t("common.settings")}
                 </Link>
                 <div className="navbar__dropdown-divider" />
                 {onLogout && (
@@ -142,7 +147,7 @@ export function Navbar({
                     type="button"
                     onClick={onLogout}
                   >
-                    Logout
+                    {t("common.logout")}
                   </button>
                 )}
               </div>

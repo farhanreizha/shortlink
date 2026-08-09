@@ -15,57 +15,66 @@ import { Footer } from "../components/ui/footer"
 import { Hero } from "../components/ui/hero"
 import { Navbar } from "../components/ui/navbar"
 import { Reveal } from "../components/ui/reveal"
+import { type MessageKey, useI18n } from "../lib/i18n"
 
 const NAV_LINKS = [
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Enterprise", href: "#enterprise" },
-  { label: "Resources", href: "#resources" },
-]
+  { labelKey: "nav.features", href: "#features" },
+  { labelKey: "nav.pricing", href: "#pricing" },
+  { labelKey: "nav.enterprise", href: "#enterprise" },
+  { labelKey: "nav.resources", href: "#resources" },
+] as const
 
-const PLANS = [
+const PLANS: Array<{
+  nameKey: MessageKey
+  price?: string
+  priceKey?: MessageKey
+  periodKey?: MessageKey
+  taglineKey: MessageKey
+  featureKeys: MessageKey[]
+  ctaKey: MessageKey
+  featured: boolean
+}> = [
   {
-    name: "Free",
-    price: "$0",
-    period: "forever",
-    tagline: "For personal projects and quick sharing.",
-    features: [
-      "Unlimited shortened links",
-      "Basic click analytics",
-      "Custom link aliases",
-      "Community support",
+    nameKey: "pricing.free.name",
+    price: "Rp0",
+    periodKey: "pricing.free.period",
+    taglineKey: "pricing.free.tagline",
+    featureKeys: [
+      "pricing.free.feat1",
+      "pricing.free.feat2",
+      "pricing.free.feat3",
+      "pricing.free.feat4",
     ],
-    cta: "Get Started",
+    ctaKey: "pricing.free.cta",
     featured: false,
   },
   {
-    name: "Pro",
-    price: "$29",
-    period: "/mo",
-    tagline: "For creators and marketers who need more.",
-    features: [
-      "Everything in Free",
-      "Real-time analytics & charts",
-      "Campaign management",
-      "Custom branded domains",
-      "Priority support",
+    nameKey: "pricing.pro.name",
+    price: "Rp49.000",
+    periodKey: "pricing.pro.period",
+    taglineKey: "pricing.pro.tagline",
+    featureKeys: [
+      "pricing.pro.feat1",
+      "pricing.pro.feat2",
+      "pricing.pro.feat3",
+      "pricing.pro.feat4",
+      "pricing.pro.feat5",
     ],
-    cta: "Start Free Trial",
+    ctaKey: "pricing.pro.cta",
     featured: true,
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    tagline: "For teams that need scale and control.",
-    features: [
-      "Everything in Pro",
-      "SSO & team permissions",
-      "Advanced security controls",
-      "Dedicated success manager",
-      "99.99% uptime SLA",
+    nameKey: "pricing.enterprise.name",
+    priceKey: "pricing.enterprise.price",
+    taglineKey: "pricing.enterprise.tagline",
+    featureKeys: [
+      "pricing.enterprise.feat1",
+      "pricing.enterprise.feat2",
+      "pricing.enterprise.feat3",
+      "pricing.enterprise.feat4",
+      "pricing.enterprise.feat5",
     ],
-    cta: "Contact Sales",
+    ctaKey: "pricing.enterprise.cta",
     featured: false,
   },
 ]
@@ -73,35 +82,38 @@ const PLANS = [
 const RESOURCES = [
   {
     icon: <BookOpen size={22} />,
-    title: "Documentation",
-    desc: "Guides and tutorials for getting the most out of Knot.",
+    titleKey: "landing.resource1.title",
+    descKey: "landing.resource1.desc",
   },
   {
     icon: <Code2 size={22} />,
-    title: "API Reference",
-    desc: "Integrate Knot links into your own applications.",
+    titleKey: "landing.resource2.title",
+    descKey: "landing.resource2.desc",
   },
   {
     icon: <TrendingUp size={22} />,
-    title: "Link Marketing Tips",
-    desc: "Best practices for driving more clicks and conversions.",
+    titleKey: "landing.resource3.title",
+    descKey: "landing.resource3.desc",
   },
   {
     icon: <LifeBuoy size={22} />,
-    title: "Help Center",
-    desc: "Answers to common questions and troubleshooting guides.",
+    titleKey: "landing.resource4.title",
+    descKey: "landing.resource4.desc",
   },
-]
+] as const
 
 export function LandingPage() {
+  const { t } = useI18n()
+  const navLinks = NAV_LINKS.map((l) => ({ ...l, label: t(l.labelKey) }))
+
   return (
     <div>
-      <Navbar links={NAV_LINKS}>
+      <Navbar links={navLinks}>
         <Link className="btn btn--ghost" href="/login">
-          Sign In
+          {t("nav.signIn")}
         </Link>
         <Link className="btn btn--primary" href="/register">
-          Get Started
+          {t("nav.getStarted")}
         </Link>
       </Navbar>
 
@@ -110,37 +122,37 @@ export function LandingPage() {
 
         <section className="landing-section" id="features">
           <Reveal>
-            <span className="landing-section__eyebrow">Features</span>
+            <span className="landing-section__eyebrow">
+              {t("landing.featuresEyebrow")}
+            </span>
             <h2 className="landing-section__title">
-              Everything you need to manage links
+              {t("landing.featuresTitle")}
             </h2>
-            <p className="landing-section__desc">
-              Simple tools designed for speed and reliability.
-            </p>
+            <p className="landing-section__desc">{t("landing.featuresDesc")}</p>
           </Reveal>
           <div className="features-grid">
             <Reveal delay={0}>
               <FeatureCard
                 icon={<Scissors size={32} />}
-                title="Quick Shorten"
-                tag="Lightning Fast"
-                description="Instant link generation with one click. Paste, shorten, and go without unnecessary steps slowing you down."
+                title={t("landing.feature1.title")}
+                tag={t("landing.feature1.tag")}
+                description={t("landing.feature1.desc")}
               />
             </Reveal>
             <Reveal delay={0.1}>
               <FeatureCard
                 icon={<Share2 size={32} />}
-                title="Easy Share"
-                tag="Multi-Channel"
-                description="Distribute your shortened links directly to social media platforms or generate high-quality QR codes instantly."
+                title={t("landing.feature2.title")}
+                tag={t("landing.feature2.tag")}
+                description={t("landing.feature2.desc")}
               />
             </Reveal>
             <Reveal delay={0.2}>
               <FeatureCard
                 icon={<Gauge size={32} />}
-                title="Simple Dashboard"
-                tag="Analytics Included"
-                description="Track clicks, analyze geographic data, and monitor performance in a clean, intuitive, distraction-free interface."
+                title={t("landing.feature3.title")}
+                tag={t("landing.feature3.tag")}
+                description={t("landing.feature3.desc")}
               />
             </Reveal>
           </div>
@@ -148,43 +160,43 @@ export function LandingPage() {
 
         <section className="landing-section" id="pricing">
           <Reveal>
-            <span className="landing-section__eyebrow">Pricing</span>
-            <h2 className="landing-section__title">
-              Simple, transparent pricing
-            </h2>
-            <p className="landing-section__desc">
-              Start free. Upgrade when you're ready to grow.
-            </p>
+            <span className="landing-section__eyebrow">{t("nav.pricing")}</span>
+            <h2 className="landing-section__title">{t("pricing.title")}</h2>
+            <p className="landing-section__desc">{t("pricing.desc")}</p>
           </Reveal>
           <div className="pricing-grid">
             {PLANS.map((plan, i) => (
-              <Reveal key={plan.name} delay={i * 0.1}>
+              <Reveal key={plan.nameKey} delay={i * 0.1}>
                 <div
                   className={`card pricing-card${plan.featured ? " pricing-card--featured" : ""}`}
                 >
                   {plan.featured && (
-                    <span className="pricing-card__badge">Most Popular</span>
+                    <span className="pricing-card__badge">
+                      {t("pricing.mostPopular")}
+                    </span>
                   )}
-                  <h3 className="pricing-card__name">{plan.name}</h3>
+                  <h3 className="pricing-card__name">{t(plan.nameKey)}</h3>
                   <div className="pricing-card__price">
-                    <span className="pricing-card__amount">{plan.price}</span>
-                    {plan.period && (
+                    <span className="pricing-card__amount">
+                      {plan.priceKey ? t(plan.priceKey) : plan.price}
+                    </span>
+                    {plan.periodKey && (
                       <span className="pricing-card__period">
-                        {plan.period}
+                        {t(plan.periodKey)}
                       </span>
                     )}
                   </div>
-                  <p className="pricing-card__tagline">{plan.tagline}</p>
+                  <p className="pricing-card__tagline">{t(plan.taglineKey)}</p>
                   <ul className="pricing-card__features">
-                    {plan.features.map((feature) => (
-                      <li key={feature}>{feature}</li>
+                    {plan.featureKeys.map((key) => (
+                      <li key={key}>{t(key)}</li>
                     ))}
                   </ul>
                   <Link
                     className={`btn${plan.featured ? " btn--primary" : " btn--ghost"} pricing-card__cta`}
                     href="/register"
                   >
-                    {plan.cta}
+                    {t(plan.ctaKey)}
                   </Link>
                 </div>
               </Reveal>
@@ -197,11 +209,14 @@ export function LandingPage() {
           id="enterprise"
         >
           <Reveal>
-            <span className="landing-section__eyebrow">Enterprise</span>
-            <h2 className="landing-section__title">Built for teams at scale</h2>
+            <span className="landing-section__eyebrow">
+              {t("landing.enterpriseEyebrow")}
+            </span>
+            <h2 className="landing-section__title">
+              {t("landing.enterpriseTitle")}
+            </h2>
             <p className="landing-section__desc">
-              Knot Enterprise gives your organization the controls, security and
-              support it needs to manage links with confidence.
+              {t("landing.enterpriseDesc")}
             </p>
           </Reveal>
           <div className="reliability-grid">
@@ -212,10 +227,10 @@ export function LandingPage() {
                 </div>
                 <div>
                   <h3 className="reliability-card__title">
-                    Enterprise-Grade Security
+                    {t("landing.reliability1.title")}
                   </h3>
                   <p className="reliability-card__desc">
-                    HTTPS on all links with active malicious domain scanning.
+                    {t("landing.reliability1.desc")}
                   </p>
                 </div>
               </div>
@@ -227,11 +242,10 @@ export function LandingPage() {
                 </div>
                 <div>
                   <h3 className="reliability-card__title">
-                    Global Edge Network
+                    {t("landing.reliability2.title")}
                   </h3>
                   <p className="reliability-card__desc">
-                    Redirects routed through the nearest edge node for maximum
-                    speed.
+                    {t("landing.reliability2.desc")}
                   </p>
                 </div>
               </div>
@@ -243,10 +257,10 @@ export function LandingPage() {
                 </div>
                 <div>
                   <h3 className="reliability-card__title">
-                    SSO & Team Controls
+                    {t("landing.reliability3.title")}
                   </h3>
                   <p className="reliability-card__desc">
-                    Single sign-on, role-based permissions and full audit logs.
+                    {t("landing.reliability3.desc")}
                   </p>
                 </div>
               </div>
@@ -259,14 +273,14 @@ export function LandingPage() {
           id="reliability"
         >
           <Reveal>
-            <span className="landing-section__eyebrow">Reliability</span>
+            <span className="landing-section__eyebrow">
+              {t("landing.reliabilityEyebrow")}
+            </span>
             <h2 className="landing-section__title">
-              Engineered for Reliability
+              {t("landing.reliabilityTitle")}
             </h2>
             <p className="landing-section__desc">
-              When you share a link, you need to know it will work every time.
-              Knot is built on robust infrastructure designed to handle
-              high-volume redirects with near-zero latency.
+              {t("landing.reliabilityDesc")}
             </p>
           </Reveal>
           <div className="reliability-grid">
@@ -277,10 +291,10 @@ export function LandingPage() {
                 </div>
                 <div>
                   <h3 className="reliability-card__title">
-                    Enterprise-Grade Security
+                    {t("landing.reliability1.title")}
                   </h3>
                   <p className="reliability-card__desc">
-                    HTTPS on all links with active malicious domain scanning.
+                    {t("landing.reliability1.desc")}
                   </p>
                 </div>
               </div>
@@ -292,11 +306,10 @@ export function LandingPage() {
                 </div>
                 <div>
                   <h3 className="reliability-card__title">
-                    Global Edge Network
+                    {t("landing.reliability2.title")}
                   </h3>
                   <p className="reliability-card__desc">
-                    Redirects routed through the nearest edge node for maximum
-                    speed.
+                    {t("landing.reliability2.desc")}
                   </p>
                 </div>
               </div>
@@ -309,24 +322,28 @@ export function LandingPage() {
           id="resources"
         >
           <Reveal>
-            <span className="landing-section__eyebrow">Resources</span>
+            <span className="landing-section__eyebrow">
+              {t("landing.resourcesEyebrow")}
+            </span>
             <h2 className="landing-section__title">
-              Learn, build and get help
+              {t("landing.resourcesTitle")}
             </h2>
             <p className="landing-section__desc">
-              Everything you need to make the most of Knot.
+              {t("landing.resourcesDesc")}
             </p>
           </Reveal>
           <div className="reliability-grid">
             {RESOURCES.map((resource, i) => (
-              <Reveal key={resource.title} delay={i * 0.1}>
+              <Reveal key={resource.titleKey} delay={i * 0.1}>
                 <div className="card reliability-card">
                   <div className="reliability-card__icon">{resource.icon}</div>
                   <div>
                     <h3 className="reliability-card__title">
-                      {resource.title}
+                      {t(resource.titleKey)}
                     </h3>
-                    <p className="reliability-card__desc">{resource.desc}</p>
+                    <p className="reliability-card__desc">
+                      {t(resource.descKey)}
+                    </p>
                   </div>
                 </div>
               </Reveal>
@@ -336,15 +353,10 @@ export function LandingPage() {
 
         <section className="landing-cta" id="cta">
           <Reveal>
-            <h2 className="landing-cta__title">
-              Ready to optimize your links?
-            </h2>
-            <p className="landing-cta__desc">
-              Join thousands of professionals who trust Knot for their URL
-              management needs.
-            </p>
+            <h2 className="landing-cta__title">{t("landing.ctaTitle")}</h2>
+            <p className="landing-cta__desc">{t("landing.ctaDesc")}</p>
             <Link className="landing-cta__btn" href="/register">
-              Sign Up for Free
+              {t("landing.ctaBtn")}
             </Link>
           </Reveal>
         </section>

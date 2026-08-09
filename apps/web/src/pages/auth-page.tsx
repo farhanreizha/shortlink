@@ -3,6 +3,7 @@ import { Waypoints } from "lucide-react"
 import { Link } from "wouter"
 import { LoginForm } from "../components/auth/login-form"
 import { RegisterForm } from "../components/auth/register-form"
+import { useI18n } from "../lib/i18n"
 
 export function AuthPage({
   mode,
@@ -11,6 +12,7 @@ export function AuthPage({
   mode: "login" | "register"
   onAuth: (user: User) => void
 }) {
+  const { t } = useI18n()
   const isLogin = mode === "login"
 
   return (
@@ -24,14 +26,10 @@ export function AuthPage({
         </Link>
         <div>
           <h2 className="auth-brand__title">
-            {isLogin
-              ? "Secure, simplified redirect infrastructure."
-              : "Infrastructure-level reliability."}
+            {isLogin ? t("auth.loginTitle") : t("auth.registerTitle")}
           </h2>
           <p className="auth-brand__subtitle">
-            {isLogin
-              ? "Manage your links with absolute reliability and speed. Experience the new standard in URL management."
-              : "Join Knot to manage, redirect, and optimize your global links with absolute precision and minimal latency."}
+            {isLogin ? t("auth.loginSubtitle") : t("auth.registerSubtitle")}
           </p>
         </div>
       </aside>
@@ -45,12 +43,10 @@ export function AuthPage({
             Knot
           </Link>
           <h1 className="auth-main__title">
-            {isLogin ? "Welcome back" : "Create your account"}
+            {isLogin ? t("auth.welcomeBack") : t("auth.createAccount")}
           </h1>
           <p className="auth-main__subtitle">
-            {isLogin
-              ? "Please enter your details to sign in."
-              : "Start managing your links with Knot today."}
+            {isLogin ? t("auth.loginSub") : t("auth.registerSub")}
           </p>
           {isLogin ? (
             <LoginForm onAuth={onAuth} />
@@ -60,12 +56,13 @@ export function AuthPage({
           <div className="auth-toggle">
             {isLogin ? (
               <>
-                Don&apos;t have an account?{" "}
-                <Link href="/register">Sign up</Link>
+                {t("auth.noAccount")}{" "}
+                <Link href="/register">{t("auth.signUp")}</Link>
               </>
             ) : (
               <>
-                Already have an account? <Link href="/login">Log in</Link>
+                {t("auth.haveAccount")}{" "}
+                <Link href="/login">{t("auth.logIn")}</Link>
               </>
             )}
           </div>

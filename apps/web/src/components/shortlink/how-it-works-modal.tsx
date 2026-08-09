@@ -1,23 +1,24 @@
 import { Edit3, Route, TrendingUp } from "lucide-react"
+import { useI18n } from "../../lib/i18n"
 import { Modal } from "../ui/modal"
 
 const STEPS = [
   {
     icon: Edit3,
-    title: "Create a Branded URL",
-    desc: "Instead of a random string, choose a memorable alias (e.g., knot.co/sale) that reflects your campaign.",
+    titleKey: "how.step1.title",
+    descKey: "how.step1.desc",
   },
   {
     icon: Route,
-    title: "Dynamic Redirection",
-    desc: "When clicked, Knot intercepts the request, logs the analytics instantly, and redirects to your long destination URL.",
+    titleKey: "how.step2.title",
+    descKey: "how.step2.desc",
   },
   {
     icon: TrendingUp,
-    title: "Track & Optimize",
-    desc: "Monitor click-through rates, geographical data, and referrer information in real-time on your Analytics dashboard.",
+    titleKey: "how.step3.title",
+    descKey: "how.step3.desc",
   },
-]
+] as const
 
 export function HowItWorksModal({
   open,
@@ -26,25 +27,26 @@ export function HowItWorksModal({
   open: boolean
   onClose: () => void
 }) {
+  const { t } = useI18n()
   return (
-    <Modal open={open} title="How Custom Links Work" onClose={onClose}>
+    <Modal open={open} title={t("how.title")} onClose={onClose}>
       <div className="cl-steps">
         {STEPS.map((step, i) => (
-          <div className="cl-steps__item" key={step.title}>
+          <div className="cl-steps__item" key={step.titleKey}>
             <div className="cl-steps__badge">
               <step.icon size={18} />
               <span className="cl-steps__num">{i + 1}</span>
             </div>
             <div>
-              <h4 className="cl-steps__title">{step.title}</h4>
-              <p className="cl-steps__desc">{step.desc}</p>
+              <h4 className="cl-steps__title">{t(step.titleKey)}</h4>
+              <p className="cl-steps__desc">{t(step.descKey)}</p>
             </div>
           </div>
         ))}
       </div>
       <div className="modal-actions">
         <button className="btn btn--primary" type="button" onClick={onClose}>
-          Got it
+          {t("how.gotIt")}
         </button>
       </div>
     </Modal>

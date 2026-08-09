@@ -2,6 +2,7 @@ import type { Shortlink, UpdateShortlink } from "@knot/shared"
 import { BarChart3, Check, Copy } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
+import { useI18n } from "../../lib/i18n"
 import { ConfirmModal } from "../ui/confirm-modal"
 import { EditModal } from "./edit-modal"
 import { LinkCardMenu } from "./link-card-menu"
@@ -16,6 +17,7 @@ export function LinkCard({
   onUpdate: (slug: string, data: UpdateShortlink) => Promise<void>
 }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const [copied, setCopied] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
@@ -24,7 +26,7 @@ export function LinkCard({
   function handleCopy() {
     navigator.clipboard
       .writeText(shortUrl)
-      .catch(() => toast("Failed to copy", "error"))
+      .catch(() => toast(t("link.copyFailed"), "error"))
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -34,7 +36,7 @@ export function LinkCard({
       <div className="dash-link__main">
         <div className="dash-link__top">
           <span className="dash-link__slug">{shortUrl}</span>
-          <span className="dash-link__status">Active</span>
+          <span className="dash-link__status">{t("common.active")}</span>
         </div>
         <p className="dash-link__url" title={link.url}>
           {link.url}
@@ -43,11 +45,11 @@ export function LinkCard({
       <div className="dash-link__side">
         <span className="dash-link__clicks">
           <BarChart3 size={16} />
-          {link.visits.toLocaleString()} clicks
+          {t("link.clicks", { count: link.visits.toLocaleString() })}
         </span>
         <button className="dash-link__copy" type="button" onClick={handleCopy}>
           {copied ? <Check size={16} /> : <Copy size={16} />}
-          {copied ? "Copied" : "Copy"}
+          {copied ? t("link.copied") : t("link.copy")}
         </button>
         <LinkCardMenu
           onEdit={() => setShowEdit(true)}
@@ -63,8 +65,8 @@ export function LinkCard({
       />
       <ConfirmModal
         open={showConfirm}
-        title="Delete shortlink?"
-        message={`Are you sure you want to delete "${link.slug}"? This action cannot be undone.`}
+        title={t("link.deleteTitle")}
+        message={t("link.deleteMessage", { slug: link.slug })}
         onConfirm={() => {
           onDelete(link.slug)
           setShowConfirm(false)

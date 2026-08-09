@@ -6,6 +6,7 @@ import { Reveal } from "../components/ui/reveal"
 import { Skeleton } from "../components/ui/skeleton"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
+import { useI18n } from "../lib/i18n"
 
 export function DashboardPage({
   user,
@@ -15,6 +16,7 @@ export function DashboardPage({
   onLogout: () => void
 }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const { links, loading, create, remove, update, query, setQuery } =
     useShortlinks()
 
@@ -25,34 +27,32 @@ export function DashboardPage({
 
   async function handleDelete(slug: string) {
     await remove(slug)
-    toast("Link deleted")
+    toast(t("dash.linkDeleted"))
   }
 
   async function handleUpdate(slug: string, data: UpdateShortlink) {
     await update(slug, data)
-    toast("Link updated!")
+    toast(t("dash.linkUpdated"))
   }
 
   return (
     <DashboardShell user={user} onLogout={onLogout}>
       <section className="dash-hero" id="dash-create">
-        <h1 className="dash-hero__title">Shorten your link</h1>
-        <p className="dash-hero__desc">
-          Paste your long URL below to create a concise, trackable link.
-        </p>
+        <h1 className="dash-hero__title">{t("dash.heroTitle")}</h1>
+        <p className="dash-hero__desc">{t("dash.heroDesc")}</p>
         <CreateForm onCreate={handleCreate} />
       </section>
 
       <section className="dash-recent">
         <Reveal delay={0.05}>
           <div className="dash-recent__header">
-            <h2 className="dash-recent__title">Recent Links</h2>
+            <h2 className="dash-recent__title">{t("dash.recentTitle")}</h2>
             <button
               className="dash-recent__viewall"
               type="button"
               onClick={() => setQuery({ ...query, limit: 100, offset: 0 })}
             >
-              View All
+              {t("dash.viewAll")}
             </button>
           </div>
         </Reveal>
@@ -69,10 +69,8 @@ export function DashboardPage({
         ) : links.length === 0 ? (
           <Reveal>
             <div className="empty-state">
-              <div className="empty-state__title">No links yet</div>
-              <div className="empty-state__text">
-                Create your first link above
-              </div>
+              <div className="empty-state__title">{t("dash.noLinks")}</div>
+              <div className="empty-state__text">{t("dash.noLinksText")}</div>
             </div>
           </Reveal>
         ) : (

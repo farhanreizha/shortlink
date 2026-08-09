@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react"
+import { useI18n } from "../../lib/i18n"
 
 interface Props {
   children: ReactNode
@@ -6,6 +7,30 @@ interface Props {
 
 interface State {
   hasError: boolean
+}
+
+function Fallback() {
+  const { t } = useI18n()
+  return (
+    <div className="main" style={{ textAlign: "center", paddingTop: 80 }}>
+      <h1 style={{ marginBottom: 12 }}>{t("eb.title")}</h1>
+      <p
+        style={{
+          color: "var(--color-neutral)",
+          marginBottom: 24,
+        }}
+      >
+        {t("eb.desc")}
+      </p>
+      <button
+        className="btn btn--primary"
+        type="button"
+        onClick={() => window.location.reload()}
+      >
+        {t("eb.reload")}
+      </button>
+    </div>
+  )
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -21,26 +46,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="main" style={{ textAlign: "center", paddingTop: 80 }}>
-          <h1 style={{ marginBottom: 12 }}>Something went wrong</h1>
-          <p
-            style={{
-              color: "var(--color-neutral)",
-              marginBottom: 24,
-            }}
-          >
-            An unexpected error occurred. Please try refreshing the page.
-          </p>
-          <button
-            className="btn btn--primary"
-            type="button"
-            onClick={() => window.location.reload()}
-          >
-            Reload Page
-          </button>
-        </div>
-      )
+      return <Fallback />
     }
     return this.props.children
   }

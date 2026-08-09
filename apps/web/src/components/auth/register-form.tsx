@@ -3,6 +3,7 @@ import { RegisterSchema } from "@knot/shared"
 import { useState } from "react"
 import { client } from "../../hono-client"
 import { clearFieldError } from "../../lib/form"
+import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
@@ -10,6 +11,7 @@ import { PasswordStrength } from "../ui/password-strength"
 import { SocialButtons } from "./social-buttons"
 
 export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
+  const { t } = useI18n()
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -35,23 +37,27 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
       return
     }
     if (password !== confirmPassword) {
-      setError("Passwords do not match")
+      setError(t("auth.passwordsMismatch"))
       return
     }
     setLoading(true)
     try {
       const res = await client.api.auth.register.$post({
-        json: { username, email, password },
+        json: {
+          username,
+          email,
+          password,
+        },
       })
       if (!res.ok) {
         const body = (await res.json()) as { message?: string }
-        setError(body.message ?? "Registration failed")
+        setError(body.message ?? t("auth.registrationFailed"))
         return
       }
       const user = (await res.json()) as User
       onAuth(user)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
+      setError(err instanceof Error ? err.message : t("common.error"))
     } finally {
       setLoading(false)
     }
@@ -61,17 +67,17 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
     <form className="form" onSubmit={handleSubmit}>
       <SocialButtons compact />
       <div className="auth-divider">
-        <span>or</span>
+        <span>{t("auth.or")}</span>
       </div>
       <FormField
-        label="Username"
+        label={t("auth.username")}
         htmlFor="reg-username"
         error={errors.username}
       >
         <input
           id="reg-username"
           className="input"
-          placeholder="your-name"
+          placeholder={t("auth.usernamePlaceholder")}
           value={username}
           onChange={(e) => {
             setUsername(e.target.value)
@@ -79,12 +85,16 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
           }}
         />
       </FormField>
-      <FormField label="Email" htmlFor="reg-email" error={errors.email}>
+      <FormField
+        label={t("auth.email")}
+        htmlFor="reg-email"
+        error={errors.email}
+      >
         <input
           id="reg-email"
           type="email"
           className="input"
-          placeholder="you@example.com"
+          placeholder={t("auth.emailPlaceholder")}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value)
@@ -94,7 +104,7 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
       </FormField>
       <PasswordField
         id="reg-password"
-        label="Password"
+        label={t("auth.password")}
         value={password}
         onChange={(v) => {
           setPassword(v)
@@ -108,10 +118,10 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
       <PasswordStrength password={password} />
       <PasswordField
         id="reg-confirm"
-        label="Confirm Password"
+        label={t("auth.confirmPassword")}
         value={confirmPassword}
         onChange={setConfirmPassword}
-        placeholder="repeat password"
+        placeholder={t("auth.repeatPassword")}
         showPassword={showPassword}
       />
       <ErrorBanner message={error} />
@@ -122,15 +132,14 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
           onChange={(e) => setAgreed(e.target.checked)}
         />
         <span>
-          I agree to the{" "}
+          {t("auth.agree1")}{" "}
           <button type="button" className="auth-checkbox__link">
-            Terms of Service
+            {t("auth.terms")}
           </button>{" "}
-          and{" "}
+          {t("auth.and")}{" "}
           <button type="button" className="auth-checkbox__link">
-            Privacy Policy
+            {t("auth.privacy")}
           </button>
-          .
         </span>
       </label>
       <button
@@ -146,7 +155,7 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
           !agreed
         }
       >
-        {loading ? "Please wait…" : "Sign Up"}
+        {loading ? t("common.loading") : t("auth.signUpBtn")}
       </button>
     </form>
   )

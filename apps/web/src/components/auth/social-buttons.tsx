@@ -1,3 +1,5 @@
+import { useI18n } from "../../lib/i18n"
+
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
@@ -33,15 +35,16 @@ function GithubIcon() {
 }
 
 export function SocialButtons({ compact = false }: { compact?: boolean }) {
+  const { t } = useI18n()
   return (
     <div className="social-buttons">
       <button type="button" className="social-button" disabled>
         <GoogleIcon />
-        {compact ? "Google" : "Continue with Google"}
+        {compact ? t("auth.google") : t("auth.continueGoogle")}
       </button>
       <button type="button" className="social-button" disabled>
         <GithubIcon />
-        {compact ? "GitHub" : "Continue with GitHub"}
+        {compact ? t("auth.github") : t("auth.continueGithub")}
       </button>
     </div>
   )

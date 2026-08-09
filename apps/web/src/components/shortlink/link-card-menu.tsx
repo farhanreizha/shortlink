@@ -1,6 +1,7 @@
 import { MoreVertical, Pencil, Trash2 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useEscapeKey } from "../../hooks/use-escape-key"
+import { useI18n } from "../../lib/i18n"
 
 export function LinkCardMenu({
   onEdit,
@@ -9,6 +10,7 @@ export function LinkCardMenu({
   onEdit: () => void
   onDelete: () => void
 }) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -32,7 +34,7 @@ export function LinkCardMenu({
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Link actions"
+        aria-label={t("link.actions")}
         onClick={() => setOpen(!open)}
       >
         <MoreVertical size={16} />
@@ -49,7 +51,7 @@ export function LinkCardMenu({
             }}
           >
             <Pencil size={14} />
-            Edit
+            {t("link.edit")}
           </button>
           <button
             className="link-card-menu__item link-card-menu__item--danger"
@@ -61,7 +63,7 @@ export function LinkCardMenu({
             }}
           >
             <Trash2 size={14} />
-            Delete
+            {t("link.delete")}
           </button>
         </div>
       )}

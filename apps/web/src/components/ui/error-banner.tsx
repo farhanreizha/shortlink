@@ -1,3 +1,5 @@
+import { useI18n } from "../../lib/i18n"
+
 export function ErrorBanner({
   message,
   onClose,
@@ -5,6 +7,7 @@ export function ErrorBanner({
   message: string
   onClose?: () => void
 }) {
+  const { t } = useI18n()
   if (!message) return null
 
   return (
@@ -15,7 +18,7 @@ export function ErrorBanner({
           className="error-banner__close"
           onClick={onClose}
           type="button"
-          aria-label="Dismiss error"
+          aria-label={t("common.dismissError")}
         >
           &times;
         </button>

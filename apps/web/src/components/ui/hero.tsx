@@ -1,8 +1,10 @@
 import { CheckCircle2, LinkIcon } from "lucide-react"
 import { useLocation } from "wouter"
+import { useI18n } from "../../lib/i18n"
 
 export function Hero() {
   const [, navigate] = useLocation()
+  const { t } = useI18n()
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -12,20 +14,19 @@ export function Hero() {
   return (
     <section className="landing-hero">
       <span className="landing-hero__eyebrow animate-slide-up">
-        Knot URL Shortener
+        {t("hero.eyebrow")}
       </span>
       <h1
         className="landing-hero__title animate-slide-up"
         style={{ animationDelay: "0.1s" }}
       >
-        Shorten Your Links, Expand Your Reach
+        {t("hero.title")}
       </h1>
       <p
         className="landing-hero__desc animate-slide-up"
         style={{ animationDelay: "0.2s" }}
       >
-        Transform long, unwieldy URLs into concise, manageable links in seconds.
-        Knot provides the speed and reliability your infrastructure demands.
+        {t("hero.desc")}
       </p>
       <form
         className="landing-hero__form animate-slide-up"
@@ -38,12 +39,12 @@ export function Hero() {
         <input
           className="landing-hero__input"
           type="url"
-          placeholder="Paste a long URL here..."
-          aria-label="URL to shorten"
+          placeholder={t("hero.placeholder")}
+          aria-label={t("hero.placeholder")}
           defaultValue=""
         />
         <button className="landing-hero__submit" type="submit">
-          Shorten
+          {t("hero.submit")}
         </button>
       </form>
       <div
@@ -51,10 +52,10 @@ export function Hero() {
         style={{ animationDelay: "0.35s" }}
       >
         <span className="landing-badge">
-          <CheckCircle2 size={16} /> No credit card required
+          <CheckCircle2 size={16} /> {t("hero.badge1")}
         </span>
         <span className="landing-badge">
-          <CheckCircle2 size={16} /> Free plan available
+          <CheckCircle2 size={16} /> {t("hero.badge2")}
         </span>
       </div>
     </section>

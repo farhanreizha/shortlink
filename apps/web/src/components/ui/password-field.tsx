@@ -1,5 +1,6 @@
 import { Eye, EyeOff } from "lucide-react"
 import type { ChangeEvent, ReactNode } from "react"
+import { useI18n } from "../../lib/i18n"
 import { FormField } from "./form-field"
 
 export function PasswordField({
@@ -7,7 +8,7 @@ export function PasswordField({
   label,
   value,
   onChange,
-  placeholder = "min 6 characters",
+  placeholder,
   showPassword,
   onToggle,
   showToggle = false,
@@ -25,6 +26,7 @@ export function PasswordField({
   error?: string
   trailing?: ReactNode
 }) {
+  const { t } = useI18n()
   return (
     <FormField label={label} htmlFor={id} error={error} trailing={trailing}>
       <div className="input-wrap">
@@ -32,7 +34,7 @@ export function PasswordField({
           id={id}
           type={showPassword ? "text" : "password"}
           className="input input--password"
-          placeholder={placeholder}
+          placeholder={placeholder ?? t("auth.minChars")}
           value={value}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             onChange(e.target.value)

@@ -2,6 +2,7 @@ import type { User } from "@knot/shared"
 import { useState } from "react"
 import { client } from "../../hono-client"
 import { useToast } from "../../hooks/use-toast"
+import { type MessageKey, useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 
 type FlatPrefs = {
@@ -11,26 +12,30 @@ type FlatPrefs = {
   mobileAlerts: boolean
 }
 
-const PREF_ITEMS: { key: keyof FlatPrefs; label: string; desc: string }[] = [
+const PREF_ITEMS: {
+  key: keyof FlatPrefs
+  labelKey: MessageKey
+  descKey: MessageKey
+}[] = [
   {
     key: "linkClicks",
-    label: "Link Clicks",
-    desc: "Email me when a link receives a significant number of clicks.",
+    labelKey: "nf.linkClicks",
+    descKey: "nf.linkClicksDesc",
   },
   {
     key: "campaignReports",
-    label: "Campaign Reports",
-    desc: "Weekly email summary of my campaigns performance.",
+    labelKey: "nf.campaignReports",
+    descKey: "nf.campaignReportsDesc",
   },
   {
     key: "accountUpdates",
-    label: "Account Updates",
-    desc: "Security alerts and product announcements by email.",
+    labelKey: "nf.accountUpdates",
+    descKey: "nf.accountUpdatesDesc",
   },
   {
     key: "mobileAlerts",
-    label: "Mobile App Alerts",
-    desc: "Instant push notifications for link and campaign activity.",
+    labelKey: "nf.mobileAlerts",
+    descKey: "nf.mobileAlertsDesc",
   },
 ]
 
@@ -56,6 +61,7 @@ function nest(prefs: FlatPrefs): User["notificationPrefs"] {
 
 export function NotificationForm({ user }: { user: User }) {
   const { toast } = useToast()
+  const { t } = useI18n()
   const [prefs, setPrefs] = useState(flatten(user.notificationPrefs))
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -72,13 +78,13 @@ export function NotificationForm({ user }: { user: User }) {
       if (!res.ok) {
         setPrefs(prefs)
         const body = (await res.json()) as { message?: string }
-        setError(body.message ?? "Update failed")
+        setError(body.message ?? t("pf.updateFailed"))
         return
       }
-      toast("Notification preferences saved")
+      toast(t("nf.saved"))
     } catch {
       setPrefs(prefs)
-      setError("Something went wrong")
+      setError(t("common.error"))
     } finally {
       setLoading(false)
     }
@@ -87,10 +93,8 @@ export function NotificationForm({ user }: { user: User }) {
   return (
     <section className="set-card set-card--notifications">
       <div className="set-card__header">
-        <h2 className="set-card__title">Notifications</h2>
-        <p className="set-card__desc">
-          Choose what updates you want to receive from Knot.
-        </p>
+        <h2 className="set-card__title">{t("nf.title")}</h2>
+        <p className="set-card__desc">{t("nf.desc")}</p>
       </div>
       <div className="set-form">
         <ErrorBanner message={error} onClose={() => setError("")} />
@@ -98,14 +102,14 @@ export function NotificationForm({ user }: { user: User }) {
           {PREF_ITEMS.map((item) => (
             <div className="set-pref" key={item.key}>
               <div>
-                <div className="set-pref__label">{item.label}</div>
-                <div className="set-pref__desc">{item.desc}</div>
+                <div className="set-pref__label">{t(item.labelKey)}</div>
+                <div className="set-pref__desc">{t(item.descKey)}</div>
               </div>
               <button
                 type="button"
                 role="switch"
                 aria-checked={prefs[item.key]}
-                aria-label={item.label}
+                aria-label={t(item.labelKey)}
                 disabled={loading}
                 className={`set-switch${prefs[item.key] ? " set-switch--on" : ""}`}
                 onClick={() => toggle(item.key)}
