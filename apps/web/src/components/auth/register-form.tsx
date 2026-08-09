@@ -47,6 +47,8 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
           username,
           email,
           password,
+          ref:
+            new URLSearchParams(window.location.search).get("ref") ?? undefined,
         },
       })
       if (!res.ok) {

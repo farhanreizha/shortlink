@@ -1748,6 +1748,158 @@
   font-size: 12px;
 }
 
+.ref-link__row {
+  display: flex;
+  gap: 10px;
+}
+
+.ref-link__row .input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono, monospace);
+}
+
+.ref-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.ref-stats__item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  text-align: center;
+}
+
+.ref-stats__value {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ref-stats__label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.ref-pro {
+  font-size: 13px;
+  color: var(--color-success);
+  font-weight: 600;
+  margin: 14px 0 0;
+}
+
+.ref-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ref-steps__item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.ref-steps__num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.ref-steps__title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ref-steps__desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.ref-status {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+@media (width < 768px) {
+  .ref-link__row {
+    flex-direction: column;
+  }
+}
+
+@media (width < 768px) {
+  .an-loading,
+  .an-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .an-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .an-cal-popover {
+    position: fixed;
+    top: 50%;
+    left: 12px;
+    right: 12px;
+    transform: translateY(-50%);
+    max-width: 360px;
+    margin: 0 auto;
+  }
+
+  .an-bars {
+    height: 160px;
+    gap: 2px;
+  }
+
+  .an-card:has(.an-table) {
+    overflow-x: auto;
+  }
+
+  .an-table {
+    min-width: 480px;
+  }
+
+  .cl-header__actions {
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .set-nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .set-nav__item {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .set-card:has(.set-bill__table) {
+    overflow-x: auto;
+  }
+
+  .set-bill__table {
+    min-width: 520px;
+  }
+}
+
 @keyframes dash-enter {
   from {
     opacity: 0;

@@ -1,10 +1,11 @@
 import type { User } from "@knot/shared"
-import { Bell, CreditCard, Lock, User as UserIcon } from "lucide-react"
+import { Bell, CreditCard, Gift, Lock, User as UserIcon } from "lucide-react"
 import { useState } from "react"
 import { useLocation } from "wouter"
 import { BillingForm } from "../components/settings/billing-form"
 import { NotificationForm } from "../components/settings/notification-form"
 import { ProfileForm } from "../components/settings/profile-form"
+import { ReferralForm } from "../components/settings/referral-form"
 import { SecurityForm } from "../components/settings/security-form"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
@@ -17,6 +18,7 @@ const SETTINGS_NAV = [
   { key: "security", labelKey: "set.security", icon: Lock },
   { key: "notifications", labelKey: "set.notifications", icon: Bell },
   { key: "billing", labelKey: "set.billing", icon: CreditCard },
+  { key: "referral", labelKey: "set.referral", icon: Gift },
 ] as const
 
 type SettingsTab = (typeof SETTINGS_NAV)[number]["key"]
@@ -77,6 +79,7 @@ export function SettingsPage({
           {tab === "security" && <SecurityForm />}
           {tab === "notifications" && <NotificationForm user={user} />}
           {tab === "billing" && <BillingForm />}
+          {tab === "referral" && <ReferralForm />}
 
           {tab === "profile" && (
             <section className="set-card set-card--danger">
