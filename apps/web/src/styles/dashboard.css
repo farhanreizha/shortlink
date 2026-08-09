@@ -848,11 +848,19 @@
     display: none;
   }
 
+  .dash-nav__right {
+    gap: var(--space-1);
+  }
+
   .dash-nav__hamburger {
     display: flex;
   }
 
   .dash-nav__icon-btn {
+    display: none;
+  }
+
+  .dash-nav__icon {
     display: none;
   }
 
