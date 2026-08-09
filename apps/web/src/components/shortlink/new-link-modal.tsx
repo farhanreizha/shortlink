@@ -30,9 +30,8 @@ export function NewLinkModal({
     const finalSlug = slug || randomSlug()
     const result = CreateShortlinkSchema.safeParse({ slug: finalSlug, url })
     if (!result.success) {
-      setError(
-        result.error.flatten().fieldErrors.url?.[0] ?? t("form.invalidUrl"),
-      )
+      const field = result.error.flatten().fieldErrors
+      setError(field.url?.[0] ?? field.slug?.[0] ?? t("form.invalidUrl"))
       return
     }
     setLoading(true)
