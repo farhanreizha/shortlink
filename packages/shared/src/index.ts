@@ -167,3 +167,31 @@ export const UpdateUserSchema = z.object({
 })
 
 export type UpdateUser = z.infer<typeof UpdateUserSchema>
+
+export const NotificationSchema = z.object({
+  id: z.string(),
+  type: z.enum(["welcome", "new_feature", "referral"]),
+  read: z.boolean(),
+  data: z.object({ username: z.string() }).optional(),
+  createdAt: z.string().datetime(),
+})
+
+export type Notification = z.infer<typeof NotificationSchema>
+export type NotificationType = Notification["type"]
+
+  id: z.string(),
+  username: z.string(),
+  createdAt: z.string().datetime(),
+  rewarded: z.boolean(),
+})
+
+
+  code: z.string(),
+  proUntil: z.string().datetime().nullable(),
+  stats: z.object({
+    referred: z.number(),
+    rewarded: z.number(),
+    proMonths: z.number(),
+  }),
+})
+

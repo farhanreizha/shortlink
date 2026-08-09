@@ -7,6 +7,7 @@ import type {
   CreateCampaign,
   CreateShortlink,
   LoginInput,
+  Notification,
   RegisterInput,
   Shortlink,
   ShortlinkQuery,
@@ -102,6 +103,31 @@ export type AppRoutes = {
     $get: {
       input: { query: AnalyticsQuery }
       output: AnalyticsOverview
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/notifications": {
+    $get: {
+      // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
+      input: {}
+      output: Notification[]
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/notifications/read": {
+    $post: {
+      // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
+      input: {}
+      output: Notification[]
+      outputFormat: "json"
+      status: 200
+    }
+  }
+    $get: {
+      // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
+      input: {}
       outputFormat: "json"
       status: 200
     }

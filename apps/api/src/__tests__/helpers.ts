@@ -17,7 +17,7 @@ export interface AuthResult {
 export async function cleanDatabase() {
   resetRateLimitStore()
   await db.execute(
-    sql`TRUNCATE TABLE shortlinks, users RESTART IDENTITY CASCADE`,
+    sql`TRUNCATE TABLE shortlinks, campaigns, notifications, users RESTART IDENTITY CASCADE`,
   )
 }
 

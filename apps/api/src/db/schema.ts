@@ -1,4 +1,5 @@
 import {
+  boolean,
   index,
   integer,
   jsonb,
@@ -87,5 +88,24 @@ export const clicks = pgTable(
   (table) => ({
     shortlinkIdIdx: index("clicks_shortlink_id_idx").on(table.shortlinkId),
     createdAtIdx: index("clicks_created_at_idx").on(table.createdAt),
+  }),
+)
+
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type", {
+      enum: ["welcome", "new_feature", "referral"],
+    }).notNull(),
+    read: boolean("read").notNull().default(false),
+    data: jsonb("data").$type<{ username: string }>(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    userIdIdx: index("notifications_user_id_idx").on(table.userId),
   }),
 )
