@@ -1853,13 +1853,15 @@
   }
 
   .an-cal-popover {
-    position: fixed;
-    top: 50%;
-    left: 12px;
-    right: 12px;
-    transform: translateY(-50%);
-    max-width: 360px;
-    margin: 0 auto;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+  }
+
+  .an-cal-popover .rdp-root {
+    max-height: 60vh;
+    overflow-y: auto;
   }
 
   .an-bars {
