@@ -1183,7 +1183,7 @@
 .an-range {
   display: flex;
   gap: 4px;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-muted);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 4px;
@@ -1207,7 +1207,7 @@
 }
 .an-range__btn--active {
   background: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-text-primary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 .an-range-wrap {
@@ -1249,7 +1249,7 @@
   box-shadow: var(--shadow-modal);
   padding: 12px;
   --rdp-accent-color: var(--color-primary);
-  --rdp-background-color: var(--color-surface-alt);
+  --rdp-background-color: var(--color-surface-muted);
   --rdp-day-height: 36px;
   --rdp-day-width: 36px;
   --rdp-selected-border: 0;
@@ -1281,7 +1281,7 @@
   gap: 8px;
 }
 .an-error {
-  color: var(--color-danger);
+  color: var(--color-error);
   font-size: 14px;
 }
 .an-loading {
@@ -1361,7 +1361,7 @@
 .an-toggle {
   display: flex;
   gap: 4px;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-muted);
   border-radius: 8px;
   padding: 3px;
 }
@@ -1377,7 +1377,7 @@
 }
 .an-toggle__btn--active {
   background: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-text-primary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 .an-empty {
@@ -1408,7 +1408,7 @@
   background: linear-gradient(
     180deg,
     var(--color-primary),
-    var(--color-primary-dark)
+    var(--color-primary-hover)
   );
   border-radius: 6px 6px 0 0;
   transition: height 0.25s ease;
@@ -1440,12 +1440,12 @@
 }
 .an-device__row span:first-child,
 .an-location__row span:first-child {
-  color: var(--color-text);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 .an-device__track {
   height: 8px;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-muted);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -1527,7 +1527,7 @@
 .camp-filters {
   display: flex;
   gap: 4px;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-muted);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 4px;
@@ -1544,11 +1544,11 @@
 }
 .camp-filters__btn--active {
   background: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-text-primary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 .camp-error {
-  color: var(--color-danger);
+  color: var(--color-error);
   font-size: 14px;
 }
 .camp-empty {
@@ -1601,7 +1601,7 @@
   color: var(--color-success);
 }
 .camp-card__status--archived {
-  background: var(--color-surface-alt);
+  background: var(--color-surface-muted);
   color: var(--color-text-secondary);
 }
 .camp-card__actions {
@@ -1619,12 +1619,12 @@
   cursor: pointer;
 }
 .camp-card__btn:hover {
-  background: var(--color-surface-alt);
-  color: var(--color-text);
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
 }
 .camp-card__btn--danger:hover {
   background: rgba(220, 38, 38, 0.1);
-  color: var(--color-danger);
+  color: var(--color-error);
 }
 .camp-card__name {
   font-size: 17px;
@@ -1647,7 +1647,7 @@
   padding-top: 12px;
 }
 .camp-card__stats strong {
-  color: var(--color-text);
+  color: var(--color-text-primary);
 }
 .cm-form {
   display: flex;
@@ -1696,7 +1696,7 @@
   height: 24px;
   border-radius: 999px;
   border: 1px solid var(--color-border);
-  background: var(--color-surface-alt);
+  background: var(--color-surface-muted);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.2s ease;
@@ -1772,7 +1772,7 @@
 .set-bill__card-brand {
   font-weight: 700;
   font-size: 13px;
-  background: var(--color-text);
+  background: var(--color-text-primary);
   color: var(--color-surface);
   padding: 4px 8px;
   border-radius: 6px;
