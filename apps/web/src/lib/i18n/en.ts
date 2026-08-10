@@ -295,7 +295,6 @@ export const en = {
   "an.totalClicks": "Total Clicks",
   "an.uniqueVisitors": "Unique Visitors",
   "an.topReferral": "Top Referral",
-  "an.avgCtr": "Avg. CTR",
   "an.clicksOverTime": "Clicks Over Time",
   "an.daily": "Daily",
   "an.weekly": "Weekly",

@@ -49,7 +49,6 @@ function emptyOverview(): AnalyticsOverview {
     totalClicks: 0,
     uniqueVisitors: 0,
     topReferral: "-",
-    avgCtr: null,
     clicksByDevice: { mobile: 0, desktop: 0, tablet: 0 },
     clicksByLocation: [],
     clicksOverTime: [],
@@ -159,7 +158,6 @@ export async function overview(
     totalClicks,
     uniqueVisitors,
     topReferral,
-    avgCtr: null, // ponytail: no impression data, show "-" instead of a fake number
     clicksByDevice: byDevice,
     clicksByLocation,
     clicksOverTime,

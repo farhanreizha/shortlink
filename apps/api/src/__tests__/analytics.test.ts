@@ -71,7 +71,6 @@ describe("GET /api/analytics/overview", () => {
     expect(body.totalClicks).toBe(3)
     expect(body.uniqueVisitors).toBe(2)
     expect(body.topReferral).toBe("https://twitter.com")
-    expect(body.avgCtr).toBeNull()
     expect(body.clicksByDevice).toEqual({ mobile: 2, desktop: 1, tablet: 0 })
     expect(body.clicksByLocation[0]).toMatchObject({
       country: "US",

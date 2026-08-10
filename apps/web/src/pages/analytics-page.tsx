@@ -237,18 +237,6 @@ export function AnalyticsPage({
                     </span>
                   </div>
                 </Reveal>
-                <Reveal delay={0.18}>
-                  <div className="an-stat">
-                    <span className="an-stat__label">{t("an.avgCtr")}</span>
-                    <span className="an-stat__value">
-                      {data.avgCtr === null ? (
-                        "—"
-                      ) : (
-                        <CountUp value={data.avgCtr} suffix="%" />
-                      )}
-                    </span>
-                  </div>
-                </Reveal>
               </div>
 
               <div className="an-grid">

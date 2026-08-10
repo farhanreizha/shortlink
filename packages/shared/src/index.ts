@@ -178,7 +178,6 @@ export const AnalyticsOverviewSchema = z.object({
   totalClicks: z.number(),
   uniqueVisitors: z.number(),
   topReferral: z.string(),
-  avgCtr: z.number().nullable(),
   clicksByDevice: z.object({
     mobile: z.number(),
     desktop: z.number(),

@@ -1227,12 +1227,12 @@
 }
 .an-loading {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 .an-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 .an-stat {
@@ -1246,6 +1246,9 @@
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
+}
+.an-stats .an-stat {
+  height: 100%;
 }
 
 .an-stat:hover {

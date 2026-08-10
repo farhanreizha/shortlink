@@ -298,7 +298,6 @@ export const id: Record<MessageKey, string> = {
   "an.totalClicks": "Total Klik",
   "an.uniqueVisitors": "Pengunjung Unik",
   "an.topReferral": "Perujuk Teratas",
-  "an.avgCtr": "Rata-rata CTR",
   "an.clicksOverTime": "Klik dari Waktu ke Waktu",
   "an.daily": "Harian",
   "an.weekly": "Mingguan",
