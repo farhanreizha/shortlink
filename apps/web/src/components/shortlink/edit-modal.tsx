@@ -1,6 +1,7 @@
 import type { Shortlink, UpdateShortlink } from "@knot/shared"
 import { useEffect, useState } from "react"
 import { useI18n } from "../../lib/i18n"
+import { CampaignSelect } from "../ui/campaign-select"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
@@ -17,17 +18,20 @@ export function EditModal({
   onClose: () => void
 }) {
   const { t } = useI18n()
+  const currentCampaign = link.campaignId ? Number(link.campaignId) : null
   const [slug, setSlug] = useState(link.slug)
   const [url, setUrl] = useState(link.url)
+  const [campaignId, setCampaignId] = useState<number | null>(currentCampaign)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setSlug(link.slug)
     setUrl(link.url)
+    setCampaignId(currentCampaign)
     setError("")
     setLoading(false)
-  }, [link])
+  }, [link, currentCampaign])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -38,6 +42,7 @@ export function EditModal({
       const data: UpdateShortlink = {}
       if (url !== link.url) data.url = url
       if (slug !== link.slug) data.slug = slug
+      if (campaignId !== currentCampaign) data.campaignId = campaignId
       if (Object.keys(data).length === 0) {
         onClose()
         return
@@ -68,6 +73,14 @@ export function EditModal({
             className="input input--mono"
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
+          />
+        </FormField>
+        <FormField label={t("modal.campaign")} htmlFor="edit-campaign">
+          <CampaignSelect
+            id="edit-campaign"
+            className="input"
+            value={campaignId}
+            onChange={setCampaignId}
           />
         </FormField>
         <ErrorBanner message={error} onClose={() => setError("")} />

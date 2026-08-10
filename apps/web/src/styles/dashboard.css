@@ -347,6 +347,30 @@
   margin-top: var(--space-1);
 }
 
+.dash-hero__campaign {
+  flex-shrink: 1;
+  max-width: 220px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: #f1f5f9;
+  border: 2px solid transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.dash-hero__campaign:focus {
+  background: var(--color-white);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-muted);
+}
+
 .dash-hero__btn {
   white-space: nowrap;
   background: var(--color-primary);
@@ -923,6 +947,30 @@
 
 .cl-toolbar {
   margin-bottom: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.cl-filter {
+  height: 40px;
+  max-width: 240px;
+  flex: 1 1 180px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cl-filter:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-muted);
 }
 
 .cl-search {
@@ -1010,6 +1058,17 @@
   white-space: nowrap;
   color: var(--color-text-secondary);
   font-size: 13px;
+}
+
+.cl-table__campaign {
+  display: inline-block;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .cl-table__action-col {

@@ -311,6 +311,8 @@ export const id: Record<MessageKey, string> = {
   "modal.slugPlaceholder": "promo",
   "modal.creating": "Membuat…",
   "modal.createLink": "Buat Link",
+  "modal.campaign": "Kampanye",
+  "modal.noCampaign": "Tanpa kampanye",
 
   "how.title": "Cara Kerja Link Kustom",
   "how.step1.title": "Buat URL Bermerek",
@@ -331,6 +333,8 @@ export const id: Record<MessageKey, string> = {
   "cl.searchPlaceholder": "Cari link…",
   "cl.colBranded": "URL Bermerek",
   "cl.colOriginal": "URL Asli",
+  "cl.colCampaign": "Kampanye",
+  "cl.filterAllCampaigns": "Semua kampanye",
   "cl.colCreated": "Tanggal Dibuat",
   "cl.colClicks": "Klik",
   "cl.colAction": "Aksi",

@@ -29,16 +29,21 @@ export function useShortlinks() {
     fetchLinks(query)
   }, [query, fetchLinks])
 
-  const create = useCallback(async (slug: string, url: string) => {
-    const res = await client.api.shortlinks.$post({ json: { slug, url } })
-    if (!res.ok) {
-      const body = (await res.json()) as { message?: string }
-      throw new Error(body.message ?? "Something went wrong")
-    }
-    const link = (await res.json()) as Shortlink
-    setLinks((prev) => [link, ...prev])
-    return link
-  }, [])
+  const create = useCallback(
+    async (slug: string, url: string, campaignId?: number | null) => {
+      const res = await client.api.shortlinks.$post({
+        json: { slug, url, campaignId: campaignId ?? undefined },
+      })
+      if (!res.ok) {
+        const body = (await res.json()) as { message?: string }
+        throw new Error(body.message ?? "Something went wrong")
+      }
+      const link = (await res.json()) as Shortlink
+      setLinks((prev) => [link, ...prev])
+      return link
+    },
+    [],
+  )
 
   const remove = useCallback(async (slug: string) => {
     const res = await client.api.shortlinks[":slug"].$delete({

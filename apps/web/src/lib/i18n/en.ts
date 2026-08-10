@@ -308,6 +308,8 @@ export const en = {
   "modal.slugPlaceholder": "sale",
   "modal.creating": "Creating…",
   "modal.createLink": "Create Link",
+  "modal.campaign": "Campaign",
+  "modal.noCampaign": "No campaign",
 
   "how.title": "How Custom Links Work",
   "how.step1.title": "Create a Branded URL",
@@ -328,6 +330,8 @@ export const en = {
   "cl.searchPlaceholder": "Search links…",
   "cl.colBranded": "Branded URL",
   "cl.colOriginal": "Original URL",
+  "cl.colCampaign": "Campaign",
+  "cl.filterAllCampaigns": "All campaigns",
   "cl.colCreated": "Created Date",
   "cl.colClicks": "Clicks",
   "cl.colAction": "Action",

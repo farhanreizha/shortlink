@@ -20,8 +20,12 @@ export function DashboardPage({
   const { links, loading, create, remove, update, query, setQuery } =
     useShortlinks()
 
-  async function handleCreate(slug: string, url: string) {
-    await create(slug, url)
+  async function handleCreate(
+    slug: string,
+    url: string,
+    campaignId?: number | null,
+  ) {
+    await create(slug, url, campaignId)
     toast(`${window.location.origin}/r/${slug}`)
   }
 

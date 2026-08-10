@@ -16,6 +16,7 @@ import { NewLinkModal } from "../components/shortlink/new-link-modal"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
 import { Reveal } from "../components/ui/reveal"
+import { useCampaigns } from "../hooks/use-campaigns"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
 import { useI18n } from "../lib/i18n"
@@ -39,13 +40,17 @@ export function CustomLinksPage({
 }) {
   const { toast } = useToast()
   const { t } = useI18n()
+  const { data: campaigns } = useCampaigns()
   const { links, total, loading, query, setQuery, create, remove, update } =
     useShortlinks()
   const [q, setQ] = useState("")
+  const [filterCampaign, setFilterCampaign] = useState("")
   const [showNew, setShowNew] = useState(false)
   const [showHow, setShowHow] = useState(false)
   const [editing, setEditing] = useState<{ slug: string } | null>(null)
   const [deleting, setDeleting] = useState<{ slug: string } | null>(null)
+
+  const campaignNames = new Map(campaigns.map((c) => [c.id, c.name] as const))
 
   const page = Math.floor(query.offset / query.limit)
   const pageCount = Math.max(1, Math.ceil(total / query.limit))
@@ -55,6 +60,15 @@ export function CustomLinksPage({
   function search(e: React.FormEvent) {
     e.preventDefault()
     setQuery({ ...query, q: q || undefined, offset: 0 })
+  }
+
+  function applyCampaignFilter(value: string) {
+    setFilterCampaign(value)
+    setQuery({
+      ...query,
+      campaignId: value === "" ? undefined : Number(value),
+      offset: 0,
+    })
   }
 
   function goToPage(p: number) {
@@ -119,6 +133,19 @@ export function CustomLinksPage({
               onChange={(e) => setQ(e.target.value)}
             />
           </div>
+          <select
+            className="cl-filter"
+            aria-label={t("cl.colCampaign")}
+            value={filterCampaign}
+            onChange={(e) => applyCampaignFilter(e.target.value)}
+          >
+            <option value="">{t("cl.filterAllCampaigns")}</option>
+            {campaigns.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </form>
 
         <Reveal delay={0.1}>
@@ -128,6 +155,7 @@ export function CustomLinksPage({
                 <tr>
                   <th>{t("cl.colBranded")}</th>
                   <th>{t("cl.colOriginal")}</th>
+                  <th>{t("cl.colCampaign")}</th>
                   <th>{t("cl.colCreated")}</th>
                   <th>{t("cl.colClicks")}</th>
                   <th className="cl-table__action-col">{t("cl.colAction")}</th>
@@ -149,6 +177,13 @@ export function CustomLinksPage({
                     <td>
                       <span className="cl-table__url" title={link.url}>
                         {link.url}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="cl-table__campaign">
+                        {link.campaignId
+                          ? (campaignNames.get(link.campaignId) ?? "—")
+                          : "—"}
                       </span>
                     </td>
                     <td>{formatDate(link.createdAt)}</td>
@@ -177,7 +212,7 @@ export function CustomLinksPage({
                 ))}
                 {!loading && links.length === 0 && (
                   <tr>
-                    <td colSpan={5}>
+                    <td colSpan={6}>
                       <div className="empty-state">
                         <div className="empty-state__title">
                           {t("cl.noLinks")}

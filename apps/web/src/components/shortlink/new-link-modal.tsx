@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useToast } from "../../hooks/use-toast"
 import { useI18n } from "../../lib/i18n"
 import { randomSlug } from "../../lib/slug"
+import { CampaignSelect } from "../ui/campaign-select"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
@@ -14,13 +15,18 @@ export function NewLinkModal({
   onClose,
 }: {
   open: boolean
-  onCreate: (slug: string, url: string) => Promise<unknown>
+  onCreate: (
+    slug: string,
+    url: string,
+    campaignId?: number | null,
+  ) => Promise<unknown>
   onClose: () => void
 }) {
   const { toast } = useToast()
   const { t } = useI18n()
   const [url, setUrl] = useState("")
   const [slug, setSlug] = useState("")
+  const [campaignId, setCampaignId] = useState<number | null>(null)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -36,10 +42,11 @@ export function NewLinkModal({
     }
     setLoading(true)
     try {
-      await onCreate(finalSlug, url)
+      await onCreate(finalSlug, url, campaignId)
       toast(`${window.location.origin}/r/${finalSlug}`)
       setUrl("")
       setSlug("")
+      setCampaignId(null)
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : t("common.error"))
@@ -71,6 +78,14 @@ export function NewLinkModal({
             placeholder={t("modal.slugPlaceholder")}
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
+          />
+        </FormField>
+        <FormField label={t("modal.campaign")} htmlFor="new-link-campaign">
+          <CampaignSelect
+            id="new-link-campaign"
+            className="input"
+            value={campaignId}
+            onChange={setCampaignId}
           />
         </FormField>
         <ErrorBanner message={error} onClose={() => setError("")} />
