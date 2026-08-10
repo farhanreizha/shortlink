@@ -13,7 +13,9 @@ export const securityHeaders: MiddlewareHandler = async (c, next) => {
   )
   c.header(
     "Content-Security-Policy",
-    "default-src 'none'; frame-ancestors 'none'",
+    c.req.path.startsWith("/api/docs")
+      ? "default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self'; font-src https://cdn.jsdelivr.net data:; frame-ancestors 'none'"
+      : "default-src 'none'; frame-ancestors 'none'",
   )
   c.header("Cross-Origin-Opener-Policy", "same-origin")
 }

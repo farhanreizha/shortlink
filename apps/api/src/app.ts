@@ -1,3 +1,4 @@
+import { swaggerUI } from "@hono/swagger-ui"
 import { OpenAPIHono } from "@hono/zod-openapi"
 import { cors } from "hono/cors"
 import { env } from "./config.js"
@@ -29,6 +30,8 @@ app.use("/r/*", securityHeaders)
 
 app.route("/api", healthRoutes)
 
+app.get("/api/docs", swaggerUI({ url: "/api/doc" }))
+
 app.use("/api/auth/register", rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }))
 
 app.use("/api/auth/login", rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }))
@@ -47,14 +50,12 @@ app.route("/api/notifications", notificationRoutes)
 app.route("/api/referral", referralRoutes)
 app.route("/r", redirectRoutes)
 
-if (env.NODE_ENV !== "production") {
-  app.doc("/api/doc", {
-    openapi: "3.0.0",
-    info: {
-      title: "Shortlink API",
-      version: "1.0.0",
-    },
-  })
-}
+app.doc("/api/doc", {
+  openapi: "3.0.0",
+  info: {
+    title: "Shortlink API",
+    version: "1.0.0",
+  },
+})
 
 export default app
