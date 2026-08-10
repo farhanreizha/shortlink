@@ -1,8 +1,5 @@
 import type { Notification, NotificationType } from "@knot/shared"
-import { ChevronDown } from "lucide-react"
-import { useState } from "react"
 import { type MessageKey, useI18n } from "../../lib/i18n"
-import { Modal } from "./modal"
 
 type T = ReturnType<typeof useI18n>["t"]
 
@@ -53,64 +50,5 @@ export function NotificationsDropdown({
         })}
       </ul>
     </div>
-  )
-}
-
-export function HelpDropdown({ onOpenFaq }: { onOpenFaq: () => void }) {
-  const { t } = useI18n()
-  return (
-    <div className="dash-nav__panel dash-nav__panel--help" role="menu">
-      <button
-        className="dash-nav__dropdown-item"
-        type="button"
-        role="menuitem"
-        onClick={onOpenFaq}
-      >
-        {t("dash.faq")}
-      </button>
-    </div>
-  )
-}
-
-const FAQ_ITEMS: Array<{ q: MessageKey; a: MessageKey }> = [
-  { q: "faq.q1", a: "faq.a1" },
-  { q: "faq.q2", a: "faq.a2" },
-  { q: "faq.q3", a: "faq.a3" },
-  { q: "faq.q4", a: "faq.a4" },
-  { q: "faq.q5", a: "faq.a5" },
-]
-
-export function FaqModal({
-  open,
-  onClose,
-}: {
-  open: boolean
-  onClose: () => void
-}) {
-  const { t } = useI18n()
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
-
-  return (
-    <Modal open={open} title={t("faq.title")} onClose={onClose} wide>
-      <div className="faq-list">
-        {FAQ_ITEMS.map((item, i) => (
-          <div key={item.q} className="faq-item">
-            <button
-              className="faq-item__q"
-              type="button"
-              aria-expanded={openIndex === i}
-              onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            >
-              {t(item.q)}
-              <ChevronDown
-                size={16}
-                className={`faq-item__chevron${openIndex === i ? " faq-item__chevron--open" : ""}`}
-              />
-            </button>
-            {openIndex === i && <div className="faq-item__a">{t(item.a)}</div>}
-          </div>
-        ))}
-      </div>
-    </Modal>
   )
 }

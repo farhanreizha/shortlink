@@ -1,6 +1,10 @@
+import type { User } from "@knot/shared"
+import type { ReactNode } from "react"
 import { Redirect, Route, Switch } from "wouter"
+import { DashboardShell } from "./components/ui/dashboard-shell"
 import { ErrorBoundary } from "./components/ui/error-boundary"
 import { Skeleton } from "./components/ui/skeleton"
+import { StaticPage } from "./components/ui/static-page"
 import { useAuth } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
 import { AnalyticsPage } from "./pages/analytics-page"
@@ -9,9 +13,35 @@ import { CampaignsPage } from "./pages/campaigns-page"
 import { CustomLinksPage } from "./pages/custom-links-page"
 import { DashboardPage } from "./pages/dashboard-page"
 import { LandingPage } from "./pages/landing-page"
+import { LegalContent } from "./pages/legal-page"
 import { NotFoundPage } from "./pages/not-found-page"
 import { SettingsPage } from "./pages/settings-page"
+import { SupportContent } from "./pages/support-page"
 import "./index.css"
+
+function PublicRoute({
+  path,
+  user,
+  onLogout,
+  children,
+}: {
+  path: string
+  user: User | null
+  onLogout: () => void
+  children: ReactNode
+}) {
+  return (
+    <Route path={path}>
+      {user ? (
+        <DashboardShell user={user} onLogout={onLogout} activeNav="legal">
+          {children}
+        </DashboardShell>
+      ) : (
+        <StaticPage>{children}</StaticPage>
+      )}
+    </Route>
+  )
+}
 
 export function App() {
   const { loading, user, login, logout } = useAuth()
@@ -79,30 +109,39 @@ export function App() {
             {user ? (
               <SettingsPage user={user} onLogout={logout} />
             ) : (
-              <Redirect to="/login" />
+              <Redirect to="/" />
             )}
           </Route>
           <Route path="/custom-links">
             {user ? (
               <CustomLinksPage user={user} onLogout={logout} />
             ) : (
-              <Redirect to="/login" />
+              <Redirect to="/" />
             )}
           </Route>
           <Route path="/analytics">
             {user ? (
               <AnalyticsPage user={user} onLogout={logout} />
             ) : (
-              <Redirect to="/login" />
+              <Redirect to="/" />
             )}
           </Route>
           <Route path="/campaigns">
             {user ? (
               <CampaignsPage user={user} onLogout={logout} />
             ) : (
-              <Redirect to="/login" />
+              <Redirect to="/" />
             )}
           </Route>
+          <PublicRoute path="/privacy" user={user} onLogout={logout}>
+            <LegalContent prefix="pp" />
+          </PublicRoute>
+          <PublicRoute path="/terms" user={user} onLogout={logout}>
+            <LegalContent prefix="tp" />
+          </PublicRoute>
+          <PublicRoute path="/support" user={user} onLogout={logout}>
+            <SupportContent />
+          </PublicRoute>
           <Route path="/:rest*">
             <NotFoundPage />
           </Route>

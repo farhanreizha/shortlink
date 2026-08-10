@@ -4,7 +4,7 @@ import { Link } from "wouter"
 import { useEscapeKey } from "../../hooks/use-escape-key"
 import { useNotifications } from "../../hooks/use-notifications"
 import { useI18n } from "../../lib/i18n"
-import { FaqModal, HelpDropdown, NotificationsDropdown } from "./dash-dropdowns"
+import { NotificationsDropdown } from "./dash-dropdowns"
 import { LanguageSwitcher } from "./language-switcher"
 
 const NAV_LINKS = [
@@ -15,10 +15,10 @@ const NAV_LINKS = [
 ] as const
 
 const FOOTER_LINKS = [
-  "dash.privacy",
-  "dash.terms",
-  "dash.apiDocs",
-  "dash.support",
+  { key: "dash.privacy", href: "/privacy" },
+  { key: "dash.terms", href: "/terms" },
+  { key: "dash.apiDocs", href: "/api/docs" },
+  { key: "dash.support", href: "/support" },
 ] as const
 
 export function DashboardShell({
@@ -35,43 +35,36 @@ export function DashboardShell({
   const [open, setOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [bellOpen, setBellOpen] = useState(false)
-  const [helpOpen, setHelpOpen] = useState(false)
-  const [faqOpen, setFaqOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const hamburgerRef = useRef<HTMLButtonElement>(null)
   const bellRef = useRef<HTMLDivElement>(null)
-  const helpRef = useRef<HTMLDivElement>(null)
   const { t } = useI18n()
   const { notifications, unread, markAllRead } = useNotifications()
 
   useEffect(() => {
-    if (!open && !menuOpen && !bellOpen && !helpOpen) return
+    if (!open && !menuOpen && !bellOpen) return
     function handleClick(e: MouseEvent) {
       const target = e.target as Node
       const inside = Boolean(
         ref.current?.contains(target) ||
           menuRef.current?.contains(target) ||
           hamburgerRef.current?.contains(target) ||
-          bellRef.current?.contains(target) ||
-          helpRef.current?.contains(target),
+          bellRef.current?.contains(target),
       )
       if (!inside) {
         setOpen(false)
         setMenuOpen(false)
         setBellOpen(false)
-        setHelpOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClick)
     return () => document.removeEventListener("mousedown", handleClick)
-  }, [open, menuOpen, bellOpen, helpOpen])
+  }, [open, menuOpen, bellOpen])
 
   useEscapeKey(open, () => setOpen(false))
   useEscapeKey(menuOpen, () => setMenuOpen(false))
   useEscapeKey(bellOpen, () => setBellOpen(false))
-  useEscapeKey(helpOpen, () => setHelpOpen(false))
-  useEscapeKey(faqOpen, () => setFaqOpen(false))
 
   return (
     <div className="dash-shell animate-fade-in">
@@ -105,7 +98,6 @@ export function DashboardShell({
                 onClick={() => {
                   if (!bellOpen) markAllRead()
                   setBellOpen(!bellOpen)
-                  setHelpOpen(false)
                 }}
               >
                 <Bell size={20} />
@@ -117,20 +109,14 @@ export function DashboardShell({
                 <NotificationsDropdown notifications={notifications} />
               )}
             </div>
-            <div className="dash-nav__icon" ref={helpRef}>
-              <button
+            <div className="dash-nav__icon">
+              <Link
                 className="dash-nav__icon-btn"
-                type="button"
+                to="/support"
                 aria-label={t("dash.help")}
-                aria-expanded={helpOpen}
-                onClick={() => {
-                  setHelpOpen(!helpOpen)
-                  setBellOpen(false)
-                }}
               >
                 <HelpCircle size={20} />
-              </button>
-              {helpOpen && <HelpDropdown onOpenFaq={() => setFaqOpen(true)} />}
+              </Link>
             </div>
             <div className="dash-nav__avatar" ref={ref}>
               <button
@@ -226,8 +212,6 @@ export function DashboardShell({
 
       <main className="dash-main">{children}</main>
 
-      <FaqModal open={faqOpen} onClose={() => setFaqOpen(false)} />
-
       <footer className="dash-footer">
         <div className="dash-footer__inner">
           <Link className="dash-footer__logo" href="/">
@@ -237,11 +221,25 @@ export function DashboardShell({
             className="dash-footer__nav"
             aria-label={t("dash.footerNavAria")}
           >
-            {FOOTER_LINKS.map((key) => (
-              <span key={key} className="dash-footer__link">
-                {t(key)}
-              </span>
-            ))}
+            {FOOTER_LINKS.map((link) =>
+              link.href.startsWith("/api") ? (
+                <a
+                  key={link.key}
+                  className="dash-footer__link"
+                  href={link.href}
+                >
+                  {t(link.key)}
+                </a>
+              ) : (
+                <Link
+                  key={link.key}
+                  className="dash-footer__link"
+                  href={link.href}
+                >
+                  {t(link.key)}
+                </Link>
+              ),
+            )}
           </nav>
           <div className="dash-footer__copy">
             {t("dash.rights", { year: new Date().getFullYear() })}

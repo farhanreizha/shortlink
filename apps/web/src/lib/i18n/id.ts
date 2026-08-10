@@ -131,6 +131,7 @@ export const id: Record<MessageKey, string> = {
   "footer.resources": "Sumber Daya",
   "footer.features": "Fitur",
   "footer.reliability": "Keandalan",
+  "footer.legal": "Legal",
   "footer.rights":
     "© {year} Knot Infrastructure Inc. Seluruh hak cipta dilindungi.",
 
@@ -226,6 +227,66 @@ export const id: Record<MessageKey, string> = {
     "Pro membuka analitik dan grafik real-time plus kustomisasi lebih banyak. Tingkatkan kapan saja dari Pengaturan → Penagihan.",
   "faq.q5": "Bisakah saya menggunakan API Knot?",
   "faq.a5": "Bisa — lihat Dokumentasi API di footer untuk endpoint dan contoh.",
+
+  "pp.title": "Kebijakan Privasi",
+  "pp.updated": "Terakhir diperbarui: Agustus 2026",
+  "pp.intro":
+    "Kebijakan Privasi ini menjelaskan bagaimana Knot mengumpulkan, menggunakan, dan melindungi informasi Anda saat menggunakan layanan pemendek URL kami.",
+  "pp.collect.title": "Informasi yang Kami Kumpulkan",
+  "pp.collect.body":
+    "Kami mengumpulkan informasi yang Anda berikan langsung: kredensial akun (email, nama pengguna, kata sandi), dan URL yang Anda perpendek, termasuk detail kampanye atau alias kustom yang Anda tambahkan. Kami juga mengumpulkan data penggunaan seperti jumlah klik, perkiraan lokasi, jenis perangkat, dan halaman pengarah saat seseorang mengunjungi link pendek yang Anda buat.",
+  "pp.use.title": "Cara Kami Menggunakan Informasi Anda",
+  "pp.use.body":
+    "Kami menggunakan informasi Anda untuk menyediakan dan meningkatkan layanan: membuat dan mengelola link pendek Anda, menampilkan analitik untuk link tersebut, mengirim notifikasi layanan, dan menjaga layanan tetap aman dari penyalahgunaan.",
+  "pp.cookies.title": "Cookie dan Penyimpanan Lokal",
+  "pp.cookies.body":
+    "Kami menggunakan cookie dan penyimpanan lokal untuk menjaga Anda tetap masuk dan mengingat preferensi Anda (seperti pilihan bahasa). Kami tidak menggunakan cookie iklan pihak ketiga.",
+  "pp.share.title": "Berbagi Informasi",
+  "pp.share.body":
+    "Kami tidak menjual data pribadi Anda. Kami hanya membagikan data bila diwajibkan oleh hukum, atau kepada penyedia layanan yang membantu kami beroperasi (hosting, pengiriman email) dengan kewajiban kerahasiaan.",
+  "pp.security.title": "Keamanan",
+  "pp.security.body":
+    "Link disajikan melalui HTTPS dan kami menerapkan langkah teknis yang wajar untuk melindungi data yang tersimpan. Tidak ada metode transmisi melalui internet yang 100% aman, sehingga kami tidak dapat menjamin keamanan mutlak.",
+  "pp.rights.title": "Hak Anda",
+  "pp.rights.body":
+    "Anda dapat mengakses, mengoreksi, atau menghapus akun dan link Anda kapan saja dari halaman Pengaturan. Anda juga dapat menghubungi kami untuk meminta penghapusan data Anda.",
+  "pp.contact.title": "Hubungi Kami",
+  "pp.contact.body": "Pertanyaan tentang kebijakan ini? Email {email}.",
+
+  "tp.title": "Ketentuan Layanan",
+  "tp.updated": "Terakhir diperbarui: Agustus 2026",
+  "tp.intro":
+    "Dengan membuat akun atau menggunakan Knot, Anda menyetujui Ketentuan Layanan ini. Jika tidak setuju, mohon jangan gunakan layanan ini.",
+  "tp.service.title": "Layanan",
+  "tp.service.body":
+    "Knot menyediakan pemendek URL, manajemen link, dan analitik klik. Kami dapat mengubah, menangguhkan, atau menghentikan fitur kapan saja dengan pemberitahuan yang wajar bila memungkinkan.",
+  "tp.accounts.title": "Akun",
+  "tp.accounts.body":
+    "Anda bertanggung jawab menjaga kerahasiaan kredensial login Anda dan atas semua aktivitas dalam akun Anda. Anda harus memberikan informasi pendaftaran yang akurat dan menjaganya tetap mutakhir.",
+  "tp.acceptable.title": "Penggunaan yang Dapat Diterima",
+  "tp.acceptable.body":
+    "Anda tidak boleh menggunakan Knot untuk memperpendek link ke konten ilegal, malware, situs phishing, atau materi apa pun yang melanggar hak orang lain. Kami berhak menonaktifkan link atau akun yang melanggar kebijakan ini.",
+  "tp.links.title": "Link dan Konten",
+  "tp.links.body":
+    "Anda tetap memiliki konten yang Anda tautkan. Knot tidak bertanggung jawab atas konten tujuan yang diakses melalui link pendek yang dibuat pengguna.",
+  "tp.termination.title": "Penghentian",
+  "tp.termination.body":
+    "Anda dapat menghapus akun kapan saja. Kami dapat menangguhkan atau menghentikan akun yang melanggar Ketentuan ini, dan dapat menghapus link pendek yang melanggar kebijakan penggunaan kami.",
+  "tp.disclaimer.title": "Penyangkalan dan Batasan Tanggung Jawab",
+  "tp.disclaimer.body":
+    'Layanan disediakan "sebagaimana adanya" tanpa jaminan apa pun. Sejauh diizinkan oleh hukum, Knot tidak bertanggung jawab atas kerugian tidak langsung atau konsekuensial yang timbul dari penggunaan layanan Anda.',
+  "tp.changes.title": "Perubahan Ketentuan Ini",
+  "tp.changes.body":
+    "Kami dapat memperbarui Ketentuan ini dari waktu ke waktu. Perubahan material akan tercermin dengan memperbarui tanggal di atas. Penggunaan layanan yang berkelanjutan setelah perubahan berarti Anda menerima Ketentuan baru.",
+  "tp.contact.title": "Kontak",
+  "tp.contact.body": "Pertanyaan tentang Ketentuan ini? Email {email}.",
+
+  "support.title": "Dukungan",
+  "support.desc": "Temukan jawaban atas pertanyaan umum atau hubungi kami.",
+  "support.contactTitle": "Hubungi Kami",
+  "support.contactBody":
+    "Butuh bantuan lebih lanjut? Email {email} dan kami akan membalasnya.",
+  "support.contactEmail": "support@knot.dev",
 
   "link.clicks": "{count} klik",
   "link.copy": "Salin",

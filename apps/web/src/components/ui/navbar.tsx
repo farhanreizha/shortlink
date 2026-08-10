@@ -6,13 +6,9 @@ import { LanguageSwitcher } from "./language-switcher"
 
 export function Navbar({
   children,
-  user,
-  onLogout,
   links,
 }: {
   children?: ReactNode
-  user?: { username: string }
-  onLogout?: () => void
   links?: Array<{ label: string; href: string }>
 }) {
   const [open, setOpen] = useState(false)
@@ -69,7 +65,7 @@ export function Navbar({
 
         <LanguageSwitcher />
 
-        {!user && children && (
+        {children && (
           <button
             className="navbar__hamburger"
             type="button"
@@ -103,57 +99,7 @@ export function Navbar({
             ),
           )}
           {children}
-          {user && (
-            <Link
-              className="navbar__link navbar__link--mobile"
-              href="/settings"
-            >
-              {t("common.settings")}
-            </Link>
-          )}
-          {user && onLogout && (
-            <button
-              className="navbar__logout navbar__logout--mobile"
-              type="button"
-              onClick={onLogout}
-            >
-              {t("common.logout")}
-            </button>
-          )}
         </div>
-
-        {user && (
-          <div className="navbar__avatar-container">
-            <button
-              className="navbar__avatar-btn"
-              type="button"
-              onClick={() => setOpen(!open)}
-            >
-              <span className="navbar__avatar-name">{user.username}</span>
-              <div className="navbar__avatar-circle">
-                {user.username[0]?.toUpperCase()}
-              </div>
-            </button>
-
-            {open && (
-              <div className="navbar__dropdown">
-                <Link className="navbar__dropdown-item" href="/settings">
-                  {t("common.settings")}
-                </Link>
-                <div className="navbar__dropdown-divider" />
-                {onLogout && (
-                  <button
-                    className="navbar__dropdown-item navbar__dropdown-item--danger"
-                    type="button"
-                    onClick={onLogout}
-                  >
-                    {t("common.logout")}
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {open && (

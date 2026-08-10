@@ -38,6 +38,19 @@ export function Footer() {
             {t("footer.reliability")}
           </a>
         </div>
+
+        <div className="landing-footer__col">
+          <span className="landing-footer__heading">{t("footer.legal")}</span>
+          <Link className="landing-footer__link" href="/privacy">
+            {t("dash.privacy")}
+          </Link>
+          <Link className="landing-footer__link" href="/terms">
+            {t("dash.terms")}
+          </Link>
+          <Link className="landing-footer__link" href="/support">
+            {t("dash.support")}
+          </Link>
+        </div>
       </div>
 
       <div className="landing-footer__bottom">

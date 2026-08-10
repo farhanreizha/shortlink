@@ -128,6 +128,7 @@ export const en = {
   "footer.resources": "Resources",
   "footer.features": "Features",
   "footer.reliability": "Reliability",
+  "footer.legal": "Legal",
   "footer.rights": "© {year} Knot Infrastructure Inc. All rights reserved.",
 
   "auth.loginTitle": "Secure, simplified redirect infrastructure.",
@@ -223,6 +224,66 @@ export const en = {
   "faq.q5": "Can I use the Knot API?",
   "faq.a5":
     "Yes — see the API Documentation in the footer for endpoints and examples.",
+
+  "pp.title": "Privacy Policy",
+  "pp.updated": "Last updated: August 2026",
+  "pp.intro":
+    "This Privacy Policy explains how Knot collects, uses, and protects your information when you use our URL shortener service.",
+  "pp.collect.title": "Information We Collect",
+  "pp.collect.body":
+    "We collect the information you provide directly: your account credentials (email, username, password), and the URLs you shorten, including any campaign or custom alias details you add. We also collect usage data such as the number of clicks, approximate location, device type, and referring pages when someone visits a short link you created.",
+  "pp.use.title": "How We Use Your Information",
+  "pp.use.body":
+    "We use your information to provide and improve the service: creating and managing your short links, showing analytics for those links, sending service notifications, and keeping the service secure against abuse.",
+  "pp.cookies.title": "Cookies and Local Storage",
+  "pp.cookies.body":
+    "We use cookies and local storage to keep you signed in and remember your preferences (such as your language choice). We do not use third-party advertising cookies.",
+  "pp.share.title": "Sharing of Information",
+  "pp.share.body":
+    "We do not sell your personal data. We share data only when required by law, or with service providers that help us operate (hosting, email delivery) under confidentiality obligations.",
+  "pp.security.title": "Security",
+  "pp.security.body":
+    "Links are served over HTTPS and we apply reasonable technical measures to protect stored data. No method of transmission over the internet is 100% secure, so we cannot guarantee absolute security.",
+  "pp.rights.title": "Your Rights",
+  "pp.rights.body":
+    "You can access, correct, or delete your account and links at any time from the Settings page. You may also contact us to request deletion of your data.",
+  "pp.contact.title": "Contact Us",
+  "pp.contact.body": "Questions about this policy? Email {email}.",
+
+  "tp.title": "Terms of Service",
+  "tp.updated": "Last updated: August 2026",
+  "tp.intro":
+    "By creating an account or using Knot, you agree to these Terms of Service. If you do not agree, please do not use the service.",
+  "tp.service.title": "The Service",
+  "tp.service.body":
+    "Knot provides URL shortening, link management, and click analytics. We may change, suspend, or discontinue features at any time with reasonable notice where practical.",
+  "tp.accounts.title": "Accounts",
+  "tp.accounts.body":
+    "You are responsible for keeping your login credentials confidential and for all activity under your account. You must provide accurate registration information and keep it up to date.",
+  "tp.acceptable.title": "Acceptable Use",
+  "tp.acceptable.body":
+    "You may not use Knot to shorten links to illegal content, malware, phishing sites, or any material that infringes the rights of others. We reserve the right to disable links or accounts that violate this policy.",
+  "tp.links.title": "Links and Content",
+  "tp.links.body":
+    "You retain ownership of the content you link to. Knot is not responsible for the content of the destinations reached through short links created by users.",
+  "tp.termination.title": "Termination",
+  "tp.termination.body":
+    "You may delete your account at any time. We may suspend or terminate accounts that breach these Terms, and we may remove short links that violate our acceptable use policy.",
+  "tp.disclaimer.title": "Disclaimer and Limitation of Liability",
+  "tp.disclaimer.body":
+    'The service is provided "as is" without warranties of any kind. To the maximum extent permitted by law, Knot is not liable for indirect or consequential damages arising from your use of the service.',
+  "tp.changes.title": "Changes to These Terms",
+  "tp.changes.body":
+    "We may update these Terms from time to time. Material changes will be reflected by updating the date above. Continued use of the service after changes means you accept the new Terms.",
+  "tp.contact.title": "Contact",
+  "tp.contact.body": "Questions about these Terms? Email {email}.",
+
+  "support.title": "Support",
+  "support.desc": "Find answers to common questions or get in touch with us.",
+  "support.contactTitle": "Contact Us",
+  "support.contactBody":
+    "Need more help? Email {email} and we will get back to you.",
+  "support.contactEmail": "support@knot.dev",
 
   "link.clicks": "{count} clicks",
   "link.copy": "Copy",
