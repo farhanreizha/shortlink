@@ -3,6 +3,9 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [react()],
+  ssr: {
+    noExternal: true,
+  },
   server: {
     allowedHosts: true,
     host: true,

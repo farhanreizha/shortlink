@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Knot — Shorten Your Links, Expand Your Reach">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#001433"/>
+      <stop offset="1" stop-color="#0052ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g stroke="#93b4ff" stroke-width="16" fill="none" stroke-linecap="round">
+    <rect x="450" y="215" width="170" height="170" rx="85"/>
+    <rect x="580" y="215" width="170" height="170" rx="85"/>
+    <rect x="512" y="285" width="176" height="30" fill="#001433" stroke="none"/>
+  </g>
+  <text x="600" y="500" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="88" font-weight="700" fill="#ffffff">Knot</text>
+  <text x="600" y="558" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#c7d2fe">Shorten Your Links, Expand Your Reach</text>
+</svg>

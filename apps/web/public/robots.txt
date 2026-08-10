@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /settings
+Disallow: /custom-links
+Disallow: /analytics
+Disallow: /campaigns
+Disallow: /api/
+
+Sitemap: https://shortlink.example.com/sitemap.xml

@@ -16,7 +16,7 @@ export type Lang = "en" | "id"
 const dicts: Record<Lang, Record<MessageKey, string>> = { en, id }
 
 const STORAGE_KEY = "knot.lang"
-const DEFAULT_LANG: Lang = "id"
+const DEFAULT_LANG: Lang = "en"
 
 interface I18nValue {
   lang: Lang
@@ -26,7 +26,7 @@ interface I18nValue {
 
 const I18nContext = createContext<I18nValue | null>(null)
 
-function initialLang(): Lang {
+function getInitialLang(): Lang {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     return saved === "en" || saved === "id" ? saved : DEFAULT_LANG
@@ -35,8 +35,14 @@ function initialLang(): Lang {
   }
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(initialLang)
+export function I18nProvider({
+  children,
+  initialLang,
+}: {
+  children: ReactNode
+  initialLang?: Lang
+}) {
+  const [lang, setLangState] = useState<Lang>(initialLang ?? getInitialLang)
 
   useEffect(() => {
     document.documentElement.lang = lang
