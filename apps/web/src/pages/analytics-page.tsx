@@ -186,20 +186,41 @@ export function AnalyticsPage({
         {error && <div className="an-error">{error}</div>}
 
         {loading && !data ? (
-          <div className="an-loading">
+          <>
+            <div className="an-loading">
+              <Skeleton
+                style={{ height: 96, borderRadius: "var(--radius-lg)" }}
+              />
+              <Skeleton
+                style={{ height: 96, borderRadius: "var(--radius-lg)" }}
+              />
+              <Skeleton
+                style={{ height: 96, borderRadius: "var(--radius-lg)" }}
+              />
+            </div>
+            <div className="an-grid" style={{ marginTop: 16 }}>
+              <Skeleton
+                style={{
+                  height: 240,
+                  gridColumn: "1 / -1",
+                  borderRadius: "var(--radius-lg)",
+                }}
+              />
+              <Skeleton
+                style={{ height: 180, borderRadius: "var(--radius-lg)" }}
+              />
+              <Skeleton
+                style={{ height: 180, borderRadius: "var(--radius-lg)" }}
+              />
+            </div>
             <Skeleton
-              style={{ height: 96, borderRadius: "var(--radius-lg)" }}
+              style={{
+                height: 200,
+                marginTop: 16,
+                borderRadius: "var(--radius-lg)",
+              }}
             />
-            <Skeleton
-              style={{ height: 96, borderRadius: "var(--radius-lg)" }}
-            />
-            <Skeleton
-              style={{ height: 96, borderRadius: "var(--radius-lg)" }}
-            />
-            <Skeleton
-              style={{ height: 96, borderRadius: "var(--radius-lg)" }}
-            />
-          </div>
+          </>
         ) : (
           data && (
             <>
