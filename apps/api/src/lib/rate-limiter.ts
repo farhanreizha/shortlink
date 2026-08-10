@@ -14,20 +14,21 @@ export function resetRateLimitStore() {
 
 // Trust only headers set by our reverse proxy (nginx sets X-Real-IP and
 // X-Forwarded-For for every proxied request); reject spoofed values that
-// are not valid IPs. Falls back to a shared bucket when neither is present
-// (e.g. direct API access in dev) — ponytail: per-account limits if the
-// API is ever reachable without the proxy.
-function clientKey(c: Context): string {
+// are not valid IPs. Without a client IP (direct access, e.g. dev via the
+// vite proxy) rate limiting is skipped — a shared fallback bucket would
+// let one client lock out every other client at once.
+function clientKey(c: Context): string | null {
   for (const header of ["x-forwarded-for", "x-real-ip"]) {
     const value = c.req.header(header)?.split(",")[0]?.trim()
     if (value && net.isIP(value)) return value
   }
-  return "unknown"
+  return null
 }
 
 export function rateLimit(opts: { windowMs: number; max: number }) {
   return async (c: Context, next: Next) => {
     const key = clientKey(c)
+    if (!key) return next()
     const now = Date.now()
     const entry = store.get(key)
     const current: Entry =
