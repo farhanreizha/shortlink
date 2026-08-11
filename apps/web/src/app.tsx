@@ -1,6 +1,6 @@
 import type { User } from "@knot/shared"
-import type { ReactNode } from "react"
-import { Redirect, Route, Switch } from "wouter"
+import { type ReactNode, useEffect } from "react"
+import { Redirect, Route, Switch, useLocation } from "wouter"
 import { DashboardShell } from "./components/ui/dashboard-shell"
 import { ErrorBoundary } from "./components/ui/error-boundary"
 import { Skeleton } from "./components/ui/skeleton"
@@ -45,6 +45,19 @@ function PublicRoute({
   )
 }
 
+function RouteTransition({ children }: { children: ReactNode }) {
+  const [location] = useLocation()
+  useEffect(() => {
+    if (!location) return
+    window.scrollTo(0, 0)
+  }, [location])
+  return (
+    <div key={location} className="animate-fade-in">
+      {children}
+    </div>
+  )
+}
+
 export function App() {
   const { loading, user, login, logout } = useAuth()
 
@@ -85,75 +98,77 @@ export function App() {
   return (
     <ErrorBoundary>
       <ToastProvider>
-        <Switch>
-          <Route path="/">
-            {user ? (
-              <DashboardPage user={user} onLogout={logout} />
-            ) : (
-              <LandingPage />
-            )}
-          </Route>
-          <Route path="/login">
-            {user ? (
-              <Redirect to="/" />
-            ) : (
-              <AuthPage mode="login" onAuth={login} />
-            )}
-          </Route>
-          <Route path="/register">
-            {user ? (
-              <Redirect to="/" />
-            ) : (
-              <AuthPage mode="register" onAuth={login} />
-            )}
-          </Route>
-          <Route path="/forgot-password">
-            {user ? <Redirect to="/" /> : <ForgotPasswordPage />}
-          </Route>
-          <Route path="/reset-password">
-            {user ? <Redirect to="/" /> : <ResetPasswordPage />}
-          </Route>
-          <Route path="/settings">
-            {user ? (
-              <SettingsPage user={user} onLogout={logout} />
-            ) : (
-              <Redirect to="/" />
-            )}
-          </Route>
-          <Route path="/custom-links">
-            {user ? (
-              <CustomLinksPage user={user} onLogout={logout} />
-            ) : (
-              <Redirect to="/" />
-            )}
-          </Route>
-          <Route path="/analytics">
-            {user ? (
-              <AnalyticsPage user={user} onLogout={logout} />
-            ) : (
-              <Redirect to="/" />
-            )}
-          </Route>
-          <Route path="/campaigns">
-            {user ? (
-              <CampaignsPage user={user} onLogout={logout} />
-            ) : (
-              <Redirect to="/" />
-            )}
-          </Route>
-          <PublicRoute path="/privacy" user={user} onLogout={logout}>
-            <LegalContent prefix="pp" />
-          </PublicRoute>
-          <PublicRoute path="/terms" user={user} onLogout={logout}>
-            <LegalContent prefix="tp" />
-          </PublicRoute>
-          <PublicRoute path="/support" user={user} onLogout={logout}>
-            <SupportContent />
-          </PublicRoute>
-          <Route path="/:rest*">
-            <NotFoundPage />
-          </Route>
-        </Switch>
+        <RouteTransition>
+          <Switch>
+            <Route path="/">
+              {user ? (
+                <DashboardPage user={user} onLogout={logout} />
+              ) : (
+                <LandingPage />
+              )}
+            </Route>
+            <Route path="/login">
+              {user ? (
+                <Redirect to="/" />
+              ) : (
+                <AuthPage mode="login" onAuth={login} />
+              )}
+            </Route>
+            <Route path="/register">
+              {user ? (
+                <Redirect to="/" />
+              ) : (
+                <AuthPage mode="register" onAuth={login} />
+              )}
+            </Route>
+            <Route path="/forgot-password">
+              {user ? <Redirect to="/" /> : <ForgotPasswordPage />}
+            </Route>
+            <Route path="/reset-password">
+              {user ? <Redirect to="/" /> : <ResetPasswordPage />}
+            </Route>
+            <Route path="/settings">
+              {user ? (
+                <SettingsPage user={user} onLogout={logout} />
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <Route path="/custom-links">
+              {user ? (
+                <CustomLinksPage user={user} onLogout={logout} />
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <Route path="/analytics">
+              {user ? (
+                <AnalyticsPage user={user} onLogout={logout} />
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <Route path="/campaigns">
+              {user ? (
+                <CampaignsPage user={user} onLogout={logout} />
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <PublicRoute path="/privacy" user={user} onLogout={logout}>
+              <LegalContent prefix="pp" />
+            </PublicRoute>
+            <PublicRoute path="/terms" user={user} onLogout={logout}>
+              <LegalContent prefix="tp" />
+            </PublicRoute>
+            <PublicRoute path="/support" user={user} onLogout={logout}>
+              <SupportContent />
+            </PublicRoute>
+            <Route path="/:rest*">
+              <NotFoundPage />
+            </Route>
+          </Switch>
+        </RouteTransition>
       </ToastProvider>
     </ErrorBoundary>
   )
