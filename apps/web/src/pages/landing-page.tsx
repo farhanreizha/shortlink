@@ -26,8 +26,7 @@ const NAV_LINKS = [
 
 const PLANS: Array<{
   nameKey: MessageKey
-  price?: string
-  priceKey?: MessageKey
+  priceKey: MessageKey
   periodKey?: MessageKey
   taglineKey: MessageKey
   featureKeys: MessageKey[]
@@ -36,7 +35,7 @@ const PLANS: Array<{
 }> = [
   {
     nameKey: "pricing.free.name",
-    price: "Rp0",
+    priceKey: "pricing.free.price",
     periodKey: "pricing.free.period",
     taglineKey: "pricing.free.tagline",
     featureKeys: [
@@ -50,7 +49,7 @@ const PLANS: Array<{
   },
   {
     nameKey: "pricing.pro.name",
-    price: "Rp49.000",
+    priceKey: "pricing.pro.price",
     periodKey: "pricing.pro.period",
     taglineKey: "pricing.pro.tagline",
     featureKeys: [
@@ -178,7 +177,7 @@ export function LandingPage() {
                   <h3 className="pricing-card__name">{t(plan.nameKey)}</h3>
                   <div className="pricing-card__price">
                     <span className="pricing-card__amount">
-                      {plan.priceKey ? t(plan.priceKey) : plan.price}
+                      {t(plan.priceKey)}
                     </span>
                     {plan.periodKey && (
                       <span className="pricing-card__period">

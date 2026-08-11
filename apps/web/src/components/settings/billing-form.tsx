@@ -3,25 +3,25 @@ import { type MessageKey, useI18n } from "../../lib/i18n"
 const BILLING_HISTORY: Array<{
   date: string
   planKey: MessageKey
-  amount: string
+  amountKey: MessageKey
   statusKey: MessageKey
 }> = [
   {
     date: "Jul 8, 2026",
     planKey: "bill.proMonthly",
-    amount: "Rp49.000",
+    amountKey: "bill.amount",
     statusKey: "bill.paid",
   },
   {
     date: "Jun 8, 2026",
     planKey: "bill.proMonthly",
-    amount: "Rp49.000",
+    amountKey: "bill.amount",
     statusKey: "bill.paid",
   },
   {
     date: "May 8, 2026",
     planKey: "bill.proMonthly",
-    amount: "Rp49.000",
+    amountKey: "bill.amount",
     statusKey: "bill.paid",
   },
 ]
@@ -42,7 +42,7 @@ export function BillingForm() {
             <div className="set-bill__badge">{t("bill.popular")}</div>
           </div>
           <div className="set-bill__price">
-            <strong>Rp49.000</strong>
+            <strong>{t("bill.price")}</strong>
             <span>{t("bill.perMonth")}</span>
           </div>
         </div>
@@ -89,7 +89,7 @@ export function BillingForm() {
               <tr key={row.date}>
                 <td>{row.date}</td>
                 <td>{t(row.planKey)}</td>
-                <td>{row.amount}</td>
+                <td>{t(row.amountKey)}</td>
                 <td>
                   <span className="set-bill__paid">{t(row.statusKey)}</span>
                 </td>
