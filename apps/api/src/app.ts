@@ -1,5 +1,6 @@
 import { swaggerUI } from "@hono/swagger-ui"
 import { OpenAPIHono } from "@hono/zod-openapi"
+import type { Hono } from "hono"
 import { cors } from "hono/cors"
 import { env } from "./config.js"
 import { rateLimit } from "./lib/rate-limiter.js"
@@ -15,7 +16,10 @@ import redirectRoutes from "./routes/redirect.route.js"
 import referralRoutes from "./routes/referral.route.js"
 import shortlinkRoutes from "./routes/shortlink.route.js"
 
-const app = new OpenAPIHono<{ Variables: { userId: number } }>()
+const app: Hono<{ Variables: { userId: number } }> &
+  OpenAPIHono<{ Variables: { userId: number } }> = new OpenAPIHono<{
+  Variables: { userId: number }
+}>()
 
 app.onError(errorHandler)
 
