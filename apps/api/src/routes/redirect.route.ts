@@ -26,9 +26,11 @@ const redirectRoutes = new OpenAPIHono()
 redirectRoutes.openapi(redirectRoute, async (c) => {
   const { slug } = c.req.valid("param")
   const link = await shortlinkService.getBySlug(slug)
-  // ponytail: fire-and-forget, redirect latency must not wait on click log
-  shortlinkService.incrementVisits(slug).catch(() => {})
-  recordClick(link.id, c.req.raw.headers).catch(() => {})
+  // ponytail: awaited on serverless — Vercel can freeze the function before fire-and-forget writes land; ~10ms latency tradeoff
+  await Promise.allSettled([
+    shortlinkService.incrementVisits(slug),
+    recordClick(link.id, c.req.raw.headers),
+  ])
 
   const blocked = isBlockedRedirectUrl(link.url)
   if (blocked) return c.json({ message: blocked }, 400)

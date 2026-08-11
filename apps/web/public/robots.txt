@@ -8,4 +8,4 @@ Disallow: /analytics
 Disallow: /campaigns
 Disallow: /api/
 
-Sitemap: https://shortlink.example.com/sitemap.xml
+Sitemap: https://knot.vercel.app/sitemap.xml

@@ -35,12 +35,12 @@ for (const route of seoRoutes) {
   html = replaceTag(
     html,
     /<link rel="canonical" href="[^"]*"/,
-    `<link rel="canonical" href="https://shortlink.example.com${route.path}"`,
+    `<link rel="canonical" href="https://knot.vercel.app${route.path}"`,
   )
   html = replaceTag(
     html,
     /<meta property="og:url" content="[^"]*"/,
-    `<meta property="og:url" content="https://shortlink.example.com${route.path}"`,
+    `<meta property="og:url" content="https://knot.vercel.app${route.path}"`,
   )
   html = replaceTag(
     html,

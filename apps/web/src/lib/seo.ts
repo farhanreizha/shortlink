@@ -1,6 +1,6 @@
 export const SITE = {
   name: "Knot",
-  domain: "https://shortlink.example.com",
+  domain: "https://knot.vercel.app",
   image: "/og-image.svg",
 } as const
 
