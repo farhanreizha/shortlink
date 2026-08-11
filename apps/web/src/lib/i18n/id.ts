@@ -518,6 +518,9 @@ export const id: Record<MessageKey, string> = {
   "bill.colStatus": "Status",
   "bill.paid": "Lunas",
   "bill.proMonthly": "Pro Bulanan",
+  "bill.comingSoon": "Segera Hadir",
+  "bill.comingSoonDesc":
+    "Penagihan belum tersedia. Fitur pembayaran akan segera hadir.",
 
   "set.referral": "Referal",
   "ref.title": "Ajak teman, dapatkan Pro",

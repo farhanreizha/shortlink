@@ -514,6 +514,9 @@ export const en = {
   "bill.colStatus": "Status",
   "bill.paid": "Paid",
   "bill.proMonthly": "Pro Monthly",
+  "bill.comingSoon": "Coming Soon",
+  "bill.comingSoonDesc":
+    "Billing is not available yet. Payment features will arrive soon.",
 
   "set.referral": "Referral",
   "ref.title": "Refer friends, earn Pro",
