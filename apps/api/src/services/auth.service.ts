@@ -184,8 +184,7 @@ export async function resetPassword(input: ResetPasswordInput) {
     .where(eq(users.resetTokenHash, tokenHash))
     .limit(1)
   if (
-    !row ||
-    !row.resetTokenExpiresAt ||
+    !row?.resetTokenExpiresAt ||
     row.resetTokenExpiresAt.getTime() <= Date.now()
   ) {
     throw new HTTPException(400, {

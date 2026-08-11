@@ -368,11 +368,15 @@ describe("POST /api/auth/reset-password", () => {
       body: JSON.stringify({ email }),
     })
     const data = (await res.json()) as { resetUrl?: string }
-    return new URL(data.resetUrl!).searchParams.get("token")!
+    const resetUrl = data.resetUrl
+    if (!resetUrl) throw new Error("no reset url in response")
+    const token = new URL(resetUrl).searchParams.get("token")
+    if (!token) throw new Error("no token in reset url")
+    return token
   }
 
   it("resets the password and invalidates the old one", async () => {
-    const { token } = await registerUser({
+    await registerUser({
       email: "resetpw@test.com",
       username: "resetpw",
     })
