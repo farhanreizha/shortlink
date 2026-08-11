@@ -1,8 +1,10 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import {
   DeleteAccountSchema,
+  ForgotPasswordSchema,
   LoginSchema,
   RegisterSchema,
+  ResetPasswordSchema,
   UpdateUserSchema,
   UserSchema,
 } from "@knot/shared"
@@ -125,6 +127,53 @@ const deleteMeRoute = createRoute({
   },
 })
 
+const forgotPasswordRoute = createRoute({
+  method: "post",
+  path: "/forgot-password",
+  request: {
+    body: {
+      content: { "application/json": { schema: ForgotPasswordSchema } },
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+            resetUrl: z.string().optional(),
+          }),
+        },
+      },
+      description: "Password reset requested",
+    },
+  },
+})
+
+const resetPasswordRoute = createRoute({
+  method: "post",
+  path: "/reset-password",
+  request: {
+    body: {
+      content: { "application/json": { schema: ResetPasswordSchema } },
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({ message: z.string() }),
+        },
+      },
+      description: "Password reset",
+    },
+    400: {
+      content: { "application/json": { schema: ErrorSchema } },
+      description: "Invalid or expired token",
+    },
+  },
+})
+
 const authRoutes = new OpenAPIHono<{ Variables: { userId: number } }>()
 
 authRoutes.openapi(registerRoute, async (c) => {
@@ -174,6 +223,21 @@ authRoutes.openapi(deleteMeRoute, async (c) => {
   await authService.deleteAccount(c.get("userId"), input.password)
   deleteCookie(c, "token", { path: "/" })
   return c.json({ message: "Account deleted" })
+})
+
+authRoutes.openapi(forgotPasswordRoute, async (c) => {
+  const input = c.req.valid("json")
+  const { resetUrl } = await authService.requestPasswordReset(input)
+  return c.json({
+    message: "If that email is registered, a reset link has been sent.",
+    ...(resetUrl ? { resetUrl } : {}),
+  })
+})
+
+authRoutes.openapi(resetPasswordRoute, async (c) => {
+  const input = c.req.valid("json")
+  await authService.resetPassword(input)
+  return c.json({ message: "Password reset. You can now sign in." })
 })
 
 export default authRoutes

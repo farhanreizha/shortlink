@@ -8,6 +8,13 @@ const envSchema = z.object({
   JWT_SECRET: z.string().default("dev-secret-change-in-production"),
   PORT: z.coerce.number().default(3001),
   CORS_ORIGIN: z.string().default("*"),
+  APP_URL: z.string().default("http://localhost:5173"),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().default(587),
+  SMTP_SECURE: z.coerce.boolean().default(false),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  SMTP_FROM: z.string().default("noreply@knot.dev"),
 })
 
 export const env = (() => {

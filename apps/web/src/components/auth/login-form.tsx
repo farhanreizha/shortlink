@@ -1,6 +1,7 @@
 import type { User } from "@knot/shared"
 import { LoginSchema } from "@knot/shared"
 import { useState } from "react"
+import { Link } from "wouter"
 import { client } from "../../hono-client"
 import { clearFieldError } from "../../lib/form"
 import { useI18n } from "../../lib/i18n"
@@ -86,9 +87,9 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
         showToggle
         error={errors.password}
         trailing={
-          <button type="button" className="form__label-link">
+          <Link className="form__label-link" href="/forgot-password">
             {t("auth.forgot")}
-          </button>
+          </Link>
         }
       />
       <ErrorBanner message={error} />

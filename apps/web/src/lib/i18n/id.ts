@@ -176,6 +176,26 @@ export const id: Record<MessageKey, string> = {
   "auth.google": "Google",
   "auth.github": "GitHub",
 
+  "forgot.title": "Atur ulang kata sandi",
+  "forgot.subtitle":
+    "Masukkan alamat email yang terhubung ke akunmu, kami akan mengirimkan tautan reset.",
+  "forgot.invalidEmail": "Masukkan alamat email yang valid",
+  "forgot.submit": "Kirim tautan reset",
+  "forgot.sentBody":
+    "Jika akun dengan email tersebut ada, tautan reset kata sandi sedang dikirim. Cek kotak masukmu.",
+  "forgot.backToLogin": "Kembali ke masuk",
+
+  "reset.title": "Buat kata sandi baru",
+  "reset.subtitle": "Pilih kata sandi yang kuat untuk akunmu.",
+  "reset.newPassword": "Kata sandi baru",
+  "reset.submit": "Reset kata sandi",
+  "reset.missingToken":
+    "Tautan reset ini tidak memiliki token. Minta tautan baru.",
+  "reset.requestNew": "Minta tautan reset baru",
+  "reset.invalidLink": "Tautan reset ini tidak valid atau sudah kedaluwarsa.",
+  "reset.success": "Kata sandi berhasil direset. Kamu bisa masuk sekarang.",
+  "reset.goToLogin": "Lanjut ke masuk",
+
   "strength.weak": "Lemah",
   "strength.fair": "Cukup",
   "strength.good": "Baik",

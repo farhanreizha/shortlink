@@ -40,6 +40,8 @@ export const users = pgTable(
     referrerId: integer("referrer_id"),
     proUntil: timestamp("pro_until"),
     referralRewarded: boolean("referral_rewarded").notNull().default(false),
+    resetTokenHash: text("reset_token_hash"),
+    resetTokenExpiresAt: timestamp("reset_token_expires_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({

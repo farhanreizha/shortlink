@@ -7,10 +7,12 @@ import type {
   CreateCampaign,
   CreateShortlink,
   DeleteAccount,
+  ForgotPasswordInput,
   LoginInput,
   Notification,
   Referral,
   RegisterInput,
+  ResetPasswordInput,
   Shortlink,
   ShortlinkQuery,
   UpdateCampaign,
@@ -40,6 +42,22 @@ export type AppRoutes = {
     $post: {
       // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
       input: {}
+      output: { message: string }
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/auth/forgot-password": {
+    $post: {
+      input: { json: ForgotPasswordInput }
+      output: { message: string; resetUrl?: string }
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/auth/reset-password": {
+    $post: {
+      input: { json: ResetPasswordInput }
       output: { message: string }
       outputFormat: "json"
       status: 200

@@ -36,6 +36,16 @@ app.use("/api/auth/register", rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }))
 
 app.use("/api/auth/login", rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }))
 
+app.use(
+  "/api/auth/forgot-password",
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 3 }),
+)
+
+app.use(
+  "/api/auth/reset-password",
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }),
+)
+
 app.use("/api/shortlinks", rateLimit({ windowMs: 60 * 1000, max: 30 }))
 
 app.use("/r/*", rateLimit({ windowMs: 60 * 1000, max: 120 }))

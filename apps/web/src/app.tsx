@@ -12,9 +12,11 @@ import { AuthPage } from "./pages/auth-page"
 import { CampaignsPage } from "./pages/campaigns-page"
 import { CustomLinksPage } from "./pages/custom-links-page"
 import { DashboardPage } from "./pages/dashboard-page"
+import { ForgotPasswordPage } from "./pages/forgot-password-page"
 import { LandingPage } from "./pages/landing-page"
 import { LegalContent } from "./pages/legal-page"
 import { NotFoundPage } from "./pages/not-found-page"
+import { ResetPasswordPage } from "./pages/reset-password-page"
 import { SettingsPage } from "./pages/settings-page"
 import { SupportContent } from "./pages/support-page"
 import "./index.css"
@@ -104,6 +106,12 @@ export function App() {
             ) : (
               <AuthPage mode="register" onAuth={login} />
             )}
+          </Route>
+          <Route path="/forgot-password">
+            {user ? <Redirect to="/" /> : <ForgotPasswordPage />}
+          </Route>
+          <Route path="/reset-password">
+            {user ? <Redirect to="/" /> : <ResetPasswordPage />}
           </Route>
           <Route path="/settings">
             {user ? (

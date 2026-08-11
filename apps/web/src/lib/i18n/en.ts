@@ -172,6 +172,26 @@ export const en = {
   "auth.google": "Google",
   "auth.github": "GitHub",
 
+  "forgot.title": "Reset your password",
+  "forgot.subtitle":
+    "Enter the email address linked to your account and we'll send you a reset link.",
+  "forgot.invalidEmail": "Enter a valid email address",
+  "forgot.submit": "Send reset link",
+  "forgot.sentBody":
+    "If an account exists for that email, a password reset link is on its way. Check your inbox.",
+  "forgot.backToLogin": "Back to sign in",
+
+  "reset.title": "Set a new password",
+  "reset.subtitle": "Choose a strong password for your account.",
+  "reset.newPassword": "New password",
+  "reset.submit": "Reset password",
+  "reset.missingToken":
+    "This reset link is missing a token. Request a new one.",
+  "reset.requestNew": "Request a new reset link",
+  "reset.invalidLink": "This reset link is invalid or has expired.",
+  "reset.success": "Password reset successful. You can now sign in.",
+  "reset.goToLogin": "Go to sign in",
+
   "strength.weak": "Weak",
   "strength.fair": "Fair",
   "strength.good": "Good",

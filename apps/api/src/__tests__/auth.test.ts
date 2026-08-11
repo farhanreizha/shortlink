@@ -334,3 +334,118 @@ describe("DELETE /api/auth/me", () => {
     expect(res.status).toBe(401)
   })
 })
+
+describe("POST /api/auth/forgot-password", () => {
+  it("returns 200 for unknown email without leaking", async () => {
+    const res = await app.request("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "ghost@test.com" }),
+    })
+    expect(res.status).toBe(200)
+    const data = (await res.json()) as { resetUrl?: string }
+    expect(data.resetUrl).toBeUndefined()
+  })
+
+  it("returns a reset url for a known email in dev", async () => {
+    await registerUser({ email: "reset@test.com", username: "resetuser" })
+    const res = await app.request("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "reset@test.com" }),
+    })
+    expect(res.status).toBe(200)
+    const data = (await res.json()) as { resetUrl?: string }
+    expect(data.resetUrl).toMatch(/\/reset-password\?token=/)
+  })
+})
+
+describe("POST /api/auth/reset-password", () => {
+  async function requestReset(email: string): Promise<string> {
+    const res = await app.request("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+    const data = (await res.json()) as { resetUrl?: string }
+    return new URL(data.resetUrl!).searchParams.get("token")!
+  }
+
+  it("resets the password and invalidates the old one", async () => {
+    const { token } = await registerUser({
+      email: "resetpw@test.com",
+      username: "resetpw",
+    })
+    const resetToken = await requestReset("resetpw@test.com")
+
+    const res = await app.request("/api/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: resetToken, password: "NewPass123" }),
+    })
+    expect(res.status).toBe(200)
+
+    const oldLogin = await app.request("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: "resetpw@test.com", password: "Test1234" }),
+    })
+    expect(oldLogin.status).toBe(401)
+
+    const newLogin = await app.request("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "resetpw@test.com",
+        password: "NewPass123",
+      }),
+    })
+    expect(newLogin.status).toBe(201)
+  })
+
+  it("rejects an invalid token", async () => {
+    const res = await app.request("/api/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: "bogus-token", password: "NewPass123" }),
+    })
+    expect(res.status).toBe(400)
+  })
+
+  it("rejects reusing a token", async () => {
+    await registerUser({ email: "reuse@test.com", username: "reuseuser" })
+    const resetToken = await requestReset("reuse@test.com")
+    const body = JSON.stringify({
+      token: resetToken,
+      password: "NewPass123",
+    })
+
+    const first = await app.request("/api/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    })
+    expect(first.status).toBe(200)
+
+    const second = await app.request("/api/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    })
+    expect(second.status).toBe(400)
+  })
+
+  it("rejects a password containing the username", async () => {
+    await registerUser({ email: "contain2@test.com", username: "alice2" })
+    const resetToken = await requestReset("contain2@test.com")
+    const res = await app.request("/api/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: resetToken,
+        password: "Alice2Pass123",
+      }),
+    })
+    expect(res.status).toBe(400)
+  })
+})

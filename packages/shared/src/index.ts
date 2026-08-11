@@ -43,6 +43,19 @@ export const LoginSchema = z.object({
 
 export type LoginInput = z.infer<typeof LoginSchema>
 
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email(),
+})
+
+export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>
+
+export const ResetPasswordSchema = z.object({
+  token: z.string().min(1),
+  password: PasswordSchema,
+})
+
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
+
 export const NotificationPrefsSchema = z.object({
   email: z.object({
     linkClicks: z.boolean(),

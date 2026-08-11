@@ -1,10 +1,26 @@
-import type { LoginInput, RegisterInput, UpdateUser, User } from "@knot/shared"
+import { createHash, randomBytes } from "node:crypto"
+import type {
+  ForgotPasswordInput,
+  LoginInput,
+  RegisterInput,
+  ResetPasswordInput,
+  UpdateUser,
+  User,
+} from "@knot/shared"
 import { eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
+import { env } from "../config.js"
 import { db } from "../db/index.js"
 import { shortlinks, users } from "../db/schema.js"
 import { hashPassword, signToken, verifyPassword } from "../lib/auth.js"
+import { sendPasswordReset } from "../lib/mailer.js"
 import * as referralService from "./referral.service.js"
+
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000
+
+function hashToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex")
+}
 
 function toUser(row: typeof users.$inferSelect): User {
   return {
@@ -138,4 +154,61 @@ export async function deleteAccount(userId: number, password: string) {
 
   await db.delete(shortlinks).where(eq(shortlinks.userId, userId))
   await db.delete(users).where(eq(users.id, userId))
+}
+
+export async function requestPasswordReset(input: ForgotPasswordInput) {
+  const [row] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, input.email))
+    .limit(1)
+  if (!row) return { resetUrl: undefined }
+
+  const token = randomBytes(32).toString("base64url")
+  const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MS)
+  await db
+    .update(users)
+    .set({ resetTokenHash: hashToken(token), resetTokenExpiresAt: expiresAt })
+    .where(eq(users.id, row.id))
+
+  const resetUrl = `${env.APP_URL}/reset-password?token=${token}`
+  const sent = await sendPasswordReset(row.email, resetUrl)
+  return { resetUrl: sent ? undefined : resetUrl }
+}
+
+export async function resetPassword(input: ResetPasswordInput) {
+  const tokenHash = hashToken(input.token)
+  const [row] = await db
+    .select()
+    .from(users)
+    .where(eq(users.resetTokenHash, tokenHash))
+    .limit(1)
+  if (
+    !row ||
+    !row.resetTokenExpiresAt ||
+    row.resetTokenExpiresAt.getTime() <= Date.now()
+  ) {
+    throw new HTTPException(400, {
+      message: "Reset link is invalid or expired",
+    })
+  }
+
+  const lower = input.password.toLowerCase()
+  const parts = [row.username, row.email.split("@")[0]].filter(
+    (part): part is string => part !== undefined && part !== "",
+  )
+  if (parts.some((part) => lower.includes(part.toLowerCase()))) {
+    throw new HTTPException(400, {
+      message: "Password must not contain your username or email",
+    })
+  }
+
+  await db
+    .update(users)
+    .set({
+      password: await hashPassword(input.password),
+      resetTokenHash: null,
+      resetTokenExpiresAt: null,
+    })
+    .where(eq(users.id, row.id))
 }
