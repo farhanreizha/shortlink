@@ -1,0 +1,9 @@
+# Knot
+
+> Knot is a free URL shortener and link manager for creating short links, custom aliases, and click analytics.
+
+- [Knot](https://web-knot.vercel.app/): Free URL shortener and link manager with click analytics.
+- [Privacy Policy](https://web-knot.vercel.app/privacy): How Knot handles your data.
+- [Terms of Service](https://web-knot.vercel.app/terms): Knot's terms of use.
+- [Support](https://web-knot.vercel.app/support): Knot support and FAQ.
+- [API](https://api-knot.vercel.app/): Knot REST API.
