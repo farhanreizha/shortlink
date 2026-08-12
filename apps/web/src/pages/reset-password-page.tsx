@@ -4,6 +4,7 @@ import { Link, useLocation } from "wouter"
 import { AuthShell } from "../components/auth/auth-shell"
 import { ErrorBanner } from "../components/ui/error-banner"
 import { PasswordField } from "../components/ui/password-field"
+import { SubmitButton } from "../components/ui/submit-button"
 import { client } from "../hono-client"
 import { clearFieldError } from "../lib/form"
 import { useI18n } from "../lib/i18n"
@@ -118,14 +119,14 @@ export function ResetPasswordPage() {
             error={errors.confirm}
           />
           <ErrorBanner message={error} />
-          <button
-            type="submit"
-            className="btn btn--primary"
-            style={{ width: "100%" }}
-            disabled={loading || !password || !confirm}
+          <SubmitButton
+            block
+            loading={loading}
+            loadingLabel={t("common.loading")}
+            disabled={!password || !confirm}
           >
-            {loading ? t("common.loading") : t("reset.submit")}
-          </button>
+            {t("reset.submit")}
+          </SubmitButton>
         </form>
       )}
     </AuthShell>

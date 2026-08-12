@@ -5,6 +5,8 @@ import { useToast } from "../../hooks/use-toast"
 import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
+import { SubmitButton } from "../ui/submit-button"
+import { SettingsCard } from "./settings-card"
 
 export function ProfileForm({ user }: { user: User }) {
   const { toast } = useToast()
@@ -33,11 +35,7 @@ export function ProfileForm({ user }: { user: User }) {
   }
 
   return (
-    <section className="set-card">
-      <div className="set-card__header">
-        <h2 className="set-card__title">{t("pf.title")}</h2>
-        <p className="set-card__desc">{t("pf.desc")}</p>
-      </div>
+    <SettingsCard title={t("pf.title")} desc={t("pf.desc")}>
       <form className="set-form" onSubmit={handleSubmit}>
         <FormField label={t("pf.email")} htmlFor="settings-email" error={error}>
           <input
@@ -54,15 +52,15 @@ export function ProfileForm({ user }: { user: User }) {
         </FormField>
         <ErrorBanner message={error} onClose={() => setError("")} />
         <div className="set-form__footer">
-          <button
-            type="submit"
-            className="btn btn--primary"
-            disabled={loading || !email}
+          <SubmitButton
+            loading={loading}
+            loadingLabel={t("common.saving")}
+            disabled={!email}
           >
-            {loading ? t("common.saving") : t("pf.save")}
-          </button>
+            {t("pf.save")}
+          </SubmitButton>
         </div>
       </form>
-    </section>
+    </SettingsCard>
   )
 }

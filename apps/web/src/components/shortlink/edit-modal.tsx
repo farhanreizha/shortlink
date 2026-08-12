@@ -5,6 +5,8 @@ import { CampaignSelect } from "../ui/campaign-select"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
+import { ModalActions } from "../ui/modal-actions"
+import { SubmitButton } from "../ui/submit-button"
 
 export function EditModal({
   open,
@@ -84,23 +86,15 @@ export function EditModal({
           />
         </FormField>
         <ErrorBanner message={error} onClose={() => setError("")} />
-        <div className="modal-actions">
-          <button
-            className="btn btn--ghost"
-            type="button"
-            onClick={onClose}
-            disabled={loading}
+        <ModalActions onCancel={onClose} cancelDisabled={loading}>
+          <SubmitButton
+            loading={loading}
+            loadingLabel={t("modal.saving")}
+            disabled={!url}
           >
-            {t("common.cancel")}
-          </button>
-          <button
-            className="btn btn--primary"
-            type="submit"
-            disabled={loading || !url}
-          >
-            {loading ? t("modal.saving") : t("modal.save")}
-          </button>
-        </div>
+            {t("modal.save")}
+          </SubmitButton>
+        </ModalActions>
       </form>
     </Modal>
   )

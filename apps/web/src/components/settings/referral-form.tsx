@@ -4,6 +4,7 @@ import { useReferral } from "../../hooks/use-referral"
 import { useToast } from "../../hooks/use-toast"
 import { useI18n } from "../../lib/i18n"
 import { Skeleton } from "../ui/skeleton"
+import { SettingsCard } from "./settings-card"
 
 export function ReferralForm() {
   const { t } = useI18n()
@@ -19,8 +20,10 @@ export function ReferralForm() {
 
   if (loading) {
     return (
-      <section className="set-card set-card--referral" aria-busy="true">
-        <div className="set-card__header">
+      <SettingsCard
+        modifier="set-card--referral"
+        ariaBusy
+        title={
           <Skeleton
             style={{
               height: 26,
@@ -28,9 +31,9 @@ export function ReferralForm() {
               marginBottom: "var(--space-2)",
             }}
           />
-          <Skeleton style={{ height: 16, width: "80%" }} />
-        </div>
-
+        }
+        desc={<Skeleton style={{ height: 16, width: "80%" }} />}
+      >
         <div className="ref-link">
           <Skeleton
             style={{ height: 14, width: 140, marginBottom: "var(--space-3)" }}
@@ -95,7 +98,7 @@ export function ReferralForm() {
             />
           ))}
         </div>
-      </section>
+      </SettingsCard>
     )
   }
 
@@ -120,12 +123,11 @@ export function ReferralForm() {
   ]
 
   return (
-    <section className="set-card set-card--referral">
-      <div className="set-card__header">
-        <h2 className="set-card__title">{t("ref.title")}</h2>
-        <p className="set-card__desc">{t("ref.desc")}</p>
-      </div>
-
+    <SettingsCard
+      modifier="set-card--referral"
+      title={t("ref.title")}
+      desc={t("ref.desc")}
+    >
       <div className="ref-link">
         <div className="set-bill__label">{t("ref.yourLink")}</div>
         <div className="ref-link__row">
@@ -215,6 +217,6 @@ export function ReferralForm() {
           </table>
         )}
       </div>
-    </section>
+    </SettingsCard>
   )
 }

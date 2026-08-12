@@ -8,6 +8,7 @@ import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
 import { PasswordStrength } from "../ui/password-strength"
+import { SubmitButton } from "../ui/submit-button"
 import { SocialButtons } from "./social-buttons"
 
 export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
@@ -144,21 +145,16 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
           </button>
         </span>
       </label>
-      <button
-        type="submit"
-        className="btn btn--primary"
-        style={{ width: "100%" }}
+      <SubmitButton
+        block
+        loading={loading}
+        loadingLabel={t("common.loading")}
         disabled={
-          loading ||
-          !username ||
-          !email ||
-          !password ||
-          !confirmPassword ||
-          !agreed
+          !username || !email || !password || !confirmPassword || !agreed
         }
       >
-        {loading ? t("common.loading") : t("auth.signUpBtn")}
-      </button>
+        {t("auth.signUpBtn")}
+      </SubmitButton>
     </form>
   )
 }

@@ -5,6 +5,8 @@ import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
+import { ModalActions } from "../ui/modal-actions"
+import { SubmitButton } from "../ui/submit-button"
 
 export function CampaignModal({
   campaign,
@@ -85,22 +87,15 @@ export function CampaignModal({
           </select>
         </FormField>
         {error && <ErrorBanner message={error} />}
-        <div className="cm-form__actions">
-          <button type="button" className="btn btn--ghost" onClick={onClose}>
-            {t("cm.cancel")}
-          </button>
-          <button
-            type="submit"
-            className="btn btn--primary"
+        <ModalActions onCancel={onClose}>
+          <SubmitButton
+            loading={submitting}
+            loadingLabel={t("cm.saving")}
             disabled={!canSubmit}
           >
-            {submitting
-              ? t("cm.saving")
-              : campaign
-                ? t("cm.saveChanges")
-                : t("cm.createCampaign")}
-          </button>
-        </div>
+            {campaign ? t("cm.saveChanges") : t("cm.createCampaign")}
+          </SubmitButton>
+        </ModalActions>
       </form>
     </Modal>
   )

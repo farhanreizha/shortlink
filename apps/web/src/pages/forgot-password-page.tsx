@@ -4,6 +4,7 @@ import { Link } from "wouter"
 import { AuthShell } from "../components/auth/auth-shell"
 import { ErrorBanner } from "../components/ui/error-banner"
 import { FormField } from "../components/ui/form-field"
+import { SubmitButton } from "../components/ui/submit-button"
 import { client } from "../hono-client"
 import { useI18n } from "../lib/i18n"
 
@@ -74,14 +75,14 @@ export function ForgotPasswordPage() {
             />
           </FormField>
           <ErrorBanner message={error} />
-          <button
-            type="submit"
-            className="btn btn--primary"
-            style={{ width: "100%" }}
-            disabled={loading || !email}
+          <SubmitButton
+            block
+            loading={loading}
+            loadingLabel={t("common.loading")}
+            disabled={!email}
           >
-            {loading ? t("common.loading") : t("forgot.submit")}
-          </button>
+            {t("forgot.submit")}
+          </SubmitButton>
         </form>
       )}
     </AuthShell>

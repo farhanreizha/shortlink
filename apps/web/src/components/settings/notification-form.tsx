@@ -4,6 +4,7 @@ import { client } from "../../hono-client"
 import { useToast } from "../../hooks/use-toast"
 import { type MessageKey, useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
+import { SettingsCard } from "./settings-card"
 
 type FlatPrefs = {
   linkClicks: boolean
@@ -91,11 +92,11 @@ export function NotificationForm({ user }: { user: User }) {
   }
 
   return (
-    <section className="set-card set-card--notifications">
-      <div className="set-card__header">
-        <h2 className="set-card__title">{t("nf.title")}</h2>
-        <p className="set-card__desc">{t("nf.desc")}</p>
-      </div>
+    <SettingsCard
+      modifier="set-card--notifications"
+      title={t("nf.title")}
+      desc={t("nf.desc")}
+    >
       <div className="set-form">
         <ErrorBanner message={error} onClose={() => setError("")} />
         <div className="set-prefs">
@@ -120,6 +121,6 @@ export function NotificationForm({ user }: { user: User }) {
           ))}
         </div>
       </div>
-    </section>
+    </SettingsCard>
   )
 }

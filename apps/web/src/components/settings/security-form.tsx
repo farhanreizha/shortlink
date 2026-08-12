@@ -6,6 +6,8 @@ import { clearFieldError } from "../../lib/form"
 import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { PasswordField } from "../ui/password-field"
+import { SubmitButton } from "../ui/submit-button"
+import { SettingsCard } from "./settings-card"
 
 export function SecurityForm() {
   const { toast } = useToast()
@@ -61,11 +63,11 @@ export function SecurityForm() {
   }
 
   return (
-    <section className="set-card set-card--security">
-      <div className="set-card__header">
-        <h2 className="set-card__title">{t("sec.title")}</h2>
-        <p className="set-card__desc">{t("sec.desc")}</p>
-      </div>
+    <SettingsCard
+      modifier="set-card--security"
+      title={t("sec.title")}
+      desc={t("sec.desc")}
+    >
       <form className="set-form" onSubmit={handleSubmit}>
         <PasswordField
           id="settings-current"
@@ -112,15 +114,15 @@ export function SecurityForm() {
 
         <ErrorBanner message={error} onClose={() => setError("")} />
         <div className="set-form__footer">
-          <button
-            type="submit"
-            className="btn btn--primary"
-            disabled={loading || !currentPassword || !newPassword}
+          <SubmitButton
+            loading={loading}
+            loadingLabel={t("common.saving")}
+            disabled={!currentPassword || !newPassword}
           >
-            {loading ? t("common.saving") : t("pf.save")}
-          </button>
+            {t("pf.save")}
+          </SubmitButton>
         </div>
       </form>
-    </section>
+    </SettingsCard>
   )
 }

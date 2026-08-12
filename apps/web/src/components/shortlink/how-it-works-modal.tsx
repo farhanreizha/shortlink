@@ -1,6 +1,7 @@
 import { Edit3, Route, TrendingUp } from "lucide-react"
 import { useI18n } from "../../lib/i18n"
 import { Modal } from "../ui/modal"
+import { ModalActions } from "../ui/modal-actions"
 
 const STEPS = [
   {
@@ -44,11 +45,11 @@ export function HowItWorksModal({
           </div>
         ))}
       </div>
-      <div className="modal-actions">
+      <ModalActions>
         <button className="btn btn--primary" type="button" onClick={onClose}>
           {t("how.gotIt")}
         </button>
-      </div>
+      </ModalActions>
     </Modal>
   )
 }

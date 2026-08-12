@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { useI18n } from "../../lib/i18n"
 import { Modal } from "./modal"
+import { ModalActions } from "./modal-actions"
 
 interface ConfirmModalProps {
   open: boolean
@@ -28,10 +29,7 @@ export function ConfirmModal({
     <Modal open={open} title={title} onClose={onCancel}>
       <p className="modal-message">{message}</p>
       {children}
-      <div className="modal-actions">
-        <button className="btn btn--ghost" type="button" onClick={onCancel}>
-          {t("common.cancel")}
-        </button>
+      <ModalActions onCancel={onCancel}>
         <button
           className="btn btn--danger"
           type="button"
@@ -40,7 +38,7 @@ export function ConfirmModal({
         >
           {confirmLabel ?? t("common.delete")}
         </button>
-      </div>
+      </ModalActions>
     </Modal>
   )
 }

@@ -8,6 +8,7 @@ import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
+import { SubmitButton } from "../ui/submit-button"
 import { SocialButtons } from "./social-buttons"
 
 export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
@@ -93,14 +94,14 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
         }
       />
       <ErrorBanner message={error} />
-      <button
-        type="submit"
-        className="btn btn--primary"
-        style={{ width: "100%" }}
-        disabled={loading || !email || !password}
+      <SubmitButton
+        block
+        loading={loading}
+        loadingLabel={t("common.loading")}
+        disabled={!email || !password}
       >
-        {loading ? t("common.loading") : t("auth.signIn")}
-      </button>
+        {t("auth.signIn")}
+      </SubmitButton>
     </form>
   )
 }

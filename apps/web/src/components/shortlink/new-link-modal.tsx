@@ -8,6 +8,8 @@ import { CampaignSelect } from "../ui/campaign-select"
 import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
+import { ModalActions } from "../ui/modal-actions"
+import { SubmitButton } from "../ui/submit-button"
 
 export function NewLinkModal({
   open,
@@ -89,24 +91,16 @@ export function NewLinkModal({
           />
         </FormField>
         <ErrorBanner message={error} onClose={() => setError("")} />
-        <div className="modal-actions">
-          <button
-            className="btn btn--ghost"
-            type="button"
-            onClick={onClose}
-            disabled={loading}
-          >
-            {t("common.cancel")}
-          </button>
-          <button
-            className="btn btn--primary"
-            type="submit"
-            disabled={loading || !url}
+        <ModalActions onCancel={onClose} cancelDisabled={loading}>
+          <SubmitButton
+            loading={loading}
+            loadingLabel={t("modal.creating")}
+            disabled={!url}
           >
             <LinkIcon size={16} />
-            {loading ? t("modal.creating") : t("modal.createLink")}
-          </button>
-        </div>
+            {t("modal.createLink")}
+          </SubmitButton>
+        </ModalActions>
       </form>
     </Modal>
   )

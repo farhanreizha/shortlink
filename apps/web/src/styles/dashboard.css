@@ -1640,12 +1640,6 @@
   min-height: 84px;
   resize: vertical;
 }
-.cm-form__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 4px;
-}
 
 .set-prefs {
   display: flex;

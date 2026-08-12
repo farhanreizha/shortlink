@@ -6,6 +6,7 @@ import { NotificationForm } from "../components/settings/notification-form"
 import { ProfileForm } from "../components/settings/profile-form"
 import { ReferralForm } from "../components/settings/referral-form"
 import { SecurityForm } from "../components/settings/security-form"
+import { SettingsCard } from "../components/settings/settings-card"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
 import { FormField } from "../components/ui/form-field"
@@ -82,11 +83,11 @@ export function SettingsPage({
           {tab === "referral" && <ReferralForm />}
 
           {tab === "profile" && (
-            <section className="set-card set-card--danger">
-              <div className="set-card__header">
-                <h2 className="set-card__title">{t("set.dangerZone")}</h2>
-                <p className="set-card__desc">{t("set.dangerDesc")}</p>
-              </div>
+            <SettingsCard
+              modifier="set-card--danger"
+              title={t("set.dangerZone")}
+              desc={t("set.dangerDesc")}
+            >
               <div className="set-form__footer">
                 <button
                   type="button"
@@ -96,7 +97,7 @@ export function SettingsPage({
                   {t("set.deleteAccount")}
                 </button>
               </div>
-            </section>
+            </SettingsCard>
           )}
         </div>
       </div>

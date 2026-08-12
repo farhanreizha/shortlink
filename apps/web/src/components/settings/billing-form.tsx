@@ -1,4 +1,5 @@
 import { type MessageKey, useI18n } from "../../lib/i18n"
+import { SettingsCard } from "./settings-card"
 
 const BILLING_ENABLED = false
 
@@ -31,12 +32,11 @@ const BILLING_HISTORY: Array<{
 export function BillingForm() {
   const { t } = useI18n()
   return (
-    <section className="set-card set-card--billing">
-      <div className="set-card__header">
-        <h2 className="set-card__title">{t("bill.title")}</h2>
-        <p className="set-card__desc">{t("bill.desc")}</p>
-      </div>
-
+    <SettingsCard
+      modifier="set-card--billing"
+      title={t("bill.title")}
+      desc={t("bill.desc")}
+    >
       {BILLING_ENABLED ? (
         <>
           <div className="set-bill">
@@ -112,6 +112,6 @@ export function BillingForm() {
           <p className="set-bill__feature">{t("bill.comingSoonDesc")}</p>
         </div>
       )}
-    </section>
+    </SettingsCard>
   )
 }
