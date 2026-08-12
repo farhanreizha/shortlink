@@ -1,6 +1,6 @@
 import type { User } from "@knot/shared"
 import { Waypoints } from "lucide-react"
-import { lazy, type ReactNode, Suspense, useEffect } from "react"
+import { lazy, type ReactNode, Suspense, useEffect, useRef } from "react"
 import { Redirect, Route, Switch, useLocation } from "wouter"
 import { ErrorBoundary } from "./components/ui/error-boundary"
 import { StaticPage } from "./components/ui/static-page"
@@ -75,12 +75,16 @@ function PublicRoute({
 
 function RouteTransition({ children }: { children: ReactNode }) {
   const [location] = useLocation()
+  const initialLocation = useRef(location)
   useEffect(() => {
     if (!location) return
     window.scrollTo(0, 0)
   }, [location])
   return (
-    <div key={location} className="animate-fade-in">
+    <div
+      key={location}
+      className={location === initialLocation.current ? "" : "animate-fade-in"}
+    >
       {children}
     </div>
   )
