@@ -1,4 +1,3 @@
-import { CreateShortlinkSchema } from "@knot/shared"
 import { Link as LinkIcon, Scissors } from "lucide-react"
 import { useState } from "react"
 import { useI18n } from "../../lib/i18n"
@@ -25,11 +24,10 @@ export function CreateForm({
     e.preventDefault()
     setError("")
     const slug = randomSlug()
-    const result = CreateShortlinkSchema.safeParse({ slug, url })
-    if (!result.success) {
-      setError(
-        result.error.flatten().fieldErrors.url?.[0] ?? t("form.invalidUrl"),
-      )
+    try {
+      new URL(url)
+    } catch {
+      setError(t("form.invalidUrl"))
       return
     }
     setLoading(true)

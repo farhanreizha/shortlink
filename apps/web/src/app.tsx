@@ -2,7 +2,6 @@ import type { User } from "@knot/shared"
 import { Waypoints } from "lucide-react"
 import { lazy, type ReactNode, Suspense, useEffect } from "react"
 import { Redirect, Route, Switch, useLocation } from "wouter"
-import { DashboardShell } from "./components/ui/dashboard-shell"
 import { ErrorBoundary } from "./components/ui/error-boundary"
 import { StaticPage } from "./components/ui/static-page"
 import { useAuth } from "./hooks/use-auth"
@@ -12,6 +11,12 @@ import { LegalContent } from "./pages/legal-page"
 import { NotFoundPage } from "./pages/not-found-page"
 import { SupportContent } from "./pages/support-page"
 import "./index.css"
+
+const DashboardShell = lazy(() =>
+  import("./components/ui/dashboard-shell").then((m) => ({
+    default: m.DashboardShell,
+  })),
+)
 
 const AnalyticsPage = lazy(() =>
   import("./pages/analytics-page").then((m) => ({ default: m.AnalyticsPage })),

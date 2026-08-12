@@ -17,6 +17,13 @@ const { renderRoute, seoRoutes } = await import(
 
 const template = readFileSync(join(dist, "index.html"), "utf8")
 
+function inlineCss(html) {
+  return html.replace(
+    /<link rel="stylesheet" crossorigin href="([^"]+\.css)">/g,
+    (_, href) => `<style>${readFileSync(join(dist, href), "utf8")}</style>`,
+  )
+}
+
 function replaceTag(html, pattern, value) {
   const re = new RegExp(pattern)
   if (!re.test(html)) throw new Error(`Tag not found: ${pattern}`)
@@ -25,7 +32,7 @@ function replaceTag(html, pattern, value) {
 
 for (const route of seoRoutes) {
   const body = renderRoute(route.path)
-  let html = template.replace('<div id="root"></div>', `<div id="root">${body}</div>`)
+  let html = inlineCss(template.replace('<div id="root"></div>', `<div id="root">${body}</div>`))
   html = replaceTag(html, /<title>.*?<\/title>/, `<title>${route.title}</title>`)
   html = replaceTag(
     html,
