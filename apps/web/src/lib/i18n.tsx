@@ -7,13 +7,10 @@ import {
   useState,
 } from "react"
 import { en, type MessageKey } from "./i18n/en"
-import { id } from "./i18n/id"
 
 export type { MessageKey } from "./i18n/en"
 
 export type Lang = "en" | "id"
-
-const dicts: Record<Lang, Record<MessageKey, string>> = { en, id }
 
 const STORAGE_KEY = "knot.lang"
 const DEFAULT_LANG: Lang = "en"
@@ -43,6 +40,18 @@ export function I18nProvider({
   initialLang?: Lang
 }) {
   const [lang, setLangState] = useState<Lang>(initialLang ?? getInitialLang)
+  const [dict, setDict] = useState<Record<MessageKey, string>>(en)
+
+  useEffect(() => {
+    if (lang !== "id") return
+    let cancelled = false
+    import("./i18n/id").then((m) => {
+      if (!cancelled) setDict(m.id)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [lang])
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -57,7 +66,7 @@ export function I18nProvider({
 
   const t = useCallback(
     (key: MessageKey, vars?: Record<string, string | number>) => {
-      let str = dicts[lang][key] ?? en[key] ?? key
+      let str = dict[key] ?? en[key] ?? key
       if (vars) {
         for (const [k, v] of Object.entries(vars)) {
           str = str.replace(`{${k}}`, String(v))
@@ -65,7 +74,7 @@ export function I18nProvider({
       }
       return str
     },
-    [lang],
+    [dict],
   )
 
   return (
