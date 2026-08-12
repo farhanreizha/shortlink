@@ -1,9 +1,9 @@
 import type { User } from "@knot/shared"
+import { Waypoints } from "lucide-react"
 import { lazy, type ReactNode, Suspense, useEffect } from "react"
 import { Redirect, Route, Switch, useLocation } from "wouter"
 import { DashboardShell } from "./components/ui/dashboard-shell"
 import { ErrorBoundary } from "./components/ui/error-boundary"
-import { Skeleton } from "./components/ui/skeleton"
 import { StaticPage } from "./components/ui/static-page"
 import { useAuth } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
@@ -81,36 +81,10 @@ function RouteTransition({ children }: { children: ReactNode }) {
   )
 }
 
-function LoadingSkeleton() {
+function LoadingScreen() {
   return (
-    <div className="main animate-fade-in">
-      <div className="card">
-        <Skeleton
-          style={{ height: 24, width: 200, marginBottom: "var(--space-6)" }}
-        />
-        <Skeleton style={{ height: 44, marginBottom: "var(--space-3)" }} />
-        <div style={{ display: "flex", gap: "var(--space-3)" }}>
-          <Skeleton className="skeleton--button" style={{ width: 200 }} />
-          <Skeleton className="skeleton--button" />
-        </div>
-      </div>
-      <Skeleton
-        style={{
-          height: 24,
-          width: 180,
-          margin: "var(--space-10) 0 var(--space-6)",
-        }}
-      />
-      {[1, 2, 3].map((i) => (
-        <Skeleton
-          key={i}
-          style={{
-            height: 88,
-            marginBottom: "var(--space-3)",
-            borderRadius: "var(--radius-lg)",
-          }}
-        />
-      ))}
+    <div className="loading-screen">
+      <Waypoints size={28} className="loading-screen__mark" />
     </div>
   )
 }
@@ -120,14 +94,14 @@ export function App() {
   const [location] = useLocation()
 
   if (loading && location !== "/") {
-    return <LoadingSkeleton />
+    return <LoadingScreen />
   }
 
   return (
     <ErrorBoundary>
       <ToastProvider>
         <RouteTransition>
-          <Suspense fallback={<LoadingSkeleton />}>
+          <Suspense fallback={<LoadingScreen />}>
             <Switch>
               <Route path="/">
                 <LandingPage />

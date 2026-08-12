@@ -38,6 +38,28 @@
   }
 }
 
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-screen__mark {
+  color: var(--color-primary);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
 }
@@ -75,6 +97,10 @@
   .animate-fade-in,
   .animate-slide-up,
   .animate-scale-in {
+    animation: none;
+  }
+
+  .loading-screen__mark {
     animation: none;
   }
 }
