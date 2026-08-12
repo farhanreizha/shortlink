@@ -1,8 +1,8 @@
-import { Waypoints } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Link } from "wouter"
 import { useI18n } from "../../lib/i18n"
 import { LanguageSwitcher } from "./language-switcher"
+import { Logo } from "./logo"
 
 export function Navbar({
   children,
@@ -29,21 +29,14 @@ export function Navbar({
   return (
     <nav className="navbar" ref={ref}>
       <div className="navbar__inner">
-        <Link
-          className="navbar__logo"
-          href="/"
+        <Logo
           onClick={() => {
             if (window.location.pathname === "/") {
               window.scrollTo({ top: 0, behavior: "smooth" })
               history.replaceState(null, "", "/")
             }
           }}
-        >
-          <span className="navbar__logo-mark">
-            <Waypoints size={18} />
-          </span>
-          Knot
-        </Link>
+        />
 
         {links && (
           <div className="navbar__links">

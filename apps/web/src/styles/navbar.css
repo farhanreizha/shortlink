@@ -20,30 +20,6 @@
   gap: var(--space-2);
 }
 
-.navbar__logo {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  text-decoration: none;
-  letter-spacing: -0.02em;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.navbar__logo-mark {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-md);
-  background: var(--color-primary);
-  color: var(--color-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 82, 255, 0.3);
-}
-
 .navbar__links {
   display: flex;
   align-items: center;

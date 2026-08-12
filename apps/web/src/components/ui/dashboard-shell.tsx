@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, Menu, Waypoints, X } from "lucide-react"
+import { Bell, HelpCircle, Menu, X } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Link } from "wouter"
 import { useEscapeKey } from "../../hooks/use-escape-key"
@@ -6,6 +6,7 @@ import { useNotifications } from "../../hooks/use-notifications"
 import { useI18n } from "../../lib/i18n"
 import { NotificationsDropdown } from "./dash-dropdowns"
 import { LanguageSwitcher } from "./language-switcher"
+import { Logo } from "./logo"
 
 const NAV_LINKS = [
   { key: "dashboard", labelKey: "dash.dashboard", href: "/dashboard" },
@@ -71,12 +72,7 @@ export function DashboardShell({
       <header className="dash-nav">
         <div className="dash-nav__inner">
           <div className="dash-nav__left">
-            <Link className="dash-nav__logo" href="/dashboard">
-              <span className="dash-nav__logo-mark">
-                <Waypoints size={18} />
-              </span>
-              Knot
-            </Link>
+            <Logo href="/dashboard" />
             <nav className="dash-nav__links" aria-label={t("dash.navAria")}>
               {NAV_LINKS.map((link) => (
                 <Link
@@ -217,12 +213,7 @@ export function DashboardShell({
 
       <footer className="dash-footer">
         <div className="dash-footer__inner">
-          <Link className="dash-footer__logo" href="/dashboard">
-            <span className="dash-footer__logo-mark">
-              <Waypoints size={16} />
-            </span>
-            Knot
-          </Link>
+          <Logo size="sm" href="/dashboard" />
           <nav
             className="dash-footer__nav"
             aria-label={t("dash.footerNavAria")}

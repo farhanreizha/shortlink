@@ -1,6 +1,6 @@
-import { Waypoints } from "lucide-react"
 import { Link } from "wouter"
 import { useI18n } from "../../lib/i18n"
+import { Logo } from "./logo"
 
 export function Footer() {
   const { t } = useI18n()
@@ -8,12 +8,7 @@ export function Footer() {
     <footer className="landing-footer">
       <div className="landing-footer__inner">
         <div className="landing-footer__brand">
-          <Link className="landing-footer__logo" href="/">
-            <span className="landing-footer__logo-mark">
-              <Waypoints size={16} />
-            </span>
-            Knot
-          </Link>
+          <Logo size="sm" />
           <p className="landing-footer__tagline">{t("footer.tagline")}</p>
         </div>
 

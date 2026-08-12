@@ -269,29 +269,6 @@
   padding-bottom: var(--space-8);
 }
 
-.landing-footer__logo {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  text-decoration: none;
-  letter-spacing: -0.02em;
-}
-
-.landing-footer__logo-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
-  color: var(--color-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .landing-footer__tagline {
   margin: var(--space-2) 0 0;
   font-size: 14px;

@@ -1,6 +1,7 @@
 import { Waypoints } from "lucide-react"
 import type { ReactNode } from "react"
 import { Link } from "wouter"
+import { Logo } from "../ui/logo"
 
 export function AuthShell({
   brandTitle,
@@ -34,12 +35,7 @@ export function AuthShell({
 
       <main className="auth-main">
         <div className="auth-main__wrap">
-          <Link className="auth-main__logo animate-slide-up" href="/">
-            <span className="auth-main__logo-mark">
-              <Waypoints size={18} />
-            </span>
-            Knot
-          </Link>
+          <Logo className="auth-main__logo animate-slide-up" />
           <h1
             className="auth-main__title animate-slide-up"
             style={{ animationDelay: "60ms" }}
