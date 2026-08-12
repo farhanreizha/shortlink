@@ -130,31 +130,34 @@ export function App() {
           <Suspense fallback={<LoadingSkeleton />}>
             <Switch>
               <Route path="/">
+                <LandingPage />
+              </Route>
+              <Route path="/dashboard">
                 {user ? (
                   <DashboardPage user={user} onLogout={logout} />
                 ) : (
-                  <LandingPage />
+                  <Redirect to="/" />
                 )}
               </Route>
               <Route path="/login">
                 {user ? (
-                  <Redirect to="/" />
+                  <Redirect to="/dashboard" />
                 ) : (
                   <AuthPage mode="login" onAuth={login} />
                 )}
               </Route>
               <Route path="/register">
                 {user ? (
-                  <Redirect to="/" />
+                  <Redirect to="/dashboard" />
                 ) : (
                   <AuthPage mode="register" onAuth={login} />
                 )}
               </Route>
               <Route path="/forgot-password">
-                {user ? <Redirect to="/" /> : <ForgotPasswordPage />}
+                {user ? <Redirect to="/dashboard" /> : <ForgotPasswordPage />}
               </Route>
               <Route path="/reset-password">
-                {user ? <Redirect to="/" /> : <ResetPasswordPage />}
+                {user ? <Redirect to="/dashboard" /> : <ResetPasswordPage />}
               </Route>
               <Route path="/settings">
                 {user ? (

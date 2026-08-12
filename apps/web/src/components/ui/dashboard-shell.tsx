@@ -8,7 +8,7 @@ import { NotificationsDropdown } from "./dash-dropdowns"
 import { LanguageSwitcher } from "./language-switcher"
 
 const NAV_LINKS = [
-  { key: "dashboard", labelKey: "dash.dashboard", href: "/" },
+  { key: "dashboard", labelKey: "dash.dashboard", href: "/dashboard" },
   { key: "analytics", labelKey: "dash.analytics", href: "/analytics" },
   { key: "campaigns", labelKey: "dash.campaigns", href: "/campaigns" },
   { key: "custom-links", labelKey: "dash.customLinks", href: "/custom-links" },
@@ -71,7 +71,7 @@ export function DashboardShell({
       <header className="dash-nav">
         <div className="dash-nav__inner">
           <div className="dash-nav__left">
-            <Link className="dash-nav__logo" href="/">
+            <Link className="dash-nav__logo" href="/dashboard">
               Knot
             </Link>
             <nav className="dash-nav__links" aria-label={t("dash.navAria")}>
@@ -214,7 +214,7 @@ export function DashboardShell({
 
       <footer className="dash-footer">
         <div className="dash-footer__inner">
-          <Link className="dash-footer__logo" href="/">
+          <Link className="dash-footer__logo" href="/dashboard">
             Knot
           </Link>
           <nav
