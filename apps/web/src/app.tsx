@@ -60,8 +60,9 @@ function RouteTransition({ children }: { children: ReactNode }) {
 
 export function App() {
   const { loading, user, login, logout } = useAuth()
+  const [location] = useLocation()
 
-  if (loading) {
+  if (loading && location !== "/") {
     return (
       <div className="main animate-fade-in">
         <div className="card">
