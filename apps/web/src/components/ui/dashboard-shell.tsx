@@ -71,7 +71,13 @@ export function DashboardShell({
       <header className="dash-nav">
         <div className="dash-nav__inner">
           <div className="dash-nav__left">
-            <Link className="dash-nav__logo" href="/dashboard">
+            <Link
+              className="dash-nav__logo"
+              href="/dashboard"
+            >
+              <span className="navbar__logo-mark">
+                <Waypoints size={18} />
+              </span>
               Knot
             </Link>
             <nav className="dash-nav__links" aria-label={t("dash.navAria")}>
