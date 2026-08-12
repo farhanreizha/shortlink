@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, Menu, X } from "lucide-react"
+import { Bell, HelpCircle, Menu, Waypoints, X } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Link } from "wouter"
 import { useEscapeKey } from "../../hooks/use-escape-key"
@@ -71,11 +71,8 @@ export function DashboardShell({
       <header className="dash-nav">
         <div className="dash-nav__inner">
           <div className="dash-nav__left">
-            <Link
-              className="dash-nav__logo"
-              href="/dashboard"
-            >
-              <span className="navbar__logo-mark">
+            <Link className="dash-nav__logo" href="/dashboard">
+              <span className="dash-nav__logo-mark">
                 <Waypoints size={18} />
               </span>
               Knot
@@ -221,6 +218,9 @@ export function DashboardShell({
       <footer className="dash-footer">
         <div className="dash-footer__inner">
           <Link className="dash-footer__logo" href="/dashboard">
+            <span className="dash-footer__logo-mark">
+              <Waypoints size={16} />
+            </span>
             Knot
           </Link>
           <nav
