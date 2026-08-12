@@ -12,6 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
     "@knot/shared": "workspace:*",
     "hono": "^4.12.32",
     "lucide-react": "^1.27.0",
