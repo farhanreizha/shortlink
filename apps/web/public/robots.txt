@@ -8,4 +8,4 @@ Disallow: /analytics
 Disallow: /campaigns
 Disallow: /api/
 
-Sitemap: https://knot.vercel.app/sitemap.xml
+Sitemap: https://web-knot.vercel.app/sitemap.xml
