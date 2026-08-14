@@ -142,6 +142,8 @@ Sesi lanjutan (14 Agu 2026):
 - 1.5 — hydration i18n: render `en` di pass pertama (match prerender), baca `localStorage` di `useEffect` → tanpa hydration mismatch.
 - Lint web — fix `user!` di `app.tsx` (guard `isAuthenticated && user`); hapus `landing-page.test.tsx` (untracked WIP, import path salah).
 - Verifikasi akhir: `pnpm lint` bersih, `pnpm typecheck` lolos, test 155/155, graphify diupdate.
+- 1.6 tambahan: `apps/web/scripts/prerender.mjs` (canonical/og:url) & `apps/web/public/robots.txt` (Sitemap) masih `knot.vercel.app` — diperbaiki di deploy ke-2 (index.html saja tidak cukup karena prerender menimpa).
+- Deploy (14 Agu 2026): commit 0642d5f + 89ca5c4 → Vercel. API live terverifikasi pakai rate limiter scope baru (forgot-password ke-4 → 429). Web live: canonical/og/robots/sitemap semua `web-knot.vercel.app`. Catatan: alias `web-knot.vercel.app` harus di-assign manual (`vercel alias set`) — tidak otomatis dari push; SSO-protected deployment membuat curl ke URL deployment langsung ter-redirect ke login.
 
 Verifikasi migrasi (14 Agu 2026, via Neon):
 - 2.1 terkonfirmasi & **dipulihkan**: DB live (neondb) hanya punya migrasi 0000–0004; `rate_limits` (0006) dan partial index (0005) tidak ada. Keduanya telah diterapkan manual (SQL `IF NOT EXISTS`) + dicatat di `drizzle.__drizzle_migrations` (hash sha256 cocok dengan journal lokal) → journal live 7 entry, konsisten dengan lokal. **Deploy sekarang aman untuk rate limiter DB-backed.**
