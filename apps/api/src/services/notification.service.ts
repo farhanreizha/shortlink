@@ -1,5 +1,5 @@
 import type { Notification } from "@knot/shared"
-import { desc, eq } from "drizzle-orm"
+import { desc, eq, sql } from "drizzle-orm"
 import { db } from "../db/index.js"
 import { notifications } from "../db/schema.js"
 
@@ -15,9 +15,12 @@ function toNotification(row: typeof notifications.$inferSelect): Notification {
   }
 }
 
-// ponytail: seeds once per user on first fetch (covers existing users);
-// event-driven notifications (click milestones, etc.) come later
+// ponytail: seeds once per user using advisory lock to prevent TOCTOU race;
+// avoids partial unique index which doesn't work with ON CONFLICT
 async function ensureSeeded(userId: number) {
+  // Advisory lock serializes concurrent seed attempts for the same user
+  await db.execute(sql`SELECT pg_advisory_xact_lock(${userId})`)
+
   const [row] = await db
     .select({ count: notifications.id })
     .from(notifications)

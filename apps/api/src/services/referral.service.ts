@@ -27,8 +27,6 @@ export async function generateUniqueCode(): Promise<string> {
   throw new Error("Failed to generate a unique referral code")
 }
 
-// ponytail: backfills codes lazily on first read (covers existing users);
-// a migration could do it once instead
 export async function ensureCode(userId: number): Promise<string> {
   const [user] = await db
     .select({ referralCode: users.referralCode })
@@ -36,6 +34,7 @@ export async function ensureCode(userId: number): Promise<string> {
     .where(eq(users.id, userId))
     .limit(1)
   if (user?.referralCode) return user.referralCode
+  // Should not happen after migration, but fallback for safety
   const code = await generateUniqueCode()
   await db.update(users).set({ referralCode: code }).where(eq(users.id, userId))
   return code
@@ -102,10 +101,13 @@ export async function creditReferrer(inviteeId: number) {
       })
       .where(eq(users.id, invitee.referrerId))
 
-    await tx.insert(notifications).values({
-      userId: invitee.referrerId,
-      type: "referral",
-      data: { username: invitee.username },
-    })
+    await tx
+      .insert(notifications)
+      .values({
+        userId: invitee.referrerId,
+        type: "referral",
+        data: { username: invitee.username },
+      })
+      .onConflictDoNothing()
   })
 }

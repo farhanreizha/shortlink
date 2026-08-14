@@ -9,12 +9,14 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
-    "turbo": "^2.10.7",
-    "typescript": "7.0.2"
+    "@biomejs/biome": "^2.5.8",
+    "@vitejs/plugin-react": "^6.0.5",
+    "turbo": "^2.10.9",
+    "typescript": "7.0.2",
+    "vitest": "^4.1.10"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=21"
   }
 }

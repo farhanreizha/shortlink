@@ -23,7 +23,7 @@ interface I18nValue {
 
 const I18nContext = createContext<I18nValue | null>(null)
 
-function getInitialLang(): Lang {
+function getStoredLang(): Lang {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     return saved === "en" || saved === "id" ? saved : DEFAULT_LANG
@@ -39,8 +39,14 @@ export function I18nProvider({
   children: ReactNode
   initialLang?: Lang
 }) {
-  const [lang, setLangState] = useState<Lang>(initialLang ?? getInitialLang)
+  // ponytail: always render "en" on first pass (matches prerender) to avoid hydration
+  // mismatch; swap to stored lang in an effect once the client mounts
+  const [lang, setLangState] = useState<Lang>(initialLang ?? DEFAULT_LANG)
   const [dict, setDict] = useState<Record<MessageKey, string>>(en)
+
+  useEffect(() => {
+    if (initialLang === undefined) setLangState(getStoredLang())
+  }, [initialLang])
 
   useEffect(() => {
     if (lang !== "id") return

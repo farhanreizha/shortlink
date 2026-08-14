@@ -36,23 +36,32 @@ app.route("/api", healthRoutes)
 
 app.get("/api/docs", swaggerUI({ url: "/api/doc" }))
 
-app.use("/api/auth/register", rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }))
+app.use(
+  "/api/auth/register",
+  rateLimit({ scope: "register", windowMs: 15 * 60 * 1000, max: 5 }),
+)
 
-app.use("/api/auth/login", rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }))
+app.use(
+  "/api/auth/login",
+  rateLimit({ scope: "login", windowMs: 15 * 60 * 1000, max: 10 }),
+)
 
 app.use(
   "/api/auth/forgot-password",
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 3 }),
+  rateLimit({ scope: "forgot-password", windowMs: 15 * 60 * 1000, max: 3 }),
 )
 
 app.use(
   "/api/auth/reset-password",
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }),
+  rateLimit({ scope: "reset-password", windowMs: 15 * 60 * 1000, max: 10 }),
 )
 
-app.use("/api/shortlinks", rateLimit({ windowMs: 60 * 1000, max: 30 }))
+app.use(
+  "/api/shortlinks",
+  rateLimit({ scope: "shortlinks", windowMs: 60 * 1000, max: 30 }),
+)
 
-app.use("/r/*", rateLimit({ windowMs: 60 * 1000, max: 120 }))
+app.use("/r/*", rateLimit({ scope: "redirect", windowMs: 60 * 1000, max: 120 }))
 
 app.use("/api/*", authMiddleware)
 

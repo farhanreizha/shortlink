@@ -28,3 +28,8 @@ export function useAuth() {
 
   return { loading, user, login, logout }
 }
+
+export function useAuthGuard() {
+  const { loading, user } = useAuth()
+  return { isAuthenticated: !!user, loading }
+}

@@ -4,9 +4,9 @@ import {
   CampaignSchema,
   CampaignSummarySchema,
   CreateCampaignSchema,
+  ErrorSchema,
   UpdateCampaignSchema,
 } from "@knot/shared"
-import { ErrorSchema } from "../lib/schemas.js"
 import * as campaignService from "../services/campaign.service.js"
 
 const listCampaignsRoute = createRoute({

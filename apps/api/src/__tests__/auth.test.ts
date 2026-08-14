@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import app from "../app.js"
-import { cleanDatabase, registerUser } from "./helpers.js"
+import { authedRequest, cleanDatabase, registerUser } from "./helpers.js"
 
 beforeEach(cleanDatabase)
 
@@ -47,6 +47,24 @@ describe("POST /api/auth/register", () => {
       }),
     })
     expect(res.status).toBe(409)
+  })
+
+  it("returns 409 on concurrent duplicate register (race)", async () => {
+    const body = {
+      email: "race@test.com",
+      username: "raceuser",
+      password: "Test1234",
+    }
+    const req = () =>
+      app.request("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+    const [a, b] = await Promise.all([req(), req()])
+    const statuses = [a.status, b.status].sort()
+    expect(statuses[0]).toBe(201)
+    expect(statuses[1]).toBe(409)
   })
 
   it("rejects weak password", async () => {
@@ -302,6 +320,33 @@ describe("DELETE /api/auth/me", () => {
     expect(me.status).toBe(401)
   })
 
+  it("deletes account with existing campaigns", async () => {
+    const { token } = await registerUser({
+      email: "delcamp@test.com",
+      username: "delcamp",
+    })
+    const createCamp = await authedRequest(token, "/api/campaigns", {
+      method: "POST",
+      body: JSON.stringify({ name: "Keep me", description: "" }),
+    })
+    expect(createCamp.status).toBe(201)
+
+    const res = await app.request("/api/auth/me", {
+      method: "DELETE",
+      headers: {
+        Cookie: `token=${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: "Test1234" }),
+    })
+    expect(res.status).toBe(200)
+
+    const me = await app.request("/api/auth/me", {
+      headers: { Cookie: `token=${token}` },
+    })
+    expect(me.status).toBe(401)
+  })
+
   it("rejects deletion without password", async () => {
     const { token } = await registerUser({
       email: "nopass@test.com",
@@ -357,6 +402,24 @@ describe("POST /api/auth/forgot-password", () => {
     expect(res.status).toBe(200)
     const data = (await res.json()) as { resetUrl?: string }
     expect(data.resetUrl).toMatch(/\/reset-password\?token=/)
+  })
+
+  it("does not leak a reset url in production", async () => {
+    await registerUser({ email: "prodreset@test.com", username: "prodreset" })
+    const prev = process.env.NODE_ENV
+    process.env.NODE_ENV = "production"
+    try {
+      const res = await app.request("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "prodreset@test.com" }),
+      })
+      expect(res.status).toBe(200)
+      const data = (await res.json()) as { resetUrl?: string }
+      expect(data.resetUrl).toBeUndefined()
+    } finally {
+      process.env.NODE_ENV = prev
+    }
   })
 })
 

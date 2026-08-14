@@ -3,7 +3,8 @@ import { getCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
 import { verifyToken } from "../lib/auth.js"
 
-const publicPaths = [
+// Public endpoints that don't require authentication
+const PUBLIC_PATHS = new Set([
   "/api/auth/register",
   "/api/auth/login",
   "/api/auth/logout",
@@ -11,13 +12,13 @@ const publicPaths = [
   "/api/auth/reset-password",
   "/api/doc",
   "/api/health",
-]
+])
 
 export async function authMiddleware(
   c: Context<{ Variables: { userId: number } }>,
   next: Next,
 ) {
-  if (publicPaths.includes(c.req.path)) return next()
+  if (PUBLIC_PATHS.has(c.req.path)) return next()
 
   const token = getCookie(c, "token")
   if (!token) throw new HTTPException(401, { message: "Unauthorized" })

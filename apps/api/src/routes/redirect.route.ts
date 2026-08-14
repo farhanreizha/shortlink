@@ -1,5 +1,5 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
-import { ErrorSchema } from "../lib/schemas.js"
+import { ErrorSchema } from "@knot/shared"
 import { isBlockedRedirectUrl } from "../lib/url-safety.js"
 import { recordClick } from "../services/click.service.js"
 import * as shortlinkService from "../services/shortlink.service.js"
@@ -26,14 +26,15 @@ const redirectRoutes = new OpenAPIHono()
 redirectRoutes.openapi(redirectRoute, async (c) => {
   const { slug } = c.req.valid("param")
   const link = await shortlinkService.getBySlug(slug)
+
+  const blocked = isBlockedRedirectUrl(link.url)
+  if (blocked) return c.json({ message: blocked }, 400)
+
   // ponytail: awaited on serverless — Vercel can freeze the function before fire-and-forget writes land; ~10ms latency tradeoff
   await Promise.allSettled([
     shortlinkService.incrementVisits(slug),
     recordClick(link.id, c.req.raw.headers),
   ])
-
-  const blocked = isBlockedRedirectUrl(link.url)
-  if (blocked) return c.json({ message: blocked }, 400)
 
   c.header("Referrer-Policy", "no-referrer")
   return c.redirect(link.url, 302)

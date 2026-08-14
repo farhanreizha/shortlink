@@ -3,10 +3,15 @@ import pg from "pg"
 import { env } from "../config.js"
 import * as schema from "./schema.js"
 
-// ponytail: single connection in tests — serializes fire-and-forget inserts with TRUNCATE, kills deadlocks
 const pool = new pg.Pool({
   connectionString: env.DATABASE_URL,
-  max: env.NODE_ENV === "test" ? 1 : 10,
+  max: env.NODE_ENV === "test" ? 5 : 10,
+})
+
+// Idle clients dropped by the server (common on serverless) emit 'error'
+// on the pool; without a handler Node crashes on unhandled 'error'.
+pool.on("error", (err) => {
+  console.error("[db] pool error", err)
 })
 
 export const db = drizzle(pool, { schema })

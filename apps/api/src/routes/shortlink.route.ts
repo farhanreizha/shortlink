@@ -1,11 +1,11 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import {
   CreateShortlinkSchema,
+  ErrorSchema,
   ShortlinkQuerySchema,
   ShortlinkSchema,
   UpdateShortlinkSchema,
 } from "@knot/shared"
-import { ErrorSchema } from "../lib/schemas.js"
 import * as shortlinkService from "../services/shortlink.service.js"
 
 const getShortlinksRoute = createRoute({

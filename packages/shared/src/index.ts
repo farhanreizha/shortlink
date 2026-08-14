@@ -1,6 +1,10 @@
 import { z } from "zod"
 import { COMMON_PASSWORDS } from "./common-passwords.js"
 
+export const ErrorSchema = z.object({ message: z.string() })
+
+export type ErrorResponse = z.infer<typeof ErrorSchema>
+
 const PasswordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters")

@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm"
 import {
   boolean,
   foreignKey,
@@ -131,5 +132,22 @@ export const notifications = pgTable(
   },
   (table) => ({
     userIdIdx: index("notifications_user_id_idx").on(table.userId),
+    // Prevent duplicate seed notifications (welcome, new_feature) per user;
+    // referral notifications are allowed once per invitee (partial index)
+    seedTypeUnique: uniqueIndex("notifications_user_seed_type_idx")
+      .on(table.userId, table.type)
+      .where(sql`${table.type} IN ('welcome', 'new_feature')`),
+  }),
+)
+
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    key: text("key").primaryKey(),
+    count: integer("count").notNull().default(1),
+    resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+  },
+  (table) => ({
+    resetAtIdx: index("rate_limits_reset_at_idx").on(table.resetAt),
   }),
 )

@@ -11,12 +11,22 @@ import { eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { env } from "../config.js"
 import { db } from "../db/index.js"
-import { shortlinks, users } from "../db/schema.js"
+import { campaigns, shortlinks, users } from "../db/schema.js"
 import { hashPassword, signToken, verifyPassword } from "../lib/auth.js"
 import { sendPasswordReset } from "../lib/mailer.js"
 import * as referralService from "./referral.service.js"
 
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000
+
+// PostgreSQL error code for unique_violation
+function isUniqueViolation(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    (err as { code: string }).code === "23505"
+  )
+}
 
 function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex")
@@ -66,6 +76,15 @@ export async function register(input: RegisterInput) {
       ...(referrerId !== undefined ? { referrerId } : {}),
     })
     .returning()
+    .catch((err: unknown) => {
+      // unique violation race between pre-check and insert → 409, not 500
+      if (isUniqueViolation(err)) {
+        throw new HTTPException(409, {
+          message: "Email or username already taken",
+        })
+      }
+      throw err
+    })
   // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row
   const row = rows[0]!
   const token = await signToken(row.id)
@@ -152,6 +171,7 @@ export async function deleteAccount(userId: number, password: string) {
     throw new HTTPException(401, { message: "Current password is incorrect" })
   }
 
+  await db.delete(campaigns).where(eq(campaigns.userId, userId))
   await db.delete(shortlinks).where(eq(shortlinks.userId, userId))
   await db.delete(users).where(eq(users.id, userId))
 }
@@ -173,7 +193,11 @@ export async function requestPasswordReset(input: ForgotPasswordInput) {
 
   const resetUrl = `${env.APP_URL}/reset-password?token=${token}`
   const sent = await sendPasswordReset(row.email, resetUrl)
-  return { resetUrl: sent ? undefined : resetUrl }
+  // ponytail: leak resetUrl only outside production (dev/test need it); never in prod
+  return {
+    resetUrl:
+      sent || process.env.NODE_ENV === "production" ? undefined : resetUrl,
+  }
 }
 
 export async function resetPassword(input: ResetPasswordInput) {

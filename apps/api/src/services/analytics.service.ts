@@ -1,7 +1,9 @@
 import type { AnalyticsOverview, AnalyticsQuery } from "@knot/shared"
-import { and, eq, gt, lte } from "drizzle-orm"
+import { and, count, eq, gt, lte, sql } from "drizzle-orm"
 import { db } from "../db/index.js"
 import { clicks, shortlinks } from "../db/schema.js"
+
+const LARGE_DATASET_THRESHOLD = 10000
 
 function resolveRange(query: AnalyticsQuery): { start: Date; end: Date } {
   const now = new Date()
@@ -56,12 +58,31 @@ function emptyOverview(): AnalyticsOverview {
   }
 }
 
-// ponytail: single query + JS aggregation; per-user click volume is small, revisit if it grows
-export async function overview(
+async function getClickCount(
+  userId: number,
+  start: Date,
+  end: Date,
+): Promise<number> {
+  const result = await db
+    .select({ count: count() })
+    .from(clicks)
+    .innerJoin(shortlinks, eq(clicks.shortlinkId, shortlinks.id))
+    .where(
+      and(
+        eq(shortlinks.userId, userId),
+        gt(clicks.createdAt, start),
+        lte(clicks.createdAt, end),
+      ),
+    )
+  return result[0]?.count ?? 0
+}
+
+async function aggregateInJS(
   userId: number,
   query: AnalyticsQuery,
+  start: Date,
+  end: Date,
 ): Promise<AnalyticsOverview> {
-  const { start, end } = resolveRange(query)
   const rows = await db
     .select({
       shortlinkId: clicks.shortlinkId,
@@ -163,4 +184,165 @@ export async function overview(
     clicksOverTime,
     topLinks,
   }
+}
+
+async function aggregateInSQL(
+  userId: number,
+  query: AnalyticsQuery,
+  start: Date,
+  end: Date,
+  totalClicks: number,
+): Promise<AnalyticsOverview> {
+  const bucketExpr =
+    query.bucket === "weekly"
+      ? sql`date_trunc('week', ${clicks.createdAt})::date`
+      : sql`${clicks.createdAt}::date`
+
+  const [
+    byDevice,
+    byLocation,
+    overTime,
+    topLinksRows,
+    uniqueVisitors,
+    topReferral,
+  ] = await Promise.all([
+    db
+      .select({ device: clicks.device, count: count() })
+      .from(clicks)
+      .innerJoin(shortlinks, eq(clicks.shortlinkId, shortlinks.id))
+      .where(
+        and(
+          eq(shortlinks.userId, userId),
+          gt(clicks.createdAt, start),
+          lte(clicks.createdAt, end),
+        ),
+      )
+      .groupBy(clicks.device),
+    db
+      .select({ country: clicks.country, count: count() })
+      .from(clicks)
+      .innerJoin(shortlinks, eq(clicks.shortlinkId, shortlinks.id))
+      .where(
+        and(
+          eq(shortlinks.userId, userId),
+          gt(clicks.createdAt, start),
+          lte(clicks.createdAt, end),
+        ),
+      )
+      .groupBy(clicks.country)
+      .orderBy(sql`count desc`)
+      .limit(5),
+    db
+      .select({ date: bucketExpr, count: count() })
+      .from(clicks)
+      .innerJoin(shortlinks, eq(clicks.shortlinkId, shortlinks.id))
+      .where(
+        and(
+          eq(shortlinks.userId, userId),
+          gt(clicks.createdAt, start),
+          lte(clicks.createdAt, end),
+        ),
+      )
+      .groupBy(bucketExpr)
+      .orderBy(bucketExpr),
+    db
+      .select({
+        shortlinkId: clicks.shortlinkId,
+        slug: shortlinks.slug,
+        url: shortlinks.url,
+        clicks: count(),
+        uniqueVisitors: sql<number>`count(distinct ${clicks.visitor})`,
+      })
+      .from(clicks)
+      .innerJoin(shortlinks, eq(clicks.shortlinkId, shortlinks.id))
+      .where(
+        and(
+          eq(shortlinks.userId, userId),
+          gt(clicks.createdAt, start),
+          lte(clicks.createdAt, end),
+        ),
+      )
+      .groupBy(clicks.shortlinkId, shortlinks.slug, shortlinks.url)
+      .orderBy(sql`clicks desc`)
+      .limit(5),
+    db
+      .select({ count: sql<number>`count(distinct ${clicks.visitor})` })
+      .from(clicks)
+      .innerJoin(shortlinks, eq(clicks.shortlinkId, shortlinks.id))
+      .where(
+        and(
+          eq(shortlinks.userId, userId),
+          gt(clicks.createdAt, start),
+          lte(clicks.createdAt, end),
+        ),
+      ),
+    db
+      .select({ referrer: clicks.referrer, count: count() })
+      .from(clicks)
+      .innerJoin(shortlinks, eq(clicks.shortlinkId, shortlinks.id))
+      .where(
+        and(
+          eq(shortlinks.userId, userId),
+          gt(clicks.createdAt, start),
+          lte(clicks.createdAt, end),
+        ),
+      )
+      .groupBy(clicks.referrer)
+      .orderBy(sql`count desc`)
+      .limit(1),
+  ])
+
+  const clicksByDevice: AnalyticsOverview["clicksByDevice"] = {
+    mobile: 0,
+    desktop: 0,
+    tablet: 0,
+  }
+  for (const row of byDevice) {
+    clicksByDevice[row.device as keyof typeof clicksByDevice] = row.count
+  }
+
+  const clicksByLocation = byLocation.map((row) => ({
+    country: row.country,
+    count: row.count,
+    pct: Math.round((row.count / Math.max(totalClicks, 1)) * 100),
+  }))
+
+  const clicksOverTime = overTime.map((row) => ({
+    date: (row.date as Date).toISOString().slice(0, 10),
+    count: row.count,
+  }))
+
+  const topLinks = topLinksRows.map((row) => ({
+    id: String(row.shortlinkId),
+    slug: row.slug,
+    url: row.url,
+    clicks: row.clicks,
+    unique: row.uniqueVisitors,
+  }))
+
+  return {
+    totalClicks,
+    uniqueVisitors: uniqueVisitors[0]?.count ?? 0,
+    topReferral: topReferral[0]?.referrer ?? "-",
+    clicksByDevice,
+    clicksByLocation,
+    clicksOverTime,
+    topLinks,
+  }
+}
+
+export async function overview(
+  userId: number,
+  query: AnalyticsQuery,
+): Promise<AnalyticsOverview> {
+  const { start, end } = resolveRange(query)
+
+  const totalClicks = await getClickCount(userId, start, end)
+  if (totalClicks === 0) return emptyOverview()
+
+  if (totalClicks > LARGE_DATASET_THRESHOLD) {
+    return aggregateInSQL(userId, query, start, end, totalClicks)
+  }
+
+  return aggregateInJS(userId, query, start, end)
 }

@@ -1,7 +1,6 @@
 import type { AnalyticsOverview } from "@knot/shared"
 import { eq } from "drizzle-orm"
 import { beforeEach, describe, expect, it } from "vitest"
-import app from "../app.js"
 import { db } from "../db/index.js"
 import { clicks, shortlinks } from "../db/schema.js"
 import { authedRequest, cleanDatabase, registerUser } from "./helpers.js"

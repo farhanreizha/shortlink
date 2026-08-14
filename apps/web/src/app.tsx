@@ -1,10 +1,10 @@
 import type { User } from "@knot/shared"
-import { Waypoints } from "lucide-react"
 import { lazy, type ReactNode, Suspense, useEffect, useRef } from "react"
 import { Redirect, Route, Switch, useLocation } from "wouter"
 import { ErrorBoundary } from "./components/ui/error-boundary"
 import { StaticPage } from "./components/ui/static-page"
-import { useAuth } from "./hooks/use-auth"
+import { LoadingScreen } from "./hooks/loading-screen"
+import { useAuth, useAuthGuard } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
 import { LandingPage } from "./pages/landing-page"
 import { LegalContent } from "./pages/legal-page"
@@ -49,30 +49,6 @@ const SettingsPage = lazy(() =>
   import("./pages/settings-page").then((m) => ({ default: m.SettingsPage })),
 )
 
-function PublicRoute({
-  path,
-  user,
-  onLogout,
-  children,
-}: {
-  path: string
-  user: User | null
-  onLogout: () => void
-  children: ReactNode
-}) {
-  return (
-    <Route path={path}>
-      {user ? (
-        <DashboardShell user={user} onLogout={onLogout} activeNav="legal">
-          {children}
-        </DashboardShell>
-      ) : (
-        <StaticPage>{children}</StaticPage>
-      )}
-    </Route>
-  )
-}
-
 function RouteTransition({ children }: { children: ReactNode }) {
   const [location] = useLocation()
   const initialLocation = useRef(location)
@@ -86,14 +62,6 @@ function RouteTransition({ children }: { children: ReactNode }) {
       className={location === initialLocation.current ? "" : "animate-fade-in"}
     >
       {children}
-    </div>
-  )
-}
-
-function LoadingScreen() {
-  return (
-    <div className="loading-screen">
-      <Waypoints size={28} className="loading-screen__mark" />
     </div>
   )
 }
@@ -170,15 +138,15 @@ export function App() {
                   <Redirect to="/" />
                 )}
               </Route>
-              <PublicRoute path="/privacy" user={user} onLogout={logout}>
+              <PublicLegalRoute path="/privacy" user={user} onLogout={logout}>
                 <LegalContent prefix="pp" />
-              </PublicRoute>
-              <PublicRoute path="/terms" user={user} onLogout={logout}>
+              </PublicLegalRoute>
+              <PublicLegalRoute path="/terms" user={user} onLogout={logout}>
                 <LegalContent prefix="tp" />
-              </PublicRoute>
-              <PublicRoute path="/support" user={user} onLogout={logout}>
+              </PublicLegalRoute>
+              <PublicLegalRoute path="/support" user={user} onLogout={logout}>
                 <SupportContent />
-              </PublicRoute>
+              </PublicLegalRoute>
               <Route path="/:rest*">
                 <NotFoundPage />
               </Route>
@@ -187,5 +155,31 @@ export function App() {
         </RouteTransition>
       </ToastProvider>
     </ErrorBoundary>
+  )
+}
+
+function PublicLegalRoute({
+  path,
+  user,
+  onLogout,
+  children,
+}: {
+  path: string
+  user: User | null
+  onLogout: () => void
+  children: ReactNode
+}) {
+  const { isAuthenticated, loading } = useAuthGuard()
+  if (loading) return <LoadingScreen />
+  return (
+    <Route path={path}>
+      {isAuthenticated && user ? (
+        <DashboardShell user={user} onLogout={onLogout} activeNav="legal">
+          {children}
+        </DashboardShell>
+      ) : (
+        <StaticPage>{children}</StaticPage>
+      )}
+    </Route>
   )
 }

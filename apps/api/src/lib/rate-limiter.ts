@@ -1,15 +1,11 @@
 import net from "node:net"
+import { sql } from "drizzle-orm"
 import type { Context, Next } from "hono"
-
-interface Entry {
-  count: number
-  resetTime: number
-}
-
-const store = new Map<string, Entry>()
+import { db } from "../db/index.js"
+import { rateLimits } from "../db/schema.js"
 
 export function resetRateLimitStore() {
-  store.clear()
+  // No-op for PostgreSQL-backed rate limiter; tests use cleanDatabase()
 }
 
 // Trust only headers set by our reverse proxy (nginx sets X-Real-IP and
@@ -25,36 +21,64 @@ function clientKey(c: Context): string | null {
   return null
 }
 
-export function rateLimit(opts: { windowMs: number; max: number }) {
+async function cleanupExpired() {
+  // Periodically clean up expired entries (fire-and-forget)
+  await db.delete(rateLimits).where(sql`${rateLimits.resetAt} < now()`)
+}
+
+export function rateLimit(opts: {
+  scope: string
+  windowMs: number
+  max: number
+}) {
   return async (c: Context, next: Next) => {
-    const key = clientKey(c)
-    if (!key) return next()
-    const now = Date.now()
-    const entry = store.get(key)
-    const current: Entry =
-      !entry || now >= entry.resetTime
-        ? { count: 1, resetTime: now + opts.windowMs }
-        : entry
+    const ip = clientKey(c)
+    if (!ip) return next()
+    const key = `${opts.scope}:${ip}`
+
+    const now = new Date()
+    const resetAt = new Date(now.getTime() + opts.windowMs)
+
+    // Upsert: insert new or increment existing
+    const result = await db
+      .insert(rateLimits)
+      .values({ key, count: 1, resetAt })
+      .onConflictDoUpdate({
+        target: rateLimits.key,
+        set: {
+          count: sql`CASE
+            WHEN ${rateLimits.resetAt} < ${now} THEN 1
+            ELSE ${rateLimits.count} + 1
+          END`,
+          resetAt: sql`CASE
+            WHEN ${rateLimits.resetAt} < ${now} THEN ${resetAt}
+            ELSE ${rateLimits.resetAt}
+          END`,
+        },
+      })
+      .returning({ count: rateLimits.count, resetAt: rateLimits.resetAt })
+
+    const row = result[0]
+    if (!row) return next()
+    const { count, resetAt: currentResetAt } = row
 
     c.header("X-RateLimit-Limit", String(opts.max))
-    c.header(
-      "X-RateLimit-Remaining",
-      String(Math.max(0, opts.max - current.count)),
-    )
+    c.header("X-RateLimit-Remaining", String(Math.max(0, opts.max - count)))
 
-    if (current.count > opts.max) {
-      c.header(
-        "Retry-After",
-        String(Math.ceil((current.resetTime - now) / 1000)),
+    if (count > opts.max) {
+      const retryAfter = Math.ceil(
+        (currentResetAt.getTime() - now.getTime()) / 1000,
       )
+      c.header("Retry-After", String(retryAfter))
       return c.json(
         { message: "Too many requests. Please try again later." },
         429,
       )
     }
 
-    current.count++
-    store.set(key, current)
+    // Periodic cleanup (1% chance per request)
+    if (Math.random() < 0.01) cleanupExpired()
+
     return next()
   }
 }

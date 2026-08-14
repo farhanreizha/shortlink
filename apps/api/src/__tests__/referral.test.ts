@@ -82,6 +82,49 @@ describe("Referrals", () => {
     expect(referralNotif?.data?.username).toBe("ref3invitee")
   })
 
+  it("credits both invitees without notification conflict", async () => {
+    const referrer = await registerUser({
+      email: "ref5@test.com",
+      username: "ref5user",
+    })
+    const code = await referralCode(referrer.token)
+    const inviteeA = await registerUser({
+      email: "ref5a@test.com",
+      username: "ref5a",
+      ref: code,
+    })
+    const inviteeB = await registerUser({
+      email: "ref5b@test.com",
+      username: "ref5b",
+      ref: code,
+    })
+
+    const createA = await authedRequest(inviteeA.token, "/api/shortlinks", {
+      method: "POST",
+      body: JSON.stringify({ slug: "ref5a", url: "https://example.com" }),
+    })
+    expect(createA.status).toBe(201)
+
+    const createB = await authedRequest(inviteeB.token, "/api/shortlinks", {
+      method: "POST",
+      body: JSON.stringify({ slug: "ref5b", url: "https://example.com" }),
+    })
+    expect(createB.status).toBe(201)
+
+    const res = await authedRequest(referrer.token, "/api/referral")
+    const overview = (await res.json()) as Referral
+    expect(overview.stats).toEqual({ referred: 2, rewarded: 2, proMonths: 2 })
+
+    const notifRes = await authedRequest(referrer.token, "/api/notifications")
+    const list = (await notifRes.json()) as Notification[]
+    const referralNotifs = list.filter((n) => n.type === "referral")
+    expect(referralNotifs).toHaveLength(2)
+    expect(referralNotifs.map((n) => n.data?.username).sort()).toEqual([
+      "ref5a",
+      "ref5b",
+    ])
+  })
+
   it("does not double credit on subsequent shortlinks", async () => {
     const referrer = await registerUser({
       email: "ref4@test.com",

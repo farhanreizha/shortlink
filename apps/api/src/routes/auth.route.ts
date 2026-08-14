@@ -1,6 +1,7 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import {
   DeleteAccountSchema,
+  ErrorSchema,
   ForgotPasswordSchema,
   LoginSchema,
   RegisterSchema,
@@ -10,7 +11,6 @@ import {
 } from "@knot/shared"
 import { deleteCookie, setCookie } from "hono/cookie"
 import { env } from "../config.js"
-import { ErrorSchema } from "../lib/schemas.js"
 import * as authService from "../services/auth.service.js"
 
 const registerRoute = createRoute({
@@ -141,6 +141,7 @@ const forgotPasswordRoute = createRoute({
         "application/json": {
           schema: z.object({
             message: z.string(),
+            // ponytail: dev/test only; stripped in production to avoid leaking reset tokens
             resetUrl: z.string().optional(),
           }),
         },
@@ -230,7 +231,8 @@ authRoutes.openapi(forgotPasswordRoute, async (c) => {
   const { resetUrl } = await authService.requestPasswordReset(input)
   return c.json({
     message: "If that email is registered, a reset link has been sent.",
-    ...(resetUrl ? { resetUrl } : {}),
+    // ponytail: leak only in dev/test (NODE_ENV !== production); never in prod
+    ...(process.env.NODE_ENV !== "production" && resetUrl ? { resetUrl } : {}),
   })
 })
 

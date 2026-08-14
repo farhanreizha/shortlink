@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "notifications_user_seed_type_idx" ON "notifications" USING btree ("user_id","type") WHERE "type" IN ('welcome', 'new_feature');

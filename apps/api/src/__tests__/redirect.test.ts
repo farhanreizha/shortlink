@@ -9,8 +9,11 @@ beforeEach(cleanDatabase)
 async function waitForClick() {
   for (let i = 0; i < 40; i++) {
     const rows = await db.select().from(clicks)
-    if (rows.length > 0) return rows[0]!
-    await new Promise((r) => setTimeout(r, 50))
+    if (rows.length === 0) {
+      await new Promise((r) => setTimeout(r, 50))
+      continue
+    }
+    return rows[0]
   }
   return undefined
 }
@@ -104,5 +107,23 @@ describe("GET /r/:slug", () => {
     })
     const res = await app.request("/r/dataurl")
     expect(res.status).toBe(400)
+  })
+
+  it("does not record a click for blocked URLs", async () => {
+    const { user } = await registerUser({
+      email: "blockredir@test.com",
+      username: "blockredir",
+    })
+    await db.insert(shortlinks).values({
+      slug: "blocked",
+      url: "http://localhost:5432",
+      userId: user.id,
+    })
+    const res = await app.request("/r/blocked")
+    expect(res.status).toBe(400)
+
+    await new Promise((r) => setTimeout(r, 100))
+    const rows = await db.select().from(clicks)
+    expect(rows).toHaveLength(0)
   })
 })
