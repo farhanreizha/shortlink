@@ -165,6 +165,7 @@ export const en = {
   "auth.privacy": "Privacy Policy",
   "auth.invalidLogin": "Invalid email or password",
   "auth.registrationFailed": "Registration failed",
+  "auth.refInvalid": "Referral code not recognized — continuing without it.",
   "auth.passwordsMismatch": "Passwords do not match",
   "auth.minChars": "min 6 characters",
   "auth.continueGoogle": "Continue with Google",

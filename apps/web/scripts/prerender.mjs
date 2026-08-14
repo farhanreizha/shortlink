@@ -17,6 +17,10 @@ const { renderRoute, seoRoutes } = await import(
 
 const template = readFileSync(join(dist, "index.html"), "utf8")
 
+// ponytail: SPA fallback for non-prerendered routes — serve the pristine
+// template (empty #root) so client-side mount has nothing to hydrate against
+writeFileSync(join(dist, "empty.html"), template)
+
 function inlineCss(html) {
   return html.replace(
     /<link rel="stylesheet" crossorigin href="([^"]+\.css)">/g,

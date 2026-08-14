@@ -4,6 +4,7 @@ import {
   ErrorSchema,
   ForgotPasswordSchema,
   LoginSchema,
+  RegisterResultSchema,
   RegisterSchema,
   ResetPasswordSchema,
   UpdateUserSchema,
@@ -25,7 +26,7 @@ const registerRoute = createRoute({
     201: {
       content: {
         "application/json": {
-          schema: UserSchema,
+          schema: RegisterResultSchema,
         },
       },
       description: "User registered",
@@ -179,7 +180,7 @@ const authRoutes = new OpenAPIHono<{ Variables: { userId: number } }>()
 
 authRoutes.openapi(registerRoute, async (c) => {
   const input = c.req.valid("json")
-  const { token, user } = await authService.register(input)
+  const { token, user, referrerApplied } = await authService.register(input)
   setCookie(c, "token", token, {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
@@ -187,7 +188,7 @@ authRoutes.openapi(registerRoute, async (c) => {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   })
-  return c.json(user, 201)
+  return c.json({ user, referrerApplied }, 201)
 })
 
 authRoutes.openapi(loginRoute, async (c) => {

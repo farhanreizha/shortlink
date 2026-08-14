@@ -1,7 +1,8 @@
-import type { User } from "@knot/shared"
+import type { RegisterResult, User } from "@knot/shared"
 import { RegisterSchema } from "@knot/shared"
 import { useState } from "react"
 import { client } from "../../hono-client"
+import { useToast } from "../../hooks/use-toast"
 import { clearFieldError } from "../../lib/form"
 import { useI18n } from "../../lib/i18n"
 import { ErrorBanner } from "../ui/error-banner"
@@ -13,6 +14,7 @@ import { SocialButtons } from "./social-buttons"
 
 export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
   const { t } = useI18n()
+  const { toast } = useToast()
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -42,14 +44,15 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
       return
     }
     setLoading(true)
+    const ref =
+      new URLSearchParams(window.location.search).get("ref") ?? undefined
     try {
       const res = await client.api.auth.register.$post({
         json: {
           username,
           email,
           password,
-          ref:
-            new URLSearchParams(window.location.search).get("ref") ?? undefined,
+          ref,
         },
       })
       if (!res.ok) {
@@ -57,7 +60,8 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
         setError(body.message ?? t("auth.registrationFailed"))
         return
       }
-      const user = (await res.json()) as User
+      const { user, referrerApplied } = (await res.json()) as RegisterResult
+      if (ref && !referrerApplied) toast(t("auth.refInvalid"), "error")
       onAuth(user)
     } catch (err) {
       setError(err instanceof Error ? err.message : t("common.error"))

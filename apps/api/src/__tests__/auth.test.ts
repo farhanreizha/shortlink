@@ -16,8 +16,8 @@ describe("POST /api/auth/register", () => {
       }),
     })
     expect(res.status).toBe(201)
-    const data = (await res.json()) as { username: string }
-    expect(data.username).toBe("newuser")
+    const data = (await res.json()) as { user: { username: string } }
+    expect(data.user.username).toBe("newuser")
     expect(res.headers.get("Set-Cookie")).toMatch(/^token=.+/)
   })
 

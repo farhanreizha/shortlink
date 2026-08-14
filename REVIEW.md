@@ -150,6 +150,13 @@ Verifikasi migrasi (14 Agu 2026, via Neon):
 - `0006_backfill_referral_codes.sql` & `0007_valid_slug_constraint.sql` **dihapus** (orphan; backfill tidak perlu — 6 user live semua punya referral_code; valid_slug constraint opsional, 0 slug invalid).
 - Catatan: koneksi langsung ke Neon dari mesin lokal gagal (ECONNRESET) — migrasi diterapkan via Neon MCP, bukan `db:migrate`.
 
+Sesi ke-3 (14 Agu 2026):
+- 1.11 (opsi A) — referrer invalid tidak lagi silent: response register = `{ user, referrerApplied }` (`RegisterResultSchema` di shared; `auth.service.ts` return `referrerId !== undefined`). Web `register-form.tsx` tampilkan toast `auth.refInvalid` bila ref dikirim tapi tidak ditemukan; registrasi tetap lanjut. Test: `referrerApplied` true (valid) / false (invalid).
+- Hydration #418 (React error: "initial UI does not match what was rendered on the server") — dua root cause:
+  1. Client render `LoadingScreen` saat prerender menghasilkan konten statis → `app.tsx`: guard App hanya untuk non-publik (`PUBLIC_PATHS` dari `seoRoutes`), `PublicLegalRoute` render `StaticPage` saat loading, `RouteTransition` render children langsung saat hydration (div `animate-fade-in` hanya saat navigasi).
+  2. Route non-prerendered di-serve HTML landing (rewrite `/(.*)` → `/index.html`) → `prerender.mjs` tulis `dist/empty.html` (template asli, root kosong), `vercel.json` rewrite fallback → `/empty.html`. Static file tetap menang atas rewrite → 4 route SEO tetap prerendered.
+- Verifikasi: lint/typecheck bersih, test 155/155, build web OK (empty.html + 4 route prerender), agent-browser: konsol bebas #418 di `/`, `/privacy`, `/terms`, `/support`, `/login`, `/dashboard`, `/register?ref=...`.
+
 ## Lampiran B: catatan metodologi
 
 - Output `read`/`grep` awal terkorupsi (display layer); semua fakta di laporan ini diverifikasi ulang via dump `node -e`/`sed`/`rg -n` pendek + `curl` live.

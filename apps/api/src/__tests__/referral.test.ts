@@ -26,6 +26,7 @@ describe("Referrals", () => {
       ref: code,
     })
     expect(invitee.user.username).toBe("refinvitee")
+    expect(invitee.referrerApplied).toBe(true)
 
     const res = await authedRequest(referrer.token, "/api/referral")
     const overview = (await res.json()) as Referral
@@ -39,11 +40,12 @@ describe("Referrals", () => {
       email: "ref2@test.com",
       username: "ref2user",
     })
-    await registerUser({
+    const invitee = await registerUser({
       email: "ref2invitee@test.com",
       username: "ref2invitee",
       ref: "NOPE1234",
     })
+    expect(invitee.referrerApplied).toBe(false)
 
     const res = await authedRequest(referrer.token, "/api/referral")
     const overview = (await res.json()) as Referral

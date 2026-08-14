@@ -12,6 +12,7 @@ import type {
   Notification,
   Referral,
   RegisterInput,
+  RegisterResult,
   ResetPasswordInput,
   Shortlink,
   ShortlinkQuery,
@@ -25,7 +26,7 @@ export type AppRoutes = {
   "/api/auth/register": {
     $post: {
       input: { json: RegisterInput }
-      output: User
+      output: RegisterResult
       outputFormat: "json"
       status: 201
     }

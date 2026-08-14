@@ -88,7 +88,11 @@ export async function register(input: RegisterInput) {
   // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row
   const row = rows[0]!
   const token = await signToken(row.id)
-  return { token, user: toUser(row) }
+  return {
+    token,
+    user: toUser(row),
+    referrerApplied: referrerId !== undefined,
+  }
 }
 
 export async function login(input: LoginInput) {

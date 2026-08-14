@@ -169,6 +169,8 @@ export const id: Record<MessageKey, string> = {
   "auth.privacy": "Kebijakan Privasi",
   "auth.invalidLogin": "Email atau kata sandi tidak valid",
   "auth.registrationFailed": "Pendaftaran gagal",
+  "auth.refInvalid":
+    "Kode referral tidak dikenali — pendaftaran dilanjutkan tanpa kode.",
   "auth.passwordsMismatch": "Kata sandi tidak cocok",
   "auth.minChars": "minimal 6 karakter",
   "auth.continueGoogle": "Lanjutkan dengan Google",

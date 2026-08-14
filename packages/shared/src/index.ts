@@ -83,6 +83,13 @@ export const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>
 
+export const RegisterResultSchema = z.object({
+  user: UserSchema,
+  referrerApplied: z.boolean(),
+})
+
+export type RegisterResult = z.infer<typeof RegisterResultSchema>
+
 export const ShortlinkSchema = z.object({
   id: z.string(),
   slug: z.string(),

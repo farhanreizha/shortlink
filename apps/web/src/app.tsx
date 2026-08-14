@@ -6,6 +6,7 @@ import { StaticPage } from "./components/ui/static-page"
 import { LoadingScreen } from "./hooks/loading-screen"
 import { useAuth, useAuthGuard } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
+import { seoRoutes } from "./lib/seo"
 import { LandingPage } from "./pages/landing-page"
 import { LegalContent } from "./pages/legal-page"
 import { NotFoundPage } from "./pages/not-found-page"
@@ -49,6 +50,8 @@ const SettingsPage = lazy(() =>
   import("./pages/settings-page").then((m) => ({ default: m.SettingsPage })),
 )
 
+const PUBLIC_PATHS = new Set(seoRoutes.map((r) => r.path))
+
 function RouteTransition({ children }: { children: ReactNode }) {
   const [location] = useLocation()
   const initialLocation = useRef(location)
@@ -56,11 +59,11 @@ function RouteTransition({ children }: { children: ReactNode }) {
     if (!location) return
     window.scrollTo(0, 0)
   }, [location])
+  // ponytail: on first render (hydration) render children directly so the DOM
+  // matches the prerendered HTML; only wrap in a keyed div once navigating
+  if (location === initialLocation.current) return <>{children}</>
   return (
-    <div
-      key={location}
-      className={location === initialLocation.current ? "" : "animate-fade-in"}
-    >
+    <div key={location} className="animate-fade-in">
       {children}
     </div>
   )
@@ -70,7 +73,7 @@ export function App() {
   const { loading, user, login, logout } = useAuth()
   const [location] = useLocation()
 
-  if (loading && location !== "/") {
+  if (loading && !PUBLIC_PATHS.has(location)) {
     return <LoadingScreen />
   }
 
@@ -170,7 +173,7 @@ function PublicLegalRoute({
   children: ReactNode
 }) {
   const { isAuthenticated, loading } = useAuthGuard()
-  if (loading) return <LoadingScreen />
+  if (loading) return <StaticPage>{children}</StaticPage>
   return (
     <Route path={path}>
       {isAuthenticated && user ? (

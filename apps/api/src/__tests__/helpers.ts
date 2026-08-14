@@ -1,3 +1,4 @@
+import type { RegisterResult } from "@knot/shared"
 import { sql } from "drizzle-orm"
 import app from "../app.js"
 import { db } from "../db/index.js"
@@ -12,6 +13,7 @@ interface TestUser {
 export interface AuthResult {
   token: string
   user: TestUser
+  referrerApplied: boolean
 }
 
 export async function cleanDatabase() {
@@ -44,10 +46,18 @@ export async function registerUser(
       ...overrides,
     }),
   })
-  const user = (await res.json()) as TestUser
+  const body = (await res.json()) as RegisterResult
   const cookie = res.headers.get("Set-Cookie") ?? ""
   const token = cookie ? parseSetCookie(cookie) : ""
-  return { token, user }
+  return {
+    token,
+    user: {
+      id: Number(body.user.id),
+      username: body.user.username,
+      email: body.user.email,
+    },
+    referrerApplied: body.referrerApplied,
+  }
 }
 
 export function authedRequest(token: string, path: string, init?: RequestInit) {
