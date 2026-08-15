@@ -64,7 +64,7 @@ export function Navbar({
 
         <LanguageSwitcher />
 
-        {(children || user) && (
+        {!user && children && (
           <button
             className="navbar__hamburger"
             type="button"
@@ -142,38 +142,6 @@ export function Navbar({
               ),
             )}
             {children}
-          </div>
-        )}
-
-        {user && (
-          <div
-            className={`navbar__menu navbar__menu--account${open ? " navbar__menu--open" : ""}`}
-          >
-            <span className="navbar__username-mobile">{user.username}</span>
-            <Link
-              className="navbar__link navbar__link--mobile"
-              href="/dashboard"
-              onClick={() => setOpen(false)}
-            >
-              {t("nav.dashboard")}
-            </Link>
-            <Link
-              className="navbar__link navbar__link--mobile"
-              href="/settings"
-              onClick={() => setOpen(false)}
-            >
-              {t("common.settings")}
-            </Link>
-            <button
-              className="navbar__logout--mobile"
-              type="button"
-              onClick={() => {
-                setOpen(false)
-                onLogout?.()
-              }}
-            >
-              {t("common.logout")}
-            </button>
           </div>
         )}
       </div>
