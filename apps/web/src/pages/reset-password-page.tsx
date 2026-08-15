@@ -6,7 +6,7 @@ import { ErrorBanner } from "../components/ui/error-banner"
 import { PasswordField } from "../components/ui/password-field"
 import { SubmitButton } from "../components/ui/submit-button"
 import { client } from "../hono-client"
-import { clearFieldError } from "../lib/form"
+import { clearFieldError, readErrorMessage } from "../lib/form"
 import { useI18n } from "../lib/i18n"
 
 export function ResetPasswordPage() {
@@ -45,8 +45,7 @@ export function ResetPasswordPage() {
         json: { token, password },
       })
       if (!res.ok) {
-        const body = (await res.json()) as { message?: string }
-        setError(body.message ?? t("reset.invalidLink"))
+        setError(await readErrorMessage(res, t("reset.invalidLink")))
         return
       }
       setDone(true)

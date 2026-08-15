@@ -1,35 +1,19 @@
 import type { UpdateShortlink, User } from "@knot/shared"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Info,
-  Link as LinkIcon,
-  Pencil,
-  Plus,
-  Search,
-  Trash2,
-} from "lucide-react"
+import { Info, Plus, Search } from "lucide-react"
 import { useState } from "react"
 import { EditModal } from "../components/shortlink/edit-modal"
 import { HowItWorksModal } from "../components/shortlink/how-it-works-modal"
+import { LinksTable } from "../components/shortlink/links-table"
 import { NewLinkModal } from "../components/shortlink/new-link-modal"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
+import { Pagination } from "../components/ui/pagination"
 import { Reveal } from "../components/ui/reveal"
+import { PAGE_SIZE } from "../constants/custom-links"
 import { useCampaigns } from "../hooks/use-campaigns"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
 import { useI18n } from "../lib/i18n"
-
-const PAGE_SIZE = 10
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  })
-}
 
 export function CustomLinksPage({
   user,
@@ -150,110 +134,25 @@ export function CustomLinksPage({
 
         <Reveal delay={0.1}>
           <div className="cl-table-wrap">
-            <table className="cl-table">
-              <thead>
-                <tr>
-                  <th>{t("cl.colBranded")}</th>
-                  <th>{t("cl.colOriginal")}</th>
-                  <th>{t("cl.colCampaign")}</th>
-                  <th>{t("cl.colCreated")}</th>
-                  <th>{t("cl.colClicks")}</th>
-                  <th className="cl-table__action-col">{t("cl.colAction")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {links.map((link, i) => (
-                  <tr
-                    key={link.id}
-                    className="cl-table__row"
-                    style={{ animationDelay: `${i * 0.04}s` }}
-                  >
-                    <td>
-                      <span className="cl-table__brand">
-                        <LinkIcon size={16} />
-                        {window.location.origin}/r/{link.slug}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="cl-table__url" title={link.url}>
-                        {link.url}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="cl-table__campaign">
-                        {link.campaignId
-                          ? (campaignNames.get(link.campaignId) ?? "—")
-                          : "—"}
-                      </span>
-                    </td>
-                    <td>{formatDate(link.createdAt)}</td>
-                    <td>{link.visits.toLocaleString()}</td>
-                    <td>
-                      <div className="cl-table__actions">
-                        <button
-                          className="btn btn--ghost"
-                          type="button"
-                          aria-label={t("cl.editAria", { slug: link.slug })}
-                          onClick={() => setEditing({ slug: link.slug })}
-                        >
-                          <Pencil size={14} />
-                        </button>
-                        <button
-                          className="btn btn--ghost btn--danger-ghost"
-                          type="button"
-                          aria-label={t("cl.deleteAria", { slug: link.slug })}
-                          onClick={() => setDeleting({ slug: link.slug })}
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {!loading && links.length === 0 && (
-                  <tr>
-                    <td colSpan={6}>
-                      <div className="empty-state">
-                        <div className="empty-state__title">
-                          {t("cl.noLinks")}
-                        </div>
-                        <div className="empty-state__text">
-                          {t("cl.noLinksText")}
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            <LinksTable
+              links={links}
+              loading={loading}
+              campaignNames={campaignNames}
+              onEdit={(slug) => setEditing({ slug })}
+              onDelete={(slug) => setDeleting({ slug })}
+            />
           </div>
         </Reveal>
 
-        <div className="cl-pagination">
-          <span className="cl-pagination__info">
-            {t("cl.showing", { from, to, total })}
-          </span>
-          <div className="cl-pagination__controls">
-            <button
-              className="btn btn--ghost"
-              type="button"
-              aria-label={t("cl.prev")}
-              disabled={page === 0 || loading}
-              onClick={() => goToPage(page - 1)}
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              className="btn btn--ghost"
-              type="button"
-              aria-label={t("cl.next")}
-              disabled={page >= pageCount - 1 || loading}
-              onClick={() => goToPage(page + 1)}
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
+        <Pagination
+          page={page}
+          pageCount={pageCount}
+          from={from}
+          to={to}
+          total={total}
+          disabled={loading}
+          onPage={goToPage}
+        />
       </div>
 
       <NewLinkModal
