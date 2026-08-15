@@ -83,6 +83,12 @@ export const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>
 
+export const MeResultSchema = z.object({
+  user: UserSchema.nullable(),
+})
+
+export type MeResult = z.infer<typeof MeResultSchema>
+
 export const RegisterResultSchema = z.object({
   user: UserSchema,
   referrerApplied: z.boolean(),

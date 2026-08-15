@@ -9,6 +9,7 @@ import type {
   DeleteAccount,
   ForgotPasswordInput,
   LoginInput,
+  MeResult,
   Notification,
   Referral,
   RegisterInput,
@@ -68,7 +69,7 @@ export type AppRoutes = {
     $get: {
       // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
       input: {}
-      output: User
+      output: MeResult
       outputFormat: "json"
       status: 200
     }

@@ -18,6 +18,21 @@ export async function authMiddleware(
   c: Context<{ Variables: { userId: number } }>,
   next: Next,
 ) {
+  // ponytail: GET /me is public — returns {user: null} when unauthenticated
+  // so the web client can tell "signed out" from "request failed"
+  if (c.req.method === "GET" && c.req.path === "/api/auth/me") {
+    const token = getCookie(c, "token")
+    if (token) {
+      try {
+        const payload = await verifyToken(token)
+        c.set("userId", Number(payload.sub))
+      } catch {
+        // invalid token → treat as signed out
+      }
+    }
+    return next()
+  }
+
   if (PUBLIC_PATHS.has(c.req.path)) return next()
 
   const token = getCookie(c, "token")

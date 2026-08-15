@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import { Suspense } from "react"
 import { renderToString } from "react-dom/server"
 import { Router } from "wouter"
 import { StaticPage } from "./components/ui/static-page"
@@ -12,7 +13,9 @@ function render(path: string, content: ReactNode): string {
   return renderToString(
     <I18nProvider initialLang="en">
       <Router ssrPath={path} ssrSearch="">
-        {content}
+        {/* ponytail: must mirror client Suspense in app.tsx so SSR emits the
+            hydration marker; without it hydrateRoot throws #418 */}
+        <Suspense fallback={null}>{content}</Suspense>
       </Router>
     </I18nProvider>,
   )

@@ -6,7 +6,7 @@ import { StaticPage } from "./components/ui/static-page"
 import { LoadingScreen } from "./hooks/loading-screen"
 import { useAuth, useAuthGuard } from "./hooks/use-auth"
 import { ToastProvider } from "./hooks/use-toast"
-import { seoRoutes } from "./lib/seo"
+import { SITE, seoRoutes } from "./lib/seo"
 import { LandingPage } from "./pages/landing-page"
 import { LegalContent } from "./pages/legal-page"
 import { NotFoundPage } from "./pages/not-found-page"
@@ -58,6 +58,8 @@ function RouteTransition({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!location) return
     window.scrollTo(0, 0)
+    const canonical = document.querySelector('link[rel="canonical"]')
+    if (canonical) canonical.setAttribute("href", `${SITE.domain}${location}`)
   }, [location])
   // ponytail: on first render (hydration) render children directly so the DOM
   // matches the prerendered HTML; only wrap in a keyed div once navigating

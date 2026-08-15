@@ -4,6 +4,7 @@ import {
   ErrorSchema,
   ForgotPasswordSchema,
   LoginSchema,
+  MeResultSchema,
   RegisterResultSchema,
   RegisterSchema,
   ResetPasswordSchema,
@@ -82,8 +83,12 @@ const meRoute = createRoute({
   path: "/me",
   responses: {
     200: {
-      content: { "application/json": { schema: UserSchema } },
-      description: "Current user",
+      content: {
+        "application/json": {
+          schema: MeResultSchema,
+        },
+      },
+      description: "Current user (user: null when signed out)",
     },
   },
 })
@@ -210,8 +215,9 @@ authRoutes.openapi(logoutRoute, async (c) => {
 })
 
 authRoutes.openapi(meRoute, async (c) => {
-  const user = await authService.getMe(c.get("userId"))
-  return c.json(user)
+  const userId = c.get("userId")
+  const user = userId ? await authService.getMe(userId) : null
+  return c.json({ user })
 })
 
 authRoutes.openapi(updateMeRoute, async (c) => {

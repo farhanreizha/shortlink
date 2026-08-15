@@ -191,20 +191,24 @@ describe("GET /api/auth/me", () => {
       },
     })
     expect(res.status).toBe(200)
-    const data = (await res.json()) as { username: string }
-    expect(data.username).toBe("meuser")
+    const data = (await res.json()) as { user: { username: string } | null }
+    expect(data.user?.username).toBe("meuser")
   })
 
-  it("rejects missing token", async () => {
+  it("returns user: null without token", async () => {
     const res = await app.request("/api/auth/me")
-    expect(res.status).toBe(401)
+    expect(res.status).toBe(200)
+    const data = (await res.json()) as { user: unknown }
+    expect(data.user).toBeNull()
   })
 
-  it("rejects invalid token", async () => {
+  it("returns user: null with invalid token", async () => {
     const res = await app.request("/api/auth/me", {
       headers: { Cookie: "token=invalid-token" },
     })
-    expect(res.status).toBe(401)
+    expect(res.status).toBe(200)
+    const data = (await res.json()) as { user: unknown }
+    expect(data.user).toBeNull()
   })
 })
 

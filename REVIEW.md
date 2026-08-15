@@ -157,6 +157,13 @@ Sesi ke-3 (14 Agu 2026):
   2. Route non-prerendered di-serve HTML landing (rewrite `/(.*)` → `/index.html`) → `prerender.mjs` tulis `dist/empty.html` (template asli, root kosong), `vercel.json` rewrite fallback → `/empty.html`. Static file tetap menang atas rewrite → 4 route SEO tetap prerendered.
 - Verifikasi: lint/typecheck bersih, test 155/155, build web OK (empty.html + 4 route prerender), agent-browser: konsol bebas #418 di `/`, `/privacy`, `/terms`, `/support`, `/login`, `/dashboard`, `/register?ref=...`.
 
+Sesi ke-4 (15 Agu 2026):
+- Root cause #418 teridentifikasi penuh: prerender SSR tidak punya marker `<!--$-->` (Suspense di client hanya di `app.tsx`, bukan di `prerender-entry.tsx`) → client Suspense mount+hydrating tanpa boundary → `updateSuspenseComponent` throw `throwOnHydrationMismatch` (#418). Fix layer 1: `prerender-entry.tsx` bungkus `{content}` dalam `<Suspense fallback={null}>` (mirror client).
+- Fix layer 2: `use-toast.tsx` portal `toast-container` dirender client-only (`mounted` state via `useEffect`) — portal baru saat initial hydration memicu case-5 #418 karena hydration state tidak di-reset setelah dehydrated Suspense selesai (verified: node_modules completeWork case 13 initial-hydration branch tidak reset hydration state; `A` tetap true).
+- Fix layer 3: `GET /api/auth/me` tanpa token sekarang 200 `{user:null}` (sebelumnya 401) — `MeResultSchema` di shared, middleware/auth.ts bypass auth untuk GET /me (PATCH/DELETE tetap authed), auth.route.ts return `{user}` (null bila anonim), use-auth.ts baca `data.user`.
+- Verifikasi: lint/typecheck bersih, test 155/155, build OK (marker `<!--$-->` ada di dist/index.html setelah `<div id="root">`), jsdom harness 0 error + portal muncul post-mount, CDP live (`web-knot.vercel.app`) fresh tab 0 exception + marker intact + toast-container ada.
+- Deploy: web via `vercel build --prod` + `vercel deploy --prebuilt --prod` dari `apps/web` (rootDirectory project dihapus via API karena konflik), api via `vercel deploy --prod` dari repo root; alias `web-knot.vercel.app` & `api-knot.vercel.app` auto-update. `/api/auth/me` live = 200 `{"user":null}`.
+
 ## Lampiran B: catatan metodologi
 
 - Output `read`/`grep` awal terkorupsi (display layer); semua fakta di laporan ini diverifikasi ulang via dump `node -e`/`sed`/`rg -n` pendek + `curl` live.

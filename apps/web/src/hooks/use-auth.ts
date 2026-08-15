@@ -1,4 +1,4 @@
-import type { User } from "@knot/shared"
+import type { MeResult, User } from "@knot/shared"
 import { useCallback, useEffect, useState } from "react"
 import { client } from "../hono-client"
 
@@ -9,10 +9,8 @@ export function useAuth() {
   useEffect(() => {
     client.api.auth.me
       .$get()
-      .then((res: Response) =>
-        res.ok ? (res.json() as Promise<User>) : Promise.reject(),
-      )
-      .then(setUser)
+      .then((res: Response) => res.json() as Promise<MeResult>)
+      .then((data) => setUser(data.user))
       .catch(() => setUser(null))
       .finally(() => setLoading(false))
   }, [])
