@@ -49,7 +49,10 @@ export function I18nProvider({
   }, [initialLang])
 
   useEffect(() => {
-    if (lang !== "id") return
+    if (lang !== "id") {
+      setDict(en)
+      return
+    }
     let cancelled = false
     import("./i18n/id").then((m) => {
       if (!cancelled) setDict(m.id)
