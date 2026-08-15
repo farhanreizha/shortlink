@@ -111,8 +111,6 @@ export const en = {
   "landing.resource1.title": "Documentation",
   "landing.resource1.desc":
     "Guides and tutorials for getting the most out of Knot.",
-  "landing.resource2.title": "API Reference",
-  "landing.resource2.desc": "Integrate Knot links into your own applications.",
   "landing.resource3.title": "Link Marketing Tips",
   "landing.resource3.desc":
     "Best practices for driving more clicks and conversions.",

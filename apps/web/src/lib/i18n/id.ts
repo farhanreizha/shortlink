@@ -113,9 +113,6 @@ export const id: Record<MessageKey, string> = {
   "landing.resourcesDesc": "Semua yang Anda butuhkan untuk memaksimalkan Knot.",
   "landing.resource1.title": "Dokumentasi",
   "landing.resource1.desc": "Panduan dan tutorial untuk memaksimalkan Knot.",
-  "landing.resource2.title": "Referensi API",
-  "landing.resource2.desc":
-    "Integrasikan link Knot ke dalam aplikasi Anda sendiri.",
   "landing.resource3.title": "Tips Pemasaran Link",
   "landing.resource3.desc":
     "Praktik terbaik untuk meningkatkan klik dan konversi.",

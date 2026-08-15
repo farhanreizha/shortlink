@@ -1,4 +1,4 @@
-import { BookOpen, Code2, LifeBuoy, TrendingUp } from "lucide-react"
+import { BookOpen, LifeBuoy, TrendingUp } from "lucide-react"
 import type { ReactNode } from "react"
 import type { MessageKey } from "../lib/i18n"
 
@@ -71,11 +71,6 @@ export const RESOURCES: Array<{
     icon: <BookOpen size={22} />,
     titleKey: "landing.resource1.title",
     descKey: "landing.resource1.desc",
-  },
-  {
-    icon: <Code2 size={22} />,
-    titleKey: "landing.resource2.title",
-    descKey: "landing.resource2.desc",
   },
   {
     icon: <TrendingUp size={22} />,

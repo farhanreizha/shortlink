@@ -180,6 +180,7 @@
   align-items: flex-start;
   gap: var(--space-4);
   text-align: left;
+  min-height: 100%;
 }
 
 .reliability-card__icon {
