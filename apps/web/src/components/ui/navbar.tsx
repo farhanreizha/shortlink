@@ -64,7 +64,7 @@ export function Navbar({
 
         <LanguageSwitcher />
 
-        {!user && children && (
+        {(user || children) && (
           <button
             className="navbar__hamburger"
             type="button"
@@ -76,33 +76,96 @@ export function Navbar({
         )}
 
         {user ? (
-          <div className="navbar__avatar-container">
-            <button
-              className="navbar__avatar-btn"
-              type="button"
-              aria-haspopup="menu"
-              aria-expanded={avatarOpen}
-              aria-label={t("dash.accountMenu")}
-              onClick={() => setAvatarOpen(!avatarOpen)}
+          <>
+            <div className="navbar__avatar-container">
+              <button
+                className="navbar__avatar-btn"
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={avatarOpen}
+                aria-label={t("dash.accountMenu")}
+                onClick={() => setAvatarOpen(!avatarOpen)}
+              >
+                <span className="navbar__avatar-circle">
+                  {user.username[0]?.toUpperCase()}
+                </span>
+              </button>
+              {avatarOpen && (
+                <div className="navbar__dropdown" role="menu">
+                  <div className="navbar__dropdown-header">{user.username}</div>
+                  <Link
+                    className="navbar__dropdown-item"
+                    href="/dashboard"
+                    role="menuitem"
+                  >
+                    {t("nav.dashboard")}
+                  </Link>
+                  <Link
+                    className="navbar__dropdown-item"
+                    href="/settings"
+                    role="menuitem"
+                  >
+                    {t("common.settings")}
+                  </Link>
+                  <div className="navbar__dropdown-divider" />
+                  <button
+                    className="navbar__dropdown-item navbar__dropdown-item--danger"
+                    type="button"
+                    role="menuitem"
+                    onClick={onLogout}
+                  >
+                    {t("common.logout")}
+                  </button>
+                </div>
+              )}
+            </div>
+            <div
+              className={`navbar__mobile${open ? " navbar__mobile--open" : ""}`}
             >
-              <span className="navbar__avatar-circle">
-                {user.username[0]?.toUpperCase()}
-              </span>
-            </button>
-            {avatarOpen && (
-              <div className="navbar__dropdown" role="menu">
-                <div className="navbar__dropdown-header">{user.username}</div>
+              <div className="navbar__mobile-profile">
+                <span className="navbar__avatar-circle">
+                  {user.username[0]?.toUpperCase()}
+                </span>
+                <span className="navbar__mobile-name">{user.username}</span>
+              </div>
+              <nav
+                className="navbar__mobile-links"
+                aria-label={t("dash.navAria")}
+              >
+                {links?.map((link) =>
+                  link.href.startsWith("#") ? (
+                    <a
+                      key={link.href}
+                      className="navbar__link navbar__link--mobile"
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      className="navbar__link navbar__link--mobile"
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  ),
+                )}
+              </nav>
+              <div className="navbar__mobile-account">
                 <Link
                   className="navbar__dropdown-item"
                   href="/dashboard"
-                  role="menuitem"
+                  onClick={() => setOpen(false)}
                 >
                   {t("nav.dashboard")}
                 </Link>
                 <Link
                   className="navbar__dropdown-item"
                   href="/settings"
-                  role="menuitem"
+                  onClick={() => setOpen(false)}
                 >
                   {t("common.settings")}
                 </Link>
@@ -110,14 +173,16 @@ export function Navbar({
                 <button
                   className="navbar__dropdown-item navbar__dropdown-item--danger"
                   type="button"
-                  role="menuitem"
-                  onClick={onLogout}
+                  onClick={() => {
+                    setOpen(false)
+                    onLogout?.()
+                  }}
                 >
                   {t("common.logout")}
                 </button>
               </div>
-            )}
-          </div>
+            </div>
+          </>
         ) : (
           <div className={`navbar__menu${open ? " navbar__menu--open" : ""}`}>
             {links?.map((link) =>
