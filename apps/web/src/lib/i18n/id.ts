@@ -218,7 +218,6 @@ export const id: Record<MessageKey, string> = {
   "dash.toggleNav": "Buka/tutup menu navigasi",
   "dash.privacy": "Kebijakan Privasi",
   "dash.terms": "Ketentuan Layanan",
-  "dash.apiDocs": "Dokumentasi API",
   "dash.support": "Dukungan",
   "dash.rights": "© {year} Pemendek URL Knot. Seluruh hak cipta dilindungi.",
 

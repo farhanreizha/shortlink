@@ -18,7 +18,6 @@ const NAV_LINKS = [
 const FOOTER_LINKS = [
   { key: "dash.privacy", href: "/privacy" },
   { key: "dash.terms", href: "/terms" },
-  { key: "dash.apiDocs", href: "/api/docs" },
   { key: "dash.support", href: "/support" },
 ] as const
 

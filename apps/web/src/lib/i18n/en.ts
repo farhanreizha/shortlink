@@ -213,7 +213,6 @@ export const en = {
   "dash.toggleNav": "Toggle navigation menu",
   "dash.privacy": "Privacy Policy",
   "dash.terms": "Terms of Service",
-  "dash.apiDocs": "API Documentation",
   "dash.support": "Support",
   "dash.rights": "© {year} Knot URL Shortener. All rights reserved.",
 
