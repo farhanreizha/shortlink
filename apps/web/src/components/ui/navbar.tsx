@@ -61,27 +61,29 @@ export function Navbar({
 
         {user ? (
           <>
-            {links?.map((link) =>
-              link.href.startsWith("#") ? (
-                <a
-                  key={link.href}
-                  className="navbar__link navbar__link--mobile"
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link
-                  key={link.href}
-                  className="navbar__link navbar__link--mobile"
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ),
-            )}
+            <div className="navbar__links">
+              {links?.map((link) =>
+                link.href.startsWith("#") ? (
+                  <a
+                    key={link.href}
+                    className="navbar__link navbar__link--mobile"
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.href}
+                    className="navbar__link navbar__link--mobile"
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ),
+              )}
+            </div>
             <div className="navbar__avatar-container">
               <button
                 className="navbar__avatar-btn"
