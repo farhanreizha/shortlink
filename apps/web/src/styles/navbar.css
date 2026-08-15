@@ -261,6 +261,7 @@
 .navbar__mobile-links .navbar__link {
   padding: var(--space-2);
   border-radius: var(--radius-md);
+  text-align: left;
 }
 
 .navbar__mobile-links .navbar__link:hover {
