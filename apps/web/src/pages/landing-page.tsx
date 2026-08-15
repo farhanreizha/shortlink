@@ -101,13 +101,19 @@ const RESOURCES = [
   },
 ] as const
 
-export function LandingPage() {
+export function LandingPage({
+  user,
+  onLogout,
+}: {
+  user?: { username: string } | null
+  onLogout?: () => void
+}) {
   const { t } = useI18n()
   const navLinks = NAV_LINKS.map((l) => ({ ...l, label: t(l.labelKey) }))
 
   return (
     <div>
-      <Navbar links={navLinks}>
+      <Navbar links={navLinks} user={user} onLogout={onLogout}>
         <Link className="btn btn--ghost" href="/login">
           {t("nav.signIn")}
         </Link>

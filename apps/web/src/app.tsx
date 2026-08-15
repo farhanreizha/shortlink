@@ -86,7 +86,7 @@ export function App() {
           <Suspense fallback={<LoadingScreen />}>
             <Switch>
               <Route path="/">
-                <LandingPage />
+                <LandingPage user={user} onLogout={logout} />
               </Route>
               <Route path="/dashboard">
                 {user ? (

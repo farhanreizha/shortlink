@@ -27,6 +27,7 @@ export const id: Record<MessageKey, string> = {
   "nav.resources": "Sumber Daya",
   "nav.signIn": "Masuk",
   "nav.getStarted": "Mulai",
+  "nav.dashboard": "Dasbor",
   "nav.openMenu": "Buka menu",
   "nav.closeMenu": "Tutup menu",
 

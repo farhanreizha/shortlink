@@ -25,6 +25,7 @@ export const en = {
   "nav.resources": "Resources",
   "nav.signIn": "Sign In",
   "nav.getStarted": "Get Started",
+  "nav.dashboard": "Dashboard",
   "nav.openMenu": "Open menu",
   "nav.closeMenu": "Close menu",
 
