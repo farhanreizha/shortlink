@@ -255,6 +255,25 @@ export const AnalyticsOverviewSchema = z.object({
 
 export type AnalyticsOverview = z.infer<typeof AnalyticsOverviewSchema>
 
+export const LinkAnalyticsOverviewSchema = z.object({
+  slug: z.string(),
+  url: z.string(),
+  totalClicks: z.number(),
+  uniqueVisitors: z.number(),
+  clicksByDevice: z.object({
+    mobile: z.number(),
+    desktop: z.number(),
+    tablet: z.number(),
+  }),
+  clicksByLocation: z.array(
+    z.object({ country: z.string(), count: z.number(), pct: z.number() }),
+  ),
+  clicksOverTime: z.array(z.object({ date: z.string(), count: z.number() })),
+  topReferrers: z.array(z.object({ referrer: z.string(), count: z.number() })),
+})
+
+export type LinkAnalyticsOverview = z.infer<typeof LinkAnalyticsOverviewSchema>
+
 export const UpdateUserSchema = z.object({
   email: z.string().email().optional(),
   currentPassword: z.string().optional(),

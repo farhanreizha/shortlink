@@ -3,7 +3,11 @@ import { DEVICES } from "../../constants/analytics"
 import { formatCompact } from "../../lib/format"
 import { useI18n } from "../../lib/i18n"
 
-export function DeviceBars({ data }: { data: AnalyticsOverview }) {
+export function DeviceBars({
+  data,
+}: {
+  data: Pick<AnalyticsOverview, "clicksByDevice">
+}) {
   const { t } = useI18n()
   const total =
     data.clicksByDevice.mobile +

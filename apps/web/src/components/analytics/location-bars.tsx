@@ -2,7 +2,11 @@ import type { AnalyticsOverview } from "@knot/shared"
 import { countryFlag } from "../../lib/format"
 import { useI18n } from "../../lib/i18n"
 
-export function LocationBars({ data }: { data: AnalyticsOverview }) {
+export function LocationBars({
+  data,
+}: {
+  data: Pick<AnalyticsOverview, "clicksByLocation">
+}) {
   const { t } = useI18n()
   const max = Math.max(1, ...data.clicksByLocation.map((l) => l.count))
 

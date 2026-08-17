@@ -383,6 +383,7 @@ export const en = {
     "This will permanently delete {count} link(s) and their analytics.",
   "cl.exportCsv": "Export CSV",
   "cl.qrAria": "QR code for {slug}",
+  "cl.analyticsAria": "Analytics for {slug}",
 
   "an.title": "Analytics Overview",
   "an.desc": "Track your link performance and audience engagement.",
@@ -418,6 +419,7 @@ export const en = {
   "an.linkTitle": "Analytics: {slug}",
   "an.topReferrers": "Top Referrers",
   "an.referrer": "Referrer",
+  "an.viewLink": "View analytics for {slug}",
 
   "camp.title": "Campaigns",
   "camp.desc":

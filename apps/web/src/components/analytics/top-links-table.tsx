@@ -1,4 +1,5 @@
 import type { AnalyticsOverview } from "@knot/shared"
+import { Link } from "wouter"
 import { useI18n } from "../../lib/i18n"
 
 export function TopLinksTable({ data }: { data: AnalyticsOverview }) {
@@ -22,9 +23,13 @@ export function TopLinksTable({ data }: { data: AnalyticsOverview }) {
             {data.topLinks.map((link) => (
               <tr key={link.id}>
                 <td>
-                  <div className="an-table__slug">
+                  <Link
+                    className="an-table__slug"
+                    href={`/analytics/${link.slug}`}
+                    title={t("an.viewLink", { slug: link.slug })}
+                  >
                     {window.location.origin}/r/{link.slug}
-                  </div>
+                  </Link>
                   <div className="an-table__url" title={link.url}>
                     {link.url}
                   </div>

@@ -41,6 +41,11 @@ const ForgotPasswordPage = lazy(() =>
     default: m.ForgotPasswordPage,
   })),
 )
+const LinkAnalyticsPage = lazy(() =>
+  import("./pages/link-analytics-page").then((m) => ({
+    default: m.LinkAnalyticsPage,
+  })),
+)
 const ResetPasswordPage = lazy(() =>
   import("./pages/reset-password-page").then((m) => ({
     default: m.ResetPasswordPage,
@@ -132,6 +137,13 @@ export function App() {
               <Route path="/analytics">
                 {user ? (
                   <AnalyticsPage user={user} onLogout={logout} />
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
+              <Route path="/analytics/:slug">
+                {user ? (
+                  <LinkAnalyticsPage user={user} onLogout={logout} />
                 ) : (
                   <Redirect to="/" />
                 )}

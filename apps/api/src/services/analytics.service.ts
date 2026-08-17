@@ -1,5 +1,10 @@
-import type { AnalyticsOverview, AnalyticsQuery } from "@knot/shared"
+import type {
+  AnalyticsOverview,
+  AnalyticsQuery,
+  LinkAnalyticsOverview,
+} from "@knot/shared"
 import { and, count, eq, gt, lte, sql } from "drizzle-orm"
+import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"
 import { clicks, shortlinks } from "../db/schema.js"
 
@@ -345,4 +350,85 @@ export async function overview(
   }
 
   return aggregateInJS(userId, query, start, end)
+}
+
+// ponytail: per-link data is naturally small — single scan + JS aggregation,
+// no SQL/JS threshold split like the account-wide overview
+export async function linkOverview(
+  userId: number,
+  slug: string,
+  query: AnalyticsQuery,
+): Promise<LinkAnalyticsOverview> {
+  const link = await db
+    .select({ id: shortlinks.id, url: shortlinks.url })
+    .from(shortlinks)
+    .where(and(eq(shortlinks.userId, userId), eq(shortlinks.slug, slug)))
+    .limit(1)
+  const row = link[0]
+  if (!row) throw new HTTPException(404, { message: "Link not found" })
+
+  const { start, end } = resolveRange(query)
+  const rows = await db
+    .select({
+      device: clicks.device,
+      country: clicks.country,
+      referrer: clicks.referrer,
+      visitor: clicks.visitor,
+      createdAt: clicks.createdAt,
+    })
+    .from(clicks)
+    .where(
+      and(
+        eq(clicks.shortlinkId, row.id),
+        gt(clicks.createdAt, start),
+        lte(clicks.createdAt, end),
+      ),
+    )
+
+  const byDevice: LinkAnalyticsOverview["clicksByDevice"] = {
+    mobile: 0,
+    desktop: 0,
+    tablet: 0,
+  }
+  const byLocation = new Map<string, number>()
+  const overTime = new Map<string, number>()
+  const byReferrer = new Map<string, number>()
+
+  for (const c of rows) {
+    byDevice[c.device] += 1
+    byLocation.set(c.country, (byLocation.get(c.country) ?? 0) + 1)
+    const key =
+      query.bucket === "weekly"
+        ? startOfWeek(c.createdAt)
+        : c.createdAt.toISOString().slice(0, 10)
+    overTime.set(key, (overTime.get(key) ?? 0) + 1)
+    const ref = c.referrer || "Direct"
+    byReferrer.set(ref, (byReferrer.get(ref) ?? 0) + 1)
+  }
+
+  const total = Math.max(rows.length, 1)
+  const clicksByLocation = [...byLocation.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([country, count]) => ({
+      country,
+      count,
+      pct: Math.round((count / total) * 100),
+    }))
+
+  return {
+    slug,
+    url: row.url,
+    totalClicks: rows.length,
+    uniqueVisitors: new Set(rows.map((r) => r.visitor)).size,
+    clicksByDevice: byDevice,
+    clicksByLocation,
+    clicksOverTime: [...overTime.entries()]
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([date, count]) => ({ date, count })),
+    topReferrers: [...byReferrer.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([referrer, count]) => ({ referrer, count })),
+  }
 }

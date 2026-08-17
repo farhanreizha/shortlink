@@ -1,5 +1,11 @@
 import type { Shortlink } from "@knot/shared"
-import { Link as LinkIcon, Pencil, QrCode, Trash2 } from "lucide-react"
+import {
+  BarChart3,
+  Link as LinkIcon,
+  Pencil,
+  QrCode,
+  Trash2,
+} from "lucide-react"
 import { formatDate } from "../../lib/date"
 import { useI18n } from "../../lib/i18n"
 
@@ -13,6 +19,7 @@ export function LinksTable({
   onEdit,
   onDelete,
   onQr,
+  onAnalytics,
 }: {
   links: Shortlink[]
   loading: boolean
@@ -23,6 +30,7 @@ export function LinksTable({
   onEdit: (slug: string) => void
   onDelete: (slug: string) => void
   onQr: (slug: string) => void
+  onAnalytics: (slug: string) => void
 }) {
   const { t } = useI18n()
   return (
@@ -84,6 +92,14 @@ export function LinksTable({
             <td>{link.visits.toLocaleString()}</td>
             <td>
               <div className="cl-table__actions">
+                <button
+                  className="btn btn--ghost"
+                  type="button"
+                  aria-label={t("cl.analyticsAria", { slug: link.slug })}
+                  onClick={() => onAnalytics(link.slug)}
+                >
+                  <BarChart3 size={14} />
+                </button>
                 <button
                   className="btn btn--ghost"
                   type="button"

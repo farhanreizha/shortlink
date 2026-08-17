@@ -1,6 +1,7 @@
 import type { UpdateShortlink, User } from "@knot/shared"
 import { Download, Info, Plus, Search, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useLocation } from "wouter"
 import { EditModal } from "../components/shortlink/edit-modal"
 import { HowItWorksModal } from "../components/shortlink/how-it-works-modal"
 import { LinksTable } from "../components/shortlink/links-table"
@@ -27,6 +28,7 @@ export function CustomLinksPage({
 }) {
   const { toast } = useToast()
   const { t } = useI18n()
+  const [, navigate] = useLocation()
   const { data: campaigns } = useCampaigns()
   const {
     links,
@@ -282,6 +284,7 @@ export function CustomLinksPage({
               onEdit={(slug) => setEditing({ slug })}
               onDelete={(slug) => setDeleting({ slug })}
               onQr={setQrSlug}
+              onAnalytics={(slug) => navigate(`/analytics/${slug}`)}
             />
           </div>
         </Reveal>

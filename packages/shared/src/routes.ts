@@ -10,6 +10,7 @@ import type {
   CreateShortlink,
   DeleteAccount,
   ForgotPasswordInput,
+  LinkAnalyticsOverview,
   LoginInput,
   MeResult,
   Notification,
@@ -142,6 +143,14 @@ export type AppRoutes = {
     $get: {
       input: { query: AnalyticsQuery }
       output: AnalyticsOverview
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/analytics/links/:slug": {
+    $get: {
+      input: { param: { slug: string }; query: AnalyticsQuery }
+      output: LinkAnalyticsOverview
       outputFormat: "json"
       status: 200
     }

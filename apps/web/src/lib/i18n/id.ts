@@ -386,6 +386,7 @@ export const id: Record<MessageKey, string> = {
     "Ini akan menghapus permanen {count} link beserta analitiknya.",
   "cl.exportCsv": "Ekspor CSV",
   "cl.qrAria": "Kode QR untuk {slug}",
+  "cl.analyticsAria": "Analitik untuk {slug}",
 
   "an.title": "Ringkasan Analitik",
   "an.desc": "Lacak performa link dan keterlibatan audiens Anda.",
@@ -421,6 +422,7 @@ export const id: Record<MessageKey, string> = {
   "an.linkTitle": "Analitik: {slug}",
   "an.topReferrers": "Perujuk Teratas",
   "an.referrer": "Perujuk",
+  "an.viewLink": "Lihat analitik untuk {slug}",
 
   "camp.title": "Kampanye",
   "camp.desc":
