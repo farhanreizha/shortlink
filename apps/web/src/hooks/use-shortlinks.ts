@@ -30,9 +30,20 @@ export function useShortlinks() {
   }, [query, fetchLinks])
 
   const create = useCallback(
-    async (slug: string, url: string, campaignId?: number | null) => {
+    async (
+      slug: string,
+      url: string,
+      campaignId?: number | null,
+      options?: { expiresAt?: string; password?: string },
+    ) => {
       const res = await client.api.shortlinks.$post({
-        json: { slug, url, campaignId: campaignId ?? undefined },
+        json: {
+          slug,
+          url,
+          campaignId: campaignId ?? undefined,
+          ...(options?.expiresAt ? { expiresAt: options.expiresAt } : {}),
+          ...(options?.password ? { password: options.password } : {}),
+        },
       })
       if (!res.ok) {
         const body = (await res.json()) as { message?: string }
@@ -69,5 +80,48 @@ export function useShortlinks() {
     setLinks((prev) => prev.map((l) => (l.slug === slug ? link : l)))
   }, [])
 
-  return { links, total, loading, query, setQuery, create, remove, update }
+  const bulkRemove = useCallback(async (slugs: string[]) => {
+    const res = await client.api.shortlinks["bulk-delete"].$post({
+      json: { slugs },
+    })
+    if (!res.ok) {
+      const body = (await res.json()) as { message?: string }
+      throw new Error(body.message ?? "Bulk delete failed")
+    }
+    setLinks((prev) => prev.filter((l) => !slugs.includes(l.slug)))
+    return (await res.json()).deleted
+  }, [])
+
+  const bulkAssignCampaign = useCallback(
+    async (slugs: string[], campaignId: number | null) => {
+      const res = await client.api.shortlinks["bulk-update"].$post({
+        json: { slugs, campaignId },
+      })
+      if (!res.ok) {
+        const body = (await res.json()) as { message?: string }
+        throw new Error(body.message ?? "Bulk update failed")
+      }
+      const id = campaignId === null ? null : String(campaignId)
+      setLinks((prev) =>
+        prev.map((l) =>
+          slugs.includes(l.slug) ? { ...l, campaignId: id } : l,
+        ),
+      )
+      return (await res.json()).updated
+    },
+    [],
+  )
+
+  return {
+    links,
+    total,
+    loading,
+    query,
+    setQuery,
+    create,
+    remove,
+    update,
+    bulkRemove,
+    bulkAssignCampaign,
+  }
 }

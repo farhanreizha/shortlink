@@ -23,7 +23,7 @@
     "@knot/shared": "workspace:*",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
-    "hono": "^4.12.32",
+    "hono": "^4.13.2",
     "jose": "^6.2.4",
     "nodemailer": "^9.0.5",
     "pg": "^8.22.0",

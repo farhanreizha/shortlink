@@ -41,6 +41,11 @@
   cursor: pointer;
 }
 
+.form__hint {
+  font-size: 12px;
+  color: var(--color-neutral);
+}
+
 .form__error {
   font-size: 13px;
   font-weight: 500;

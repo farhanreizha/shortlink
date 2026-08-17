@@ -1,4 +1,6 @@
 import type { UpdateShortlink, User } from "@knot/shared"
+import { Search } from "lucide-react"
+import { useState } from "react"
 import { CreateForm } from "../components/shortlink/create-form"
 import { LinkCard } from "../components/shortlink/link-card"
 import { DashboardShell } from "../components/ui/dashboard-shell"
@@ -17,8 +19,14 @@ export function DashboardPage({
 }) {
   const { toast } = useToast()
   const { t } = useI18n()
+  const [q, setQ] = useState("")
   const { links, loading, create, remove, update, query, setQuery } =
     useShortlinks()
+
+  function search(e: React.FormEvent) {
+    e.preventDefault()
+    setQuery({ ...query, q: q || undefined, offset: 0 })
+  }
 
   async function handleCreate(
     slug: string,
@@ -28,7 +36,6 @@ export function DashboardPage({
     await create(slug, url, campaignId)
     toast(`${window.location.origin}/r/${slug}`)
   }
-
   async function handleDelete(slug: string) {
     await remove(slug)
     toast(t("dash.linkDeleted"))
@@ -59,6 +66,21 @@ export function DashboardPage({
               {t("dash.viewAll")}
             </button>
           </div>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <form className="cl-toolbar dash-search" onSubmit={search}>
+            <div className="cl-search">
+              <Search size={16} className="cl-search__icon" />
+              <input
+                className="cl-search__input"
+                type="search"
+                placeholder={t("dash.searchPlaceholder")}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+              />
+            </div>
+          </form>
         </Reveal>
 
         {loading ? (

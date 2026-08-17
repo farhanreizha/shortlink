@@ -21,6 +21,7 @@ export function NewLinkModal({
     slug: string,
     url: string,
     campaignId?: number | null,
+    options?: { expiresAt?: string; password?: string },
   ) => Promise<unknown>
   onClose: () => void
 }) {
@@ -29,6 +30,8 @@ export function NewLinkModal({
   const [url, setUrl] = useState("")
   const [slug, setSlug] = useState("")
   const [campaignId, setCampaignId] = useState<number | null>(null)
+  const [expiresAt, setExpiresAt] = useState("")
+  const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -36,7 +39,13 @@ export function NewLinkModal({
     e.preventDefault()
     setError("")
     const finalSlug = slug || randomSlug()
-    const result = CreateShortlinkSchema.safeParse({ slug: finalSlug, url })
+    const isoExpiry = expiresAt ? new Date(expiresAt).toISOString() : undefined
+    const result = CreateShortlinkSchema.safeParse({
+      slug: finalSlug,
+      url,
+      expiresAt: isoExpiry,
+      password: password || undefined,
+    })
     if (!result.success) {
       const field = result.error.flatten().fieldErrors
       setError(field.url?.[0] ?? field.slug?.[0] ?? t("form.invalidUrl"))
@@ -44,11 +53,16 @@ export function NewLinkModal({
     }
     setLoading(true)
     try {
-      await onCreate(finalSlug, url, campaignId)
+      await onCreate(finalSlug, url, campaignId, {
+        expiresAt: isoExpiry,
+        password: password || undefined,
+      })
       toast(`${window.location.origin}/r/${finalSlug}`)
       setUrl("")
       setSlug("")
       setCampaignId(null)
+      setExpiresAt("")
+      setPassword("")
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : t("common.error"))
@@ -88,6 +102,26 @@ export function NewLinkModal({
             className="input"
             value={campaignId}
             onChange={setCampaignId}
+          />
+        </FormField>
+        <FormField label={t("modal.expiresAt")} htmlFor="new-link-expires">
+          <input
+            id="new-link-expires"
+            className="input"
+            type="datetime-local"
+            value={expiresAt}
+            onChange={(e) => setExpiresAt(e.target.value)}
+          />
+        </FormField>
+        <FormField label={t("modal.password")} htmlFor="new-link-password">
+          <input
+            id="new-link-password"
+            className="input"
+            type="password"
+            placeholder={t("modal.passwordHint")}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="new-password"
           />
         </FormField>
         <ErrorBanner message={error} onClose={() => setError("")} />

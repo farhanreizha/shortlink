@@ -87,6 +87,10 @@ export const shortlinks = pgTable(
     campaignId: integer("campaign_id").references(() => campaigns.id, {
       onDelete: "set null",
     }),
+    expiresAt: timestamp("expires_at"),
+    password: text("password"),
+    title: text("title"),
+    description: text("description"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
     visits: integer("visits").notNull().default(0),

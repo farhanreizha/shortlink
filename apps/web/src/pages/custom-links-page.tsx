@@ -1,5 +1,5 @@
 import type { UpdateShortlink, User } from "@knot/shared"
-import { Info, Plus, Search } from "lucide-react"
+import { Info, Plus, Search, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { EditModal } from "../components/shortlink/edit-modal"
 import { HowItWorksModal } from "../components/shortlink/how-it-works-modal"
@@ -25,14 +25,28 @@ export function CustomLinksPage({
   const { toast } = useToast()
   const { t } = useI18n()
   const { data: campaigns } = useCampaigns()
-  const { links, total, loading, query, setQuery, create, remove, update } =
-    useShortlinks()
+  const {
+    links,
+    total,
+    loading,
+    query,
+    setQuery,
+    create,
+    remove,
+    update,
+    bulkRemove,
+    bulkAssignCampaign,
+  } = useShortlinks()
   const [q, setQ] = useState("")
   const [filterCampaign, setFilterCampaign] = useState("")
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [bulkCampaignId, setBulkCampaignId] = useState("")
   const [showNew, setShowNew] = useState(false)
   const [showHow, setShowHow] = useState(false)
   const [editing, setEditing] = useState<{ slug: string } | null>(null)
   const [deleting, setDeleting] = useState<{ slug: string } | null>(null)
+  const [bulkDeleting, setBulkDeleting] = useState(false)
+  const [busy, setBusy] = useState(false)
 
   const campaignNames = new Map(campaigns.map((c) => [c.id, c.name] as const))
 
@@ -75,6 +89,58 @@ export function CustomLinksPage({
   const deleteLink = deleting
     ? links.find((l) => l.slug === deleting.slug)
     : undefined
+
+  function toggleSelect(slug: string) {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(slug)) {
+        next.delete(slug)
+      } else {
+        next.add(slug)
+      }
+      return next
+    })
+  }
+
+  function toggleSelectAll() {
+    setSelected((prev) =>
+      links.length > 0 && links.every((l) => prev.has(l.slug))
+        ? new Set()
+        : new Set(links.map((l) => l.slug)),
+    )
+  }
+
+  async function handleBulkDelete() {
+    setBusy(true)
+    try {
+      await bulkRemove([...selected])
+      setSelected(new Set())
+      setBulkDeleting(false)
+      toast(t("cl.bulkDeleted"))
+    } catch (err) {
+      toast(err instanceof Error ? err.message : t("common.error"), "error")
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function handleBulkAssign() {
+    if (bulkCampaignId === "") return
+    setBusy(true)
+    try {
+      await bulkAssignCampaign(
+        [...selected],
+        bulkCampaignId === "none" ? null : Number(bulkCampaignId),
+      )
+      setSelected(new Set())
+      setBulkCampaignId("")
+      toast(t("cl.bulkAssigned"))
+    } catch (err) {
+      toast(err instanceof Error ? err.message : t("common.error"), "error")
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <DashboardShell user={user} onLogout={onLogout} activeNav="custom-links">
@@ -134,10 +200,52 @@ export function CustomLinksPage({
 
         <Reveal delay={0.1}>
           <div className="cl-table-wrap">
+            {selected.size > 0 && (
+              <div className="cl-bulkbar">
+                <span className="cl-bulkbar__count">
+                  {t("cl.selected", { count: selected.size })}
+                </span>
+                <select
+                  className="cl-filter cl-bulkbar__select"
+                  aria-label={t("cl.bulkAssign")}
+                  value={bulkCampaignId}
+                  onChange={(e) => setBulkCampaignId(e.target.value)}
+                  disabled={busy}
+                >
+                  <option value="">{t("cl.bulkAssign")}</option>
+                  <option value="none">{t("modal.noCampaign")}</option>
+                  {campaigns.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className="btn btn--primary"
+                  type="button"
+                  onClick={handleBulkAssign}
+                  disabled={busy || bulkCampaignId === ""}
+                >
+                  {t("cl.apply")}
+                </button>
+                <button
+                  className="btn btn--danger-ghost"
+                  type="button"
+                  onClick={() => setBulkDeleting(true)}
+                  disabled={busy}
+                >
+                  <Trash2 size={16} />
+                  {t("cl.bulkDelete")}
+                </button>
+              </div>
+            )}
             <LinksTable
               links={links}
               loading={loading}
               campaignNames={campaignNames}
+              selected={selected}
+              onToggle={toggleSelect}
+              onToggleAll={toggleSelectAll}
               onEdit={(slug) => setEditing({ slug })}
               onDelete={(slug) => setDeleting({ slug })}
             />
@@ -181,6 +289,13 @@ export function CustomLinksPage({
           onCancel={() => setDeleting(null)}
         />
       )}
+      <ConfirmModal
+        open={bulkDeleting}
+        title={t("cl.bulkDeleteTitle")}
+        message={t("cl.bulkDeleteMessage", { count: selected.size })}
+        onConfirm={handleBulkDelete}
+        onCancel={() => setBulkDeleting(false)}
+      />
     </DashboardShell>
   )
 }

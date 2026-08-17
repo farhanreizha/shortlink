@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import app from "../app.js"
 import { db } from "../db/index.js"
 import { clicks, shortlinks } from "../db/schema.js"
+import { hashPassword } from "../lib/auth.js"
 import { authedRequest, cleanDatabase, registerUser } from "./helpers.js"
 
 beforeEach(cleanDatabase)
@@ -125,5 +126,95 @@ describe("GET /r/:slug", () => {
     await new Promise((r) => setTimeout(r, 100))
     const rows = await db.select().from(clicks)
     expect(rows).toHaveLength(0)
+  })
+
+  it("serves an expired page for expired links", async () => {
+    const { user } = await registerUser({
+      email: "exp@test.com",
+      username: "expuser",
+    })
+    await db.insert(shortlinks).values({
+      slug: "oldlink",
+      url: "https://example.com",
+      userId: user.id,
+      expiresAt: new Date(Date.now() - 1000),
+    })
+    const res = await app.request("/r/oldlink")
+    expect(res.status).toBe(200)
+    expect(await res.text()).toContain("has expired")
+  })
+
+  it("serves a password form for protected links", async () => {
+    const { user } = await registerUser({
+      email: "pw@test.com",
+      username: "pwuser",
+    })
+    await db.insert(shortlinks).values({
+      slug: "secret",
+      url: "https://example.com",
+      userId: user.id,
+      password: await hashPassword("hunter2"),
+    })
+    const res = await app.request("/r/secret")
+    expect(res.status).toBe(200)
+    expect(await res.text()).toContain("password")
+  })
+
+  it("unlocks a protected link with the correct password", async () => {
+    const { user } = await registerUser({
+      email: "pw2@test.com",
+      username: "pw2user",
+    })
+    await db.insert(shortlinks).values({
+      slug: "secret2",
+      url: "https://example.com",
+      userId: user.id,
+      password: await hashPassword("hunter2"),
+    })
+    const post = await app.request("/r/secret2", {
+      method: "POST",
+      body: new URLSearchParams({ password: "wrong" }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    })
+    expect(post.status).toBe(200)
+    expect(await post.text()).toContain("Incorrect password")
+
+    const ok = await app.request("/r/secret2", {
+      method: "POST",
+      body: new URLSearchParams({ password: "hunter2" }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    })
+    expect(ok.status).toBe(302)
+    expect(ok.headers.get("Set-Cookie")).toContain("knot_secret2")
+    expect(ok.headers.get("Location")).toBe("/r/secret2")
+
+    const follow = await app.request("/r/secret2", {
+      headers: { Cookie: ok.headers.get("Set-Cookie")?.split(";")[0] ?? "" },
+    })
+    expect(follow.status).toBe(302)
+    expect(follow.headers.get("Location")).toBe("https://example.com")
+  })
+
+  it("serves OG preview for social crawlers", async () => {
+    const { user } = await registerUser({
+      email: "og@test.com",
+      username: "oguser",
+    })
+    await db.insert(shortlinks).values({
+      slug: "preview",
+      url: "https://example.com",
+      userId: user.id,
+      title: "My Great Link",
+      description: "A useful destination",
+    })
+    const res = await app.request("/r/preview", {
+      headers: { "user-agent": "Twitterbot/1.0" },
+    })
+    expect(res.status).toBe(200)
+    const html = await res.text()
+    expect(html).toContain('property="og:title" content="My Great Link"')
+    expect(html).toContain(
+      'property="og:description" content="A useful destination"',
+    )
   })
 })

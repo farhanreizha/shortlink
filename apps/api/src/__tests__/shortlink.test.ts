@@ -298,3 +298,113 @@ describe("PATCH /api/shortlinks/:slug", () => {
     expect(res.status).toBe(401)
   })
 })
+
+describe("POST /api/shortlinks/bulk-delete", () => {
+  it("deletes multiple own shortlinks", async () => {
+    const { token } = await registerUser({
+      email: "bulkdel@test.com",
+      username: "bulkdel",
+    })
+    for (const slug of ["b1", "b2", "b3"]) {
+      await authedRequest(token, "/api/shortlinks", {
+        method: "POST",
+        body: JSON.stringify({ slug, url: "https://example.com" }),
+      })
+    }
+    const res = await authedRequest(token, "/api/shortlinks/bulk-delete", {
+      method: "POST",
+      body: JSON.stringify({ slugs: ["b1", "b3"] }),
+    })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ deleted: 2 })
+    const list = await authedRequest(token, "/api/shortlinks")
+    const data = (await list.json()) as { slug: string }[]
+    expect(data).toHaveLength(1)
+    expect(data[0]?.slug).toBe("b2")
+  })
+
+  it("does not delete other users' shortlinks", async () => {
+    const { token } = await registerUser({
+      email: "bulkdel2@test.com",
+      username: "bulkdel2",
+    })
+    const other = await registerUser({
+      email: "bulkdel3@test.com",
+      username: "bulkdel3",
+    })
+    await authedRequest(other.token, "/api/shortlinks", {
+      method: "POST",
+      body: JSON.stringify({ slug: "theirs", url: "https://example.com" }),
+    })
+    const res = await authedRequest(token, "/api/shortlinks/bulk-delete", {
+      method: "POST",
+      body: JSON.stringify({ slugs: ["theirs"] }),
+    })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ deleted: 0 })
+  })
+})
+
+describe("POST /api/shortlinks/bulk-update", () => {
+  it("assigns a campaign to multiple shortlinks", async () => {
+    const { token } = await registerUser({
+      email: "bulkup@test.com",
+      username: "bulkup",
+    })
+    const campaign = await authedRequest(token, "/api/campaigns", {
+      method: "POST",
+      body: JSON.stringify({ name: "Summer" }),
+    })
+    const { id } = (await campaign.json()) as { id: string }
+    for (const slug of ["c1", "c2"]) {
+      await authedRequest(token, "/api/shortlinks", {
+        method: "POST",
+        body: JSON.stringify({ slug, url: "https://example.com" }),
+      })
+    }
+    const res = await authedRequest(token, "/api/shortlinks/bulk-update", {
+      method: "POST",
+      body: JSON.stringify({ slugs: ["c1", "c2"], campaignId: Number(id) }),
+    })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ updated: 2 })
+  })
+
+  it("clears campaign when campaignId is null", async () => {
+    const { token } = await registerUser({
+      email: "bulkclear@test.com",
+      username: "bulkclear",
+    })
+    await authedRequest(token, "/api/shortlinks", {
+      method: "POST",
+      body: JSON.stringify({ slug: "clear", url: "https://example.com" }),
+    })
+    const res = await authedRequest(token, "/api/shortlinks/bulk-update", {
+      method: "POST",
+      body: JSON.stringify({ slugs: ["clear"], campaignId: null }),
+    })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ updated: 1 })
+  })
+
+  it("rejects campaign owned by another user", async () => {
+    const { token } = await registerUser({
+      email: "bulkbad@test.com",
+      username: "bulkbad",
+    })
+    const other = await registerUser({
+      email: "bulkbad2@test.com",
+      username: "bulkbad2",
+    })
+    const campaign = await authedRequest(other.token, "/api/campaigns", {
+      method: "POST",
+      body: JSON.stringify({ name: "Theirs" }),
+    })
+    const { id } = (await campaign.json()) as { id: string }
+    const res = await authedRequest(token, "/api/shortlinks/bulk-update", {
+      method: "POST",
+      body: JSON.stringify({ slugs: ["x"], campaignId: Number(id) }),
+    })
+    expect(res.status).toBe(400)
+  })
+})

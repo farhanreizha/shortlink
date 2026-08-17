@@ -102,6 +102,10 @@ export const ShortlinkSchema = z.object({
   url: z.string().url(),
   visits: z.number(),
   campaignId: z.string().nullable(),
+  expiresAt: z.string().datetime().nullable(),
+  hasPassword: z.boolean(),
+  title: z.string().nullable(),
+  description: z.string().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 })
@@ -133,6 +137,10 @@ export const CreateShortlinkSchema = z.object({
   slug: SlugSchema,
   url: HttpUrlSchema,
   campaignId: z.coerce.number().int().nullable().optional(),
+  expiresAt: z.string().datetime().nullable().optional(),
+  password: z.string().min(1).max(128).optional(),
+  title: z.string().max(200).optional(),
+  description: z.string().max(500).optional(),
 })
 
 export type CreateShortlink = z.infer<typeof CreateShortlinkSchema>
@@ -141,6 +149,10 @@ export const UpdateShortlinkSchema = z.object({
   slug: SlugSchema.optional(),
   url: HttpUrlSchema.optional(),
   campaignId: z.coerce.number().int().nullable().optional(),
+  expiresAt: z.string().datetime().nullable().optional(),
+  password: z.string().min(1).max(128).nullable().optional(),
+  title: z.string().max(200).nullable().optional(),
+  description: z.string().max(500).nullable().optional(),
 })
 
 export type UpdateShortlink = z.infer<typeof UpdateShortlinkSchema>
@@ -154,6 +166,19 @@ export const ShortlinkQuerySchema = z.object({
 })
 
 export type ShortlinkQuery = z.infer<typeof ShortlinkQuerySchema>
+
+export const BulkDeleteSchema = z.object({
+  slugs: z.array(SlugSchema).min(1).max(100),
+})
+
+export type BulkDelete = z.infer<typeof BulkDeleteSchema>
+
+export const BulkUpdateSchema = z.object({
+  slugs: z.array(SlugSchema).min(1).max(100),
+  campaignId: z.coerce.number().int().nullable(),
+})
+
+export type BulkUpdate = z.infer<typeof BulkUpdateSchema>
 
 export const CampaignSchema = z.object({
   id: z.string(),

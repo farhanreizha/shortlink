@@ -7,12 +7,18 @@ export function LinksTable({
   links,
   loading,
   campaignNames,
+  selected,
+  onToggle,
+  onToggleAll,
   onEdit,
   onDelete,
 }: {
   links: Shortlink[]
   loading: boolean
   campaignNames: Map<string, string>
+  selected: Set<string>
+  onToggle: (slug: string) => void
+  onToggleAll: () => void
   onEdit: (slug: string) => void
   onDelete: (slug: string) => void
 }) {
@@ -21,6 +27,16 @@ export function LinksTable({
     <table className="cl-table">
       <thead>
         <tr>
+          <th className="cl-table__check-col">
+            <input
+              type="checkbox"
+              aria-label={t("cl.selectAll")}
+              checked={
+                links.length > 0 && links.every((l) => selected.has(l.slug))
+              }
+              onChange={onToggleAll}
+            />
+          </th>
           <th>{t("cl.colBranded")}</th>
           <th>{t("cl.colOriginal")}</th>
           <th>{t("cl.colCampaign")}</th>
@@ -33,9 +49,17 @@ export function LinksTable({
         {links.map((link, i) => (
           <tr
             key={link.id}
-            className="cl-table__row"
+            className={`cl-table__row${selected.has(link.slug) ? " cl-table__row--selected" : ""}`}
             style={{ animationDelay: `${i * 0.04}s` }}
           >
+            <td>
+              <input
+                type="checkbox"
+                aria-label={t("cl.selectAria", { slug: link.slug })}
+                checked={selected.has(link.slug)}
+                onChange={() => onToggle(link.slug)}
+              />
+            </td>
             <td>
               <span className="cl-table__brand">
                 <LinkIcon size={16} />
@@ -80,7 +104,7 @@ export function LinksTable({
         ))}
         {!loading && links.length === 0 && (
           <tr>
-            <td colSpan={6}>
+            <td colSpan={7}>
               <div className="empty-state">
                 <div className="empty-state__title">{t("cl.noLinks")}</div>
                 <div className="empty-state__text">{t("cl.noLinksText")}</div>

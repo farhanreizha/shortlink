@@ -1,5 +1,7 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
 import {
+  BulkDeleteSchema,
+  BulkUpdateSchema,
   CreateShortlinkSchema,
   ErrorSchema,
   ShortlinkQuerySchema,
@@ -123,6 +125,54 @@ const updateShortlinkRoute = createRoute({
   },
 })
 
+const bulkDeleteRoute = createRoute({
+  method: "post",
+  path: "/bulk-delete",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: BulkDeleteSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({ deleted: z.number() }),
+        },
+      },
+      description: "Bulk deleted shortlinks",
+    },
+  },
+})
+
+const bulkUpdateRoute = createRoute({
+  method: "post",
+  path: "/bulk-update",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: BulkUpdateSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({ updated: z.number() }),
+        },
+      },
+      description: "Bulk updated shortlinks",
+    },
+  },
+})
+
 const shortlinkRoutes = new OpenAPIHono<{ Variables: { userId: number } }>()
 
 shortlinkRoutes.openapi(getShortlinksRoute, async (c) => {
@@ -155,6 +205,22 @@ shortlinkRoutes.openapi(updateShortlinkRoute, async (c) => {
   const input = c.req.valid("json")
   const link = await shortlinkService.update(slug, c.get("userId"), input)
   return c.json(link, 200)
+})
+
+shortlinkRoutes.openapi(bulkDeleteRoute, async (c) => {
+  const { slugs } = c.req.valid("json")
+  const deleted = await shortlinkService.bulkRemove(slugs, c.get("userId"))
+  return c.json({ deleted })
+})
+
+shortlinkRoutes.openapi(bulkUpdateRoute, async (c) => {
+  const { slugs, campaignId } = c.req.valid("json")
+  const updated = await shortlinkService.bulkAssignCampaign(
+    slugs,
+    campaignId,
+    c.get("userId"),
+  )
+  return c.json({ updated })
 })
 
 export default shortlinkRoutes

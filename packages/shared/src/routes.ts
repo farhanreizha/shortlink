@@ -1,6 +1,8 @@
 import type {
   AnalyticsOverview,
   AnalyticsQuery,
+  BulkDelete,
+  BulkUpdate,
   Campaign,
   CampaignQuery,
   CampaignSummary,
@@ -98,6 +100,22 @@ export type AppRoutes = {
       output: Shortlink
       outputFormat: "json"
       status: 201
+    }
+  }
+  "/api/shortlinks/bulk-delete": {
+    $post: {
+      input: { json: BulkDelete }
+      output: { deleted: number }
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/shortlinks/bulk-update": {
+    $post: {
+      input: { json: BulkUpdate }
+      output: { updated: number }
+      outputFormat: "json"
+      status: 200
     }
   }
   "/api/shortlinks/:slug": {
