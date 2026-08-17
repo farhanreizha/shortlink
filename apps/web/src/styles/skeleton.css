@@ -20,8 +20,3 @@
   width: 60px;
   border-radius: var(--radius-sm);
 }
-
-.skeleton--button {
-  height: 44px;
-  width: 100px;
-}

@@ -40,18 +40,6 @@
   box-shadow: 0 4px 12px rgba(0, 82, 255, 0.3);
 }
 
-.btn--secondary {
-  background: transparent;
-  color: var(--color-primary);
-  border: 1.5px solid var(--color-primary);
-  min-width: auto;
-  padding: 0 var(--space-4);
-}
-
-.btn--secondary:hover:not(:disabled) {
-  background: var(--color-primary-muted);
-}
-
 .btn--ghost {
   background: transparent;
   color: var(--color-primary);
@@ -61,11 +49,6 @@
 
 .btn--ghost:hover:not(:disabled) {
   background: var(--color-primary-muted);
-}
-
-.btn--success {
-  background: var(--color-success-muted);
-  color: var(--color-success);
 }
 
 .btn--danger {

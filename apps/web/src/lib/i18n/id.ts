@@ -171,10 +171,6 @@ export const id: Record<MessageKey, string> = {
     "Kode referral tidak dikenali — pendaftaran dilanjutkan tanpa kode.",
   "auth.passwordsMismatch": "Kata sandi tidak cocok",
   "auth.minChars": "minimal 6 karakter",
-  "auth.continueGoogle": "Lanjutkan dengan Google",
-  "auth.continueGithub": "Lanjutkan dengan GitHub",
-  "auth.google": "Google",
-  "auth.github": "GitHub",
 
   "forgot.title": "Atur ulang kata sandi",
   "forgot.subtitle":
@@ -479,7 +475,6 @@ export const id: Record<MessageKey, string> = {
   "set.profile": "Profil",
   "set.security": "Keamanan",
   "set.notifications": "Notifikasi",
-  "set.billing": "Penagihan",
   "set.dangerZone": "Zona Berbahaya",
   "set.dangerDesc":
     "Hapus akun dan semua link terkait. Tindakan ini tidak dapat dibatalkan.",
@@ -535,32 +530,6 @@ export const id: Record<MessageKey, string> = {
   "notif.minAgo": "{n} mnt lalu",
   "notif.hrAgo": "{n} jam lalu",
   "notif.dayAgo": "{n} hari lalu",
-
-  "bill.title": "Penagihan",
-  "bill.desc": "Kelola langganan, metode pembayaran, dan faktur Anda.",
-  "bill.pro": "Pro",
-  "bill.popular": "Populer",
-  "bill.perMonth": "/bln",
-  "bill.price": "Rp49.000",
-  "bill.amount": "Rp49.000",
-  "bill.feature":
-    "Link tanpa batas, analitik real-time, manajemen kampanye, dan akses API.",
-  "bill.changePlan": "Ganti Paket",
-  "bill.upgrade": "Tingkatkan",
-  "bill.paymentMethod": "Metode Pembayaran",
-  "bill.endingIn": "Berakhir dengan 4242",
-  "bill.expires": "Kedaluwarsa 08/27",
-  "bill.edit": "Ubah",
-  "bill.history": "Riwayat Penagihan",
-  "bill.colDate": "Tanggal",
-  "bill.colPlan": "Paket",
-  "bill.colAmount": "Jumlah",
-  "bill.colStatus": "Status",
-  "bill.paid": "Lunas",
-  "bill.proMonthly": "Pro Bulanan",
-  "bill.comingSoon": "Segera Hadir",
-  "bill.comingSoonDesc":
-    "Penagihan belum tersedia. Fitur pembayaran akan segera hadir.",
 
   "set.referral": "Referal",
   "ref.title": "Ajak teman, dapatkan Pro",

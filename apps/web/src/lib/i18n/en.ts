@@ -167,11 +167,6 @@ export const en = {
   "auth.refInvalid": "Referral code not recognized — continuing without it.",
   "auth.passwordsMismatch": "Passwords do not match",
   "auth.minChars": "min 6 characters",
-  "auth.continueGoogle": "Continue with Google",
-  "auth.continueGithub": "Continue with GitHub",
-  "auth.google": "Google",
-  "auth.github": "GitHub",
-
   "forgot.title": "Reset your password",
   "forgot.subtitle":
     "Enter the email address linked to your account and we'll send you a reset link.",
@@ -476,7 +471,6 @@ export const en = {
   "set.profile": "Profile",
   "set.security": "Security",
   "set.notifications": "Notifications",
-  "set.billing": "Billing",
   "set.dangerZone": "Danger Zone",
   "set.dangerDesc":
     "Delete your account and all associated links. This action cannot be undone.",
@@ -531,32 +525,6 @@ export const en = {
   "notif.minAgo": "{n}m ago",
   "notif.hrAgo": "{n}h ago",
   "notif.dayAgo": "{n}d ago",
-
-  "bill.title": "Billing",
-  "bill.desc": "Manage your subscription, payment method and invoices.",
-  "bill.pro": "Pro",
-  "bill.popular": "Popular",
-  "bill.perMonth": "/mo",
-  "bill.price": "$3",
-  "bill.amount": "$3",
-  "bill.feature":
-    "Unlimited links, real-time analytics, campaign management and API access.",
-  "bill.changePlan": "Change Plan",
-  "bill.upgrade": "Upgrade",
-  "bill.paymentMethod": "Payment Method",
-  "bill.endingIn": "Ending in 4242",
-  "bill.expires": "Expires 08/27",
-  "bill.edit": "Edit",
-  "bill.history": "Billing History",
-  "bill.colDate": "Date",
-  "bill.colPlan": "Plan",
-  "bill.colAmount": "Amount",
-  "bill.colStatus": "Status",
-  "bill.paid": "Paid",
-  "bill.proMonthly": "Pro Monthly",
-  "bill.comingSoon": "Coming Soon",
-  "bill.comingSoonDesc":
-    "Billing is not available yet. Payment features will arrive soon.",
 
   "set.referral": "Referral",
   "ref.title": "Refer friends, earn Pro",

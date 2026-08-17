@@ -135,40 +135,6 @@
   text-decoration: underline;
 }
 
-.social-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.social-button {
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-btn);
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  cursor: not-allowed;
-}
-
-.social-button:not(:disabled) {
-  cursor: pointer;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
-}
-
-.social-button:not(:disabled):hover {
-  border-color: var(--color-primary);
-  background: var(--color-primary-muted);
-}
-
 .auth-divider {
   display: flex;
   align-items: center;

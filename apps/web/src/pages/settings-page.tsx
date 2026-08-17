@@ -1,6 +1,5 @@
 import type { User } from "@knot/shared"
 import { useState } from "react"
-import { BillingForm } from "../components/settings/billing-form"
 import { DeleteAccountCard } from "../components/settings/delete-account-card"
 import { NotificationForm } from "../components/settings/notification-form"
 import { ProfileForm } from "../components/settings/profile-form"
@@ -28,7 +27,6 @@ export function SettingsPage({
           {tab === "profile" && <ProfileForm user={user} />}
           {tab === "security" && <SecurityForm />}
           {tab === "notifications" && <NotificationForm user={user} />}
-          {tab === "billing" && <BillingForm />}
           {tab === "referral" && <ReferralForm />}
 
           {tab === "profile" && <DeleteAccountCard onDeleted={onLogout} />}

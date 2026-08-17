@@ -10,7 +10,6 @@ import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
 import { PasswordStrength } from "../ui/password-strength"
 import { SubmitButton } from "../ui/submit-button"
-import { SocialButtons } from "./social-buttons"
 
 export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
   const { t } = useI18n()
@@ -72,7 +71,6 @@ export function RegisterForm({ onAuth }: { onAuth: (user: User) => void }) {
 
   return (
     <form className="form" onSubmit={handleSubmit}>
-      <SocialButtons compact />
       <div className="auth-divider">
         <span>{t("auth.or")}</span>
       </div>

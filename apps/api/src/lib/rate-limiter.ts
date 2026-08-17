@@ -4,10 +4,6 @@ import type { Context, Next } from "hono"
 import { db } from "../db/index.js"
 import { rateLimits } from "../db/schema.js"
 
-export function resetRateLimitStore() {
-  // No-op for PostgreSQL-backed rate limiter; tests use cleanDatabase()
-}
-
 // Trust only headers set by our reverse proxy (nginx sets X-Real-IP and
 // X-Forwarded-For for every proxied request); reject spoofed values that
 // are not valid IPs. Without a client IP (direct access, e.g. dev via the

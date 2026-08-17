@@ -9,7 +9,6 @@ import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { PasswordField } from "../ui/password-field"
 import { SubmitButton } from "../ui/submit-button"
-import { SocialButtons } from "./social-buttons"
 
 export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
   const { t } = useI18n()
@@ -54,7 +53,6 @@ export function LoginForm({ onAuth }: { onAuth: (user: User) => void }) {
 
   return (
     <form className="form" onSubmit={handleSubmit}>
-      <SocialButtons />
       <div className="auth-divider">
         <span>{t("auth.orContinue")}</span>
       </div>
