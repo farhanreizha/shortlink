@@ -32,3 +32,20 @@ export async function sendPasswordReset(to: string, resetUrl: string) {
   })
   return true
 }
+
+export async function sendVerificationEmail(to: string, verifyUrl: string) {
+  const smtp = getTransport()
+  if (!smtp) {
+    console.log(
+      `[mailer] SMTP not configured — verification link for ${to}: ${verifyUrl}`,
+    )
+    return false
+  }
+  await smtp.sendMail({
+    from: env.SMTP_FROM,
+    to,
+    subject: "Verify your Knot email",
+    text: `Welcome to Knot!\n\nConfirm your email address to finish setting up your account:\n${verifyUrl}\n\nIf you didn't create this account, you can ignore this email.`,
+  })
+  return true
+}

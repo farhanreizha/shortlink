@@ -13,7 +13,7 @@ import { env } from "../config.js"
 import { db } from "../db/index.js"
 import { campaigns, shortlinks, users } from "../db/schema.js"
 import { hashPassword, signToken, verifyPassword } from "../lib/auth.js"
-import { sendPasswordReset } from "../lib/mailer.js"
+import { sendPasswordReset, sendVerificationEmail } from "../lib/mailer.js"
 import * as referralService from "./referral.service.js"
 
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000
@@ -37,6 +37,7 @@ function toUser(row: typeof users.$inferSelect): User {
     id: String(row.id),
     username: row.username,
     email: row.email,
+    emailVerified: row.emailVerified,
     notificationPrefs: row.notificationPrefs,
     createdAt: row.createdAt.toISOString(),
   }
@@ -87,12 +88,54 @@ export async function register(input: RegisterInput) {
     })
   // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row
   const row = rows[0]!
+  await issueVerificationToken(row.id, row.email)
   const token = await signToken(row.id)
   return {
     token,
     user: toUser(row),
     referrerApplied: referrerId !== undefined,
   }
+}
+
+// Token is stored hashed (same pattern as password reset) and is single-use;
+// verifyEmail() clears it, so a used link can't be replayed
+async function issueVerificationToken(userId: number, email: string) {
+  const token = randomBytes(32).toString("base64url")
+  await db
+    .update(users)
+    .set({
+      emailVerified: false,
+      emailVerificationToken: hashToken(token),
+    })
+    .where(eq(users.id, userId))
+  const verifyUrl = `${env.APP_URL}/verify-email?token=${token}`
+  await sendVerificationEmail(email, verifyUrl)
+}
+
+export async function verifyEmail(token: string) {
+  const [row] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.emailVerificationToken, hashToken(token)))
+    .limit(1)
+  if (!row) throw new HTTPException(400, { message: "Invalid token" })
+  await db
+    .update(users)
+    .set({ emailVerified: true, emailVerificationToken: null })
+    .where(eq(users.id, row.id))
+}
+
+export async function resendVerification(userId: number) {
+  const [row] = await db
+    .select({ email: users.email, verified: users.emailVerified })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1)
+  if (!row) throw new HTTPException(401, { message: "User not found" })
+  if (row.verified) {
+    throw new HTTPException(400, { message: "Email already verified" })
+  }
+  await issueVerificationToken(userId, row.email)
 }
 
 export async function login(input: LoginInput) {

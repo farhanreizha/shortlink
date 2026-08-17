@@ -181,6 +181,43 @@ const resetPasswordRoute = createRoute({
   },
 })
 
+const verifyEmailRoute = createRoute({
+  method: "get",
+  path: "/verify-email",
+  request: {
+    query: z.object({ token: z.string() }),
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({ message: z.string() }),
+        },
+      },
+      description: "Email verified",
+    },
+    400: {
+      content: { "application/json": { schema: ErrorSchema } },
+      description: "Invalid token",
+    },
+  },
+})
+
+const resendVerificationRoute = createRoute({
+  method: "post",
+  path: "/resend-verification",
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({ message: z.string() }),
+        },
+      },
+      description: "Verification email resent",
+    },
+  },
+})
+
 const authRoutes = new OpenAPIHono<{ Variables: { userId: number } }>()
 
 authRoutes.openapi(registerRoute, async (c) => {
@@ -247,6 +284,17 @@ authRoutes.openapi(resetPasswordRoute, async (c) => {
   const input = c.req.valid("json")
   await authService.resetPassword(input)
   return c.json({ message: "Password reset. You can now sign in." })
+})
+
+authRoutes.openapi(verifyEmailRoute, async (c) => {
+  const { token } = c.req.valid("query")
+  await authService.verifyEmail(token)
+  return c.json({ message: "Email verified. You can now sign in." })
+})
+
+authRoutes.openapi(resendVerificationRoute, async (c) => {
+  await authService.resendVerification(c.get("userId"))
+  return c.json({ message: "Verification email sent." })
 })
 
 export default authRoutes

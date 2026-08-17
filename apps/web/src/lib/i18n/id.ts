@@ -185,6 +185,18 @@ export const id: Record<MessageKey, string> = {
     "Jika akun dengan email tersebut ada, tautan reset kata sandi sedang dikirim. Cek kotak masukmu.",
   "forgot.backToLogin": "Kembali ke masuk",
 
+  "verify.successTitle": "Email terverifikasi",
+  "verify.successBody":
+    "Alamat emailmu sudah dikonfirmasi. Kamu sekarang bisa memakai semua fitur Knot.",
+  "verify.errorTitle": "Verifikasi gagal",
+  "verify.errorBody":
+    "Tautan ini tidak valid atau sudah kedaluwarsa. Coba masuk lalu kirim ulang email verifikasi.",
+  "verify.goDashboard": "Ke Dasbor",
+  "verify.goLogin": "Ke Halaman Masuk",
+  "verify.banner": "Verifikasi alamat emailmu.",
+  "verify.resend": "Kirim ulang verifikasi",
+  "verify.sent": "Email terkirim!",
+
   "reset.title": "Buat kata sandi baru",
   "reset.subtitle": "Pilih kata sandi yang kuat untuk akunmu.",
   "reset.newPassword": "Kata sandi baru",

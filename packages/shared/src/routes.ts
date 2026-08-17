@@ -68,6 +68,23 @@ export type AppRoutes = {
       status: 200
     }
   }
+  "/api/auth/verify-email": {
+    $get: {
+      input: { query: { token: string } }
+      output: { message: string }
+      outputFormat: "json"
+      status: 200
+    }
+  }
+  "/api/auth/resend-verification": {
+    $post: {
+      // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type
+      input: {}
+      output: { message: string }
+      outputFormat: "json"
+      status: 200
+    }
+  }
   "/api/auth/me": {
     $get: {
       // biome-ignore lint/complexity/noBannedTypes: Hono RPC input type

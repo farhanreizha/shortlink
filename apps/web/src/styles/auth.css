@@ -4,6 +4,20 @@
   min-height: 100vh;
 }
 
+.verify-status {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4) 0;
+}
+
+.verify-status__icon--ok {
+  color: var(--color-success);
+}
+
+.verify-status__icon--err {
+  color: var(--color-danger);
+}
+
 .auth-brand {
   position: relative;
   overflow: hidden;

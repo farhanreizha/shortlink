@@ -77,6 +77,7 @@ export const UserSchema = z.object({
   id: z.string(),
   username: z.string(),
   email: z.string(),
+  emailVerified: z.boolean(),
   notificationPrefs: NotificationPrefsSchema,
   createdAt: z.string().datetime(),
 })

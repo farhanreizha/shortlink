@@ -259,6 +259,19 @@
   animation: dash-enter 0.35s ease-out;
 }
 
+.verify-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-btn);
+  margin-top: calc(-1 * var(--space-8));
+  font-size: 14px;
+  color: var(--color-text);
+}
+
 .dash-main > * {
   min-width: 0;
 }

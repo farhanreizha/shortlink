@@ -181,6 +181,18 @@ export const en = {
     "If an account exists for that email, a password reset link is on its way. Check your inbox.",
   "forgot.backToLogin": "Back to sign in",
 
+  "verify.successTitle": "Email verified",
+  "verify.successBody":
+    "Your email address has been confirmed. You can now use all Knot features.",
+  "verify.errorTitle": "Verification failed",
+  "verify.errorBody":
+    "This link is invalid or has expired. Try signing in and resending the verification email.",
+  "verify.goDashboard": "Go to Dashboard",
+  "verify.goLogin": "Go to Sign In",
+  "verify.banner": "Please verify your email address.",
+  "verify.resend": "Resend verification",
+  "verify.sent": "Email sent!",
+
   "reset.title": "Set a new password",
   "reset.subtitle": "Choose a strong password for your account.",
   "reset.newPassword": "New password",

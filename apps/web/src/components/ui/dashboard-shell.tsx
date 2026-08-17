@@ -1,3 +1,4 @@
+import type { User } from "@knot/shared"
 import { Bell, HelpCircle, Menu, X } from "lucide-react"
 import { type ReactNode, useEffect, useRef, useState } from "react"
 import { Link } from "wouter"
@@ -7,6 +8,7 @@ import { useI18n } from "../../lib/i18n"
 import { NotificationsDropdown } from "./dash-dropdowns"
 import { LanguageSwitcher } from "./language-switcher"
 import { Logo } from "./logo"
+import { VerifyBanner } from "./verify-banner"
 
 const NAV_LINKS = [
   { key: "dashboard", labelKey: "dash.dashboard", href: "/dashboard" },
@@ -27,7 +29,7 @@ export function DashboardShell({
   activeNav = "dashboard",
   children,
 }: {
-  user: { username: string }
+  user: User
   onLogout: () => void
   activeNav?: string
   children: ReactNode
@@ -208,7 +210,10 @@ export function DashboardShell({
         </div>
       </header>
 
-      <main className="dash-main">{children}</main>
+      <main className="dash-main">
+        {!user.emailVerified && <VerifyBanner />}
+        {children}
+      </main>
 
       <footer className="dash-footer">
         <div className="dash-footer__inner">

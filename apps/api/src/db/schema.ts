@@ -43,6 +43,8 @@ export const users = pgTable(
     referralRewarded: boolean("referral_rewarded").notNull().default(false),
     resetTokenHash: text("reset_token_hash"),
     resetTokenExpiresAt: timestamp("reset_token_expires_at"),
+    emailVerified: boolean("email_verified").notNull().default(false),
+    emailVerificationToken: text("email_verification_token"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({

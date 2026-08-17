@@ -10,6 +10,7 @@ const PUBLIC_PATHS = new Set([
   "/api/auth/logout",
   "/api/auth/forgot-password",
   "/api/auth/reset-password",
+  "/api/auth/verify-email",
   "/api/doc",
   "/api/health",
 ])

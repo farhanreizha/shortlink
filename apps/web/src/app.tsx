@@ -54,6 +54,11 @@ const ResetPasswordPage = lazy(() =>
 const SettingsPage = lazy(() =>
   import("./pages/settings-page").then((m) => ({ default: m.SettingsPage })),
 )
+const VerifyEmailPage = lazy(() =>
+  import("./pages/verify-email-page").then((m) => ({
+    default: m.VerifyEmailPage,
+  })),
+)
 
 const PUBLIC_PATHS = new Set(seoRoutes.map((r) => r.path))
 
@@ -119,6 +124,9 @@ export function App() {
               </Route>
               <Route path="/reset-password">
                 {user ? <Redirect to="/dashboard" /> : <ResetPasswordPage />}
+              </Route>
+              <Route path="/verify-email">
+                {user ? <Redirect to="/dashboard" /> : <VerifyEmailPage />}
               </Route>
               <Route path="/settings">
                 {user ? (

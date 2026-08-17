@@ -2,7 +2,6 @@ import type { RegisterResult } from "@knot/shared"
 import { sql } from "drizzle-orm"
 import app from "../app.js"
 import { db } from "../db/index.js"
-import { resetRateLimitStore } from "../lib/rate-limiter.js"
 
 interface TestUser {
   id: number
@@ -17,9 +16,10 @@ export interface AuthResult {
 }
 
 export async function cleanDatabase() {
-  resetRateLimitStore()
+  // rate_limits must be truncated too — the /r/* limiter is DB-backed and
+  // counts accumulate across parallel test files (and runs) otherwise
   await db.execute(
-    sql`TRUNCATE TABLE shortlinks, campaigns, notifications, users RESTART IDENTITY CASCADE`,
+    sql`TRUNCATE TABLE shortlinks, campaigns, notifications, users, rate_limits RESTART IDENTITY CASCADE`,
   )
 }
 
