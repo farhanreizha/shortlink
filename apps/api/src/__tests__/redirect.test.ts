@@ -158,6 +158,9 @@ describe("GET /r/:slug", () => {
     const res = await app.request("/r/secret")
     expect(res.status).toBe(200)
     expect(await res.text()).toContain("password")
+    expect(res.headers.get("Content-Security-Policy")).toContain(
+      "style-src 'unsafe-inline'",
+    )
   })
 
   it("unlocks a protected link with the correct password", async () => {

@@ -11,11 +11,14 @@ export const securityHeaders: MiddlewareHandler = async (c, next) => {
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   )
+  const path = c.req.path
   c.header(
     "Content-Security-Policy",
-    c.req.path.startsWith("/api/docs")
+    path.startsWith("/api/docs")
       ? "default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self'; font-src https://cdn.jsdelivr.net data:; frame-ancestors 'none'"
-      : "default-src 'none'; frame-ancestors 'none'",
+      : path.startsWith("/r/")
+        ? "default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-ancestors 'none'"
+        : "default-src 'none'; frame-ancestors 'none'",
   )
   c.header("Cross-Origin-Opener-Policy", "same-origin")
 }
