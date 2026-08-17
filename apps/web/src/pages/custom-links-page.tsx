@@ -1,6 +1,6 @@
 import type { UpdateShortlink, User } from "@knot/shared"
 import { Info, Plus, Search, Trash2 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { EditModal } from "../components/shortlink/edit-modal"
 import { HowItWorksModal } from "../components/shortlink/how-it-works-modal"
 import { LinksTable } from "../components/shortlink/links-table"
@@ -11,6 +11,7 @@ import { Pagination } from "../components/ui/pagination"
 import { Reveal } from "../components/ui/reveal"
 import { PAGE_SIZE } from "../constants/custom-links"
 import { useCampaigns } from "../hooks/use-campaigns"
+import { useDebouncedValue } from "../hooks/use-debounced-value"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
 import { useI18n } from "../lib/i18n"
@@ -38,6 +39,7 @@ export function CustomLinksPage({
     bulkAssignCampaign,
   } = useShortlinks()
   const [q, setQ] = useState("")
+  const debouncedQ = useDebouncedValue(q, 300)
   const [filterCampaign, setFilterCampaign] = useState("")
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [bulkCampaignId, setBulkCampaignId] = useState("")
@@ -55,10 +57,9 @@ export function CustomLinksPage({
   const from = total === 0 ? 0 : query.offset + 1
   const to = Math.min(query.offset + query.limit, total)
 
-  function search(e: React.FormEvent) {
-    e.preventDefault()
-    setQuery({ ...query, q: q || undefined, offset: 0 })
-  }
+  useEffect(() => {
+    setQuery((prev) => ({ ...prev, q: debouncedQ || undefined, offset: 0 }))
+  }, [debouncedQ, setQuery])
 
   function applyCampaignFilter(value: string) {
     setFilterCampaign(value)
@@ -172,7 +173,7 @@ export function CustomLinksPage({
           </div>
         </Reveal>
 
-        <form className="cl-toolbar" onSubmit={search}>
+        <div className="cl-toolbar">
           <div className="cl-search">
             <Search size={16} className="cl-search__icon" />
             <input
@@ -196,7 +197,7 @@ export function CustomLinksPage({
               </option>
             ))}
           </select>
-        </form>
+        </div>
 
         <Reveal delay={0.1}>
           <div className="cl-table-wrap">

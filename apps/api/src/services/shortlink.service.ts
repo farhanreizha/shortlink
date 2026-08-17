@@ -4,7 +4,7 @@ import type {
   ShortlinkQuery,
   UpdateShortlink,
 } from "@knot/shared"
-import { and, desc, eq, ilike, sql } from "drizzle-orm"
+import { and, desc, eq, ilike, or, sql } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { db } from "../db/index.js"
 import { campaigns, shortlinks } from "../db/schema.js"
@@ -45,8 +45,17 @@ const sortMap = {
 export async function list(userId: number, query: ShortlinkQuery) {
   let conditions = eq(shortlinks.userId, userId)
   if (query.q) {
+    const pattern = `%${query.q}%`
     // biome-ignore lint/style/noNonNullAssertion: conditions always defined
-    conditions = and(conditions, ilike(shortlinks.url, `%${query.q}%`))!
+    conditions = and(
+      conditions,
+      or(
+        ilike(shortlinks.url, pattern),
+        ilike(shortlinks.slug, pattern),
+        ilike(shortlinks.title, pattern),
+        ilike(shortlinks.description, pattern),
+      ),
+    )!
   }
   if (query.campaignId !== undefined) {
     // biome-ignore lint/style/noNonNullAssertion: conditions always defined

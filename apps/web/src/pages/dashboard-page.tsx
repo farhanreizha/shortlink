@@ -1,11 +1,12 @@
 import type { UpdateShortlink, User } from "@knot/shared"
 import { Search } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CreateForm } from "../components/shortlink/create-form"
 import { LinkCard } from "../components/shortlink/link-card"
 import { DashboardShell } from "../components/ui/dashboard-shell"
 import { Reveal } from "../components/ui/reveal"
 import { Skeleton } from "../components/ui/skeleton"
+import { useDebouncedValue } from "../hooks/use-debounced-value"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
 import { useI18n } from "../lib/i18n"
@@ -20,13 +21,13 @@ export function DashboardPage({
   const { toast } = useToast()
   const { t } = useI18n()
   const [q, setQ] = useState("")
+  const debouncedQ = useDebouncedValue(q, 300)
   const { links, loading, create, remove, update, query, setQuery } =
     useShortlinks()
 
-  function search(e: React.FormEvent) {
-    e.preventDefault()
-    setQuery({ ...query, q: q || undefined, offset: 0 })
-  }
+  useEffect(() => {
+    setQuery((prev) => ({ ...prev, q: debouncedQ || undefined, offset: 0 }))
+  }, [debouncedQ, setQuery])
 
   async function handleCreate(
     slug: string,
@@ -69,7 +70,7 @@ export function DashboardPage({
         </Reveal>
 
         <Reveal delay={0.1}>
-          <form className="cl-toolbar dash-search" onSubmit={search}>
+          <div className="cl-toolbar dash-search">
             <div className="cl-search">
               <Search size={16} className="cl-search__icon" />
               <input
@@ -80,7 +81,7 @@ export function DashboardPage({
                 onChange={(e) => setQ(e.target.value)}
               />
             </div>
-          </form>
+          </div>
         </Reveal>
 
         {loading ? (
