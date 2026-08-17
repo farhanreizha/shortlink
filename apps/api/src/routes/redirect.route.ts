@@ -35,17 +35,19 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#39;")
 }
 
-function passwordForm(slug: string, error = false) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Protected link</title>
-<meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-:root{--primary:#0052ff;--primary-hover:#003ec7;--border:#c3c5d9;--text:#131b2e;--text-secondary:#5b616e;--error:#df2935;--radius-md:8px;--radius-lg:16px;--radius-btn:12px;--shadow-card:0 4px 20px rgba(15,23,42,.05)}
+const LOGO_MARK =
+  '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2.5"/><path d="m10.2 6.3-3.9 3.9"/><circle cx="4.5" cy="12" r="2.5"/><path d="M7 12h10"/><circle cx="19.5" cy="12" r="2.5"/><path d="m13.8 17.7 3.9-3.9"/><circle cx="12" cy="19.5" r="2.5"/></svg>'
+
+const PAGE_CSS = `
+:root{--primary:#0052ff;--primary-hover:#003ec7;--border:#c3c5d9;--text:#131b2e;--text-secondary:#5b616e;--error:#df2935;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-btn:12px;--shadow-card:0 4px 20px rgba(15,23,42,.05)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Space Grotesk",system-ui,sans-serif;font-size:16px;line-height:1.5;color:var(--text);background:radial-gradient(1000px 600px at 85% -10%,rgba(0,82,255,.06),transparent 60%),#faf8ff;display:flex;align-items:center;justify-content:center;min-height:100vh;-webkit-font-smoothing:antialiased}
-.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:2rem;width:min(360px,calc(100vw - 2rem))}
+body{font-family:"Space Grotesk",system-ui,sans-serif;font-size:16px;line-height:1.5;color:var(--text);background:radial-gradient(1000px 600px at 85% -10%,rgba(0,82,255,.06),transparent 60%),#faf8ff;display:flex;flex-direction:column;min-height:100vh;-webkit-font-smoothing:antialiased}
+.navbar{height:72px;background:rgba(250,248,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;position:sticky;top:0;z-index:10}
+.navbar__inner{max-width:1280px;width:100%;margin:0 auto}
+.logo{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.logo__mark{width:30px;height:30px;border-radius:var(--radius-md);background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,82,255,.3)}
+.page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:2rem;width:min(360px,100%)}
 h1{font-size:1.25rem;font-weight:700;margin:0 0 .25rem}
 p.sub{color:var(--text-secondary);font-size:.9rem;margin:0 0 1.25rem}
 label{display:block;font-size:.875rem;font-weight:500;margin-bottom:.4rem}
@@ -53,11 +55,38 @@ input{width:100%;height:44px;padding:0 .8rem;border:1px solid var(--border);bord
 input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,82,255,.1)}
 button{width:100%;height:44px;margin-top:1rem;border:none;border-radius:var(--radius-btn);background:var(--primary);color:#fff;font:inherit;font-weight:700;cursor:pointer;transition:background .15s}
 button:hover{background:var(--primary-hover)}
-.error{color:var(--error);font-size:.85rem;margin-top:.6rem}</style></head>
-<body><div class="card"><form method="post" action="/r/${escapeHtml(slug)}"><h1>Protected link</h1><p class="sub">Enter the password to continue.</p>
+.error{color:var(--error);font-size:.85rem;margin-top:.6rem}
+.expired{text-align:center}
+.expired p{color:var(--text-secondary);margin-top:.25rem}
+.expired code{font-family:ui-monospace,monospace;background:rgba(0,82,255,.08);color:var(--primary);padding:2px 6px;border-radius:var(--radius-sm)}
+`
+
+function pageShell(title: string, content: string) {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>${PAGE_CSS}</style></head>
+<body><header class="navbar"><div class="navbar__inner"><span class="logo"><span class="logo__mark">${LOGO_MARK}</span>Knot</span></div></header>
+<div class="page">${content}</div></body></html>`
+}
+
+function passwordForm(slug: string, error = false) {
+  return pageShell(
+    "Protected link",
+    `<div class="card"><form method="post" action="/r/${escapeHtml(slug)}"><h1>Protected link</h1><p class="sub">Enter the password to continue.</p>
 <label for="password">Password</label>
 <input type="password" id="password" name="password" placeholder="Enter your password" autofocus autocomplete="current-password">
-<button type="submit">Unlock</button>${error ? '<p class="error">Incorrect password. Try again.</p>' : ""}</form></div></body></html>`
+<button type="submit">Unlock</button>${error ? '<p class="error">Incorrect password. Try again.</p>' : ""}</form></div>`,
+  )
+}
+
+function expiredPage(slug: string) {
+  return pageShell(
+    "Link expired",
+    `<div class="card expired"><h1>This link has expired</h1><p>The link <code>/${escapeHtml(slug)}</code> is no longer available.</p></div>`,
+  )
 }
 
 const redirectRoutes = new OpenAPIHono()
@@ -67,12 +96,7 @@ redirectRoutes.openapi(redirectRoute, async (c) => {
   const link = await shortlinkService.getBySlug(slug)
 
   if (link.expiresAt && link.expiresAt.getTime() < Date.now()) {
-    return c.html(
-      `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Link expired</title>
-<meta name="robots" content="noindex">
-<style>body{font-family:system-ui,sans-serif;background:#0f1115;color:#e6e8eb;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}h1{font-size:1.4rem;margin-bottom:.5rem}p{color:#9aa0a6}</style></head>
-<body><div><h1>This link has expired</h1><p>The link <strong>/${escapeHtml(slug)}</strong> is no longer available.</p></div></body></html>`,
-    )
+    return c.html(expiredPage(slug))
   }
 
   if (link.password) {
