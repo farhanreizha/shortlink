@@ -381,6 +381,8 @@ export const en = {
   "cl.bulkDeleteTitle": "Delete selected links?",
   "cl.bulkDeleteMessage":
     "This will permanently delete {count} link(s) and their analytics.",
+  "cl.exportCsv": "Export CSV",
+  "cl.qrAria": "QR code for {slug}",
 
   "an.title": "Analytics Overview",
   "an.desc": "Track your link performance and audience engagement.",
@@ -409,6 +411,13 @@ export const en = {
   "an.colDetails": "Link Details",
   "an.colClicks": "Clicks",
   "an.colUnique": "Unique",
+  "an.date": "Date",
+  "an.clicks": "Clicks",
+  "an.exportCsv": "Export CSV",
+  "an.backToOverview": "Back to Overview",
+  "an.linkTitle": "Analytics: {slug}",
+  "an.topReferrers": "Top Referrers",
+  "an.referrer": "Referrer",
 
   "camp.title": "Campaigns",
   "camp.desc":
@@ -565,6 +574,10 @@ export const en = {
   "eb.title": "Something went wrong",
   "eb.desc": "An unexpected error occurred. Please try refreshing the page.",
   "eb.reload": "Reload Page",
+
+  "qr.title": "QR Code",
+  "qr.download": "Download PNG",
+  "qr.alt": "QR code for {slug}",
 } as const
 
 export type MessageKey = keyof typeof en

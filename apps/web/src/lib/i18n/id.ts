@@ -384,6 +384,8 @@ export const id: Record<MessageKey, string> = {
   "cl.bulkDeleteTitle": "Hapus link yang dipilih?",
   "cl.bulkDeleteMessage":
     "Ini akan menghapus permanen {count} link beserta analitiknya.",
+  "cl.exportCsv": "Ekspor CSV",
+  "cl.qrAria": "Kode QR untuk {slug}",
 
   "an.title": "Ringkasan Analitik",
   "an.desc": "Lacak performa link dan keterlibatan audiens Anda.",
@@ -412,6 +414,13 @@ export const id: Record<MessageKey, string> = {
   "an.colDetails": "Detail Link",
   "an.colClicks": "Klik",
   "an.colUnique": "Unik",
+  "an.date": "Tanggal",
+  "an.clicks": "Klik",
+  "an.exportCsv": "Ekspor CSV",
+  "an.backToOverview": "Kembali ke Ringkasan",
+  "an.linkTitle": "Analitik: {slug}",
+  "an.topReferrers": "Perujuk Teratas",
+  "an.referrer": "Perujuk",
 
   "camp.title": "Kampanye",
   "camp.desc":
@@ -569,4 +578,8 @@ export const id: Record<MessageKey, string> = {
   "eb.title": "Terjadi kesalahan",
   "eb.desc": "Terjadi kesalahan tak terduga. Silakan muat ulang halaman.",
   "eb.reload": "Muat Ulang Halaman",
+
+  "qr.title": "Kode QR",
+  "qr.download": "Unduh PNG",
+  "qr.alt": "Kode QR untuk {slug}",
 }

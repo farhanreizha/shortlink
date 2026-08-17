@@ -1,5 +1,5 @@
 import type { UpdateShortlink, User } from "@knot/shared"
-import { Info, Plus, Search, Trash2 } from "lucide-react"
+import { Download, Info, Plus, Search, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { EditModal } from "../components/shortlink/edit-modal"
 import { HowItWorksModal } from "../components/shortlink/how-it-works-modal"
@@ -8,12 +8,14 @@ import { NewLinkModal } from "../components/shortlink/new-link-modal"
 import { ConfirmModal } from "../components/ui/confirm-modal"
 import { DashboardShell } from "../components/ui/dashboard-shell"
 import { Pagination } from "../components/ui/pagination"
+import { QrModal } from "../components/ui/qr-modal"
 import { Reveal } from "../components/ui/reveal"
 import { PAGE_SIZE } from "../constants/custom-links"
 import { useCampaigns } from "../hooks/use-campaigns"
 import { useDebouncedValue } from "../hooks/use-debounced-value"
 import { useShortlinks } from "../hooks/use-shortlinks"
 import { useToast } from "../hooks/use-toast"
+import { downloadCsv } from "../lib/csv"
 import { useI18n } from "../lib/i18n"
 
 export function CustomLinksPage({
@@ -47,6 +49,7 @@ export function CustomLinksPage({
   const [showHow, setShowHow] = useState(false)
   const [editing, setEditing] = useState<{ slug: string } | null>(null)
   const [deleting, setDeleting] = useState<{ slug: string } | null>(null)
+  const [qrSlug, setQrSlug] = useState<string | null>(null)
   const [bulkDeleting, setBulkDeleting] = useState(false)
   const [busy, setBusy] = useState(false)
 
@@ -72,6 +75,26 @@ export function CustomLinksPage({
 
   function goToPage(p: number) {
     setQuery({ ...query, offset: p * PAGE_SIZE, limit: PAGE_SIZE })
+  }
+
+  function handleExportLinks() {
+    downloadCsv(
+      "links.csv",
+      [
+        t("cl.colBranded"),
+        t("cl.colOriginal"),
+        t("cl.colCampaign"),
+        t("cl.colCreated"),
+        t("cl.colClicks"),
+      ],
+      links.map((l) => [
+        l.slug,
+        l.url,
+        l.campaignId ? (campaignNames.get(l.campaignId) ?? "") : "",
+        l.createdAt,
+        String(l.visits),
+      ]),
+    )
   }
 
   async function handleUpdate(slug: string, data: UpdateShortlink) {
@@ -197,6 +220,15 @@ export function CustomLinksPage({
               </option>
             ))}
           </select>
+          <button
+            className="btn btn--ghost"
+            type="button"
+            onClick={handleExportLinks}
+            disabled={links.length === 0}
+          >
+            <Download size={16} />
+            {t("cl.exportCsv")}
+          </button>
         </div>
 
         <Reveal delay={0.1}>
@@ -249,6 +281,7 @@ export function CustomLinksPage({
               onToggleAll={toggleSelectAll}
               onEdit={(slug) => setEditing({ slug })}
               onDelete={(slug) => setDeleting({ slug })}
+              onQr={setQrSlug}
             />
           </div>
         </Reveal>
@@ -268,6 +301,11 @@ export function CustomLinksPage({
         open={showNew}
         onCreate={create}
         onClose={() => setShowNew(false)}
+      />
+      <QrModal
+        open={qrSlug !== null}
+        slug={qrSlug ?? ""}
+        onClose={() => setQrSlug(null)}
       />
       <HowItWorksModal open={showHow} onClose={() => setShowHow(false)} />
       {editLink && (

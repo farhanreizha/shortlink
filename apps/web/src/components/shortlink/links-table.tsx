@@ -1,5 +1,5 @@
 import type { Shortlink } from "@knot/shared"
-import { Link as LinkIcon, Pencil, Trash2 } from "lucide-react"
+import { Link as LinkIcon, Pencil, QrCode, Trash2 } from "lucide-react"
 import { formatDate } from "../../lib/date"
 import { useI18n } from "../../lib/i18n"
 
@@ -12,6 +12,7 @@ export function LinksTable({
   onToggleAll,
   onEdit,
   onDelete,
+  onQr,
 }: {
   links: Shortlink[]
   loading: boolean
@@ -21,6 +22,7 @@ export function LinksTable({
   onToggleAll: () => void
   onEdit: (slug: string) => void
   onDelete: (slug: string) => void
+  onQr: (slug: string) => void
 }) {
   const { t } = useI18n()
   return (
@@ -82,6 +84,14 @@ export function LinksTable({
             <td>{link.visits.toLocaleString()}</td>
             <td>
               <div className="cl-table__actions">
+                <button
+                  className="btn btn--ghost"
+                  type="button"
+                  aria-label={t("cl.qrAria", { slug: link.slug })}
+                  onClick={() => onQr(link.slug)}
+                >
+                  <QrCode size={14} />
+                </button>
                 <button
                   className="btn btn--ghost"
                   type="button"

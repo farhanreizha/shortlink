@@ -123,3 +123,25 @@
   background: var(--color-error);
   color: var(--color-white);
 }
+
+.qr-preview {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4) 0;
+}
+
+.qr-preview img {
+  width: 300px;
+  height: 300px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+}
+
+.qr-url {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  word-break: break-all;
+  margin-bottom: var(--space-4);
+}
