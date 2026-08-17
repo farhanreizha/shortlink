@@ -21,7 +21,6 @@ export const en = {
 
   "nav.features": "Features",
   "nav.pricing": "Pricing",
-  "nav.enterprise": "Enterprise",
   "nav.resources": "Resources",
   "nav.signIn": "Sign In",
   "nav.getStarted": "Get Started",
@@ -56,8 +55,8 @@ export const en = {
   "landing.feature3.desc":
     "Track clicks, analyze geographic data, and monitor performance in a clean, intuitive, distraction-free interface.",
 
-  "pricing.title": "Simple, transparent pricing",
-  "pricing.desc": "Start free. Upgrade when you're ready to grow.",
+  "pricing.title": "Free forever",
+  "pricing.desc": "No payments. Earn Pro by inviting friends.",
   "pricing.mostPopular": "Most Popular",
   "pricing.free.name": "Free",
   "pricing.free.price": "$0",
@@ -69,29 +68,15 @@ export const en = {
   "pricing.free.feat4": "Community support",
   "pricing.free.cta": "Get Started",
   "pricing.pro.name": "Pro",
-  "pricing.pro.price": "$3",
-  "pricing.pro.period": "/mo",
-  "pricing.pro.tagline": "For creators and marketers who need more.",
+  "pricing.pro.price": "Free",
+  "pricing.pro.tagline": "Earn it by inviting friends.",
   "pricing.pro.feat1": "Everything in Free",
   "pricing.pro.feat2": "Real-time analytics & charts",
   "pricing.pro.feat3": "Campaign management",
-  "pricing.pro.feat4": "Custom branded domains",
-  "pricing.pro.feat5": "Priority support",
-  "pricing.pro.cta": "Start Free Trial",
-  "pricing.enterprise.name": "Enterprise",
-  "pricing.enterprise.price": "Custom",
-  "pricing.enterprise.tagline": "For teams that need scale and control.",
-  "pricing.enterprise.feat1": "Everything in Pro",
-  "pricing.enterprise.feat2": "SSO & team permissions",
-  "pricing.enterprise.feat3": "Advanced security controls",
-  "pricing.enterprise.feat4": "Dedicated success manager",
-  "pricing.enterprise.feat5": "99.99% uptime SLA",
-  "pricing.enterprise.cta": "Contact Sales",
+  "pricing.pro.feat4": "QR codes & CSV export",
+  "pricing.pro.feat5": "1 free Pro month per referral",
+  "pricing.pro.cta": "Get Started",
 
-  "landing.enterpriseEyebrow": "Enterprise",
-  "landing.enterpriseTitle": "Built for teams at scale",
-  "landing.enterpriseDesc":
-    "Knot Enterprise gives your organization the controls, security and support it needs to manage links with confidence.",
   "landing.reliabilityEyebrow": "Reliability",
   "landing.reliabilityTitle": "Engineered for Reliability",
   "landing.reliabilityDesc":
@@ -102,9 +87,6 @@ export const en = {
   "landing.reliability2.title": "Global Edge Network",
   "landing.reliability2.desc":
     "Redirects routed through the nearest edge node for maximum speed.",
-  "landing.reliability3.title": "SSO & Team Controls",
-  "landing.reliability3.desc":
-    "Single sign-on, role-based permissions and full audit logs.",
   "landing.resourcesEyebrow": "Resources",
   "landing.resourcesTitle": "Learn, build and get help",
   "landing.resourcesDesc": "Everything you need to make the most of Knot.",

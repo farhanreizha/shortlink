@@ -5,7 +5,6 @@ import type { MessageKey } from "../lib/i18n"
 export const NAV_LINKS = [
   { labelKey: "nav.features", href: "#features" },
   { labelKey: "nav.pricing", href: "#pricing" },
-  { labelKey: "nav.enterprise", href: "#enterprise" },
   { labelKey: "nav.resources", href: "#resources" },
 ] as const
 
@@ -35,7 +34,6 @@ export const PLANS: Array<{
   {
     nameKey: "pricing.pro.name",
     priceKey: "pricing.pro.price",
-    periodKey: "pricing.pro.period",
     taglineKey: "pricing.pro.tagline",
     featureKeys: [
       "pricing.pro.feat1",
@@ -46,20 +44,6 @@ export const PLANS: Array<{
     ],
     ctaKey: "pricing.pro.cta",
     featured: true,
-  },
-  {
-    nameKey: "pricing.enterprise.name",
-    priceKey: "pricing.enterprise.price",
-    taglineKey: "pricing.enterprise.tagline",
-    featureKeys: [
-      "pricing.enterprise.feat1",
-      "pricing.enterprise.feat2",
-      "pricing.enterprise.feat3",
-      "pricing.enterprise.feat4",
-      "pricing.enterprise.feat5",
-    ],
-    ctaKey: "pricing.enterprise.cta",
-    featured: false,
   },
 ]
 export const RESOURCES: Array<{

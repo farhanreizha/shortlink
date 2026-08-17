@@ -4,24 +4,6 @@ import type { MessageKey } from "../../lib/i18n"
 import { ReliabilityCard } from "./reliability-card"
 import { SectionHeader } from "./section-header"
 
-export const ENTERPRISE_ITEMS = [
-  {
-    icon: <ShieldCheck size={24} />,
-    titleKey: "landing.reliability1.title",
-    descKey: "landing.reliability1.desc",
-  },
-  {
-    icon: <Rocket size={24} />,
-    titleKey: "landing.reliability2.title",
-    descKey: "landing.reliability2.desc",
-  },
-  {
-    icon: <ShieldCheck size={24} />,
-    titleKey: "landing.reliability3.title",
-    descKey: "landing.reliability3.desc",
-  },
-] as const
-
 export const RELIABILITY_ITEMS = [
   {
     icon: <ShieldCheck size={24} />,

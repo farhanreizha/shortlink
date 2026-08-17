@@ -3,7 +3,6 @@ import { CtaSection } from "../components/landing/cta-section"
 import { FeaturesSection } from "../components/landing/features-section"
 import { PricingSection } from "../components/landing/pricing-section"
 import {
-  ENTERPRISE_ITEMS,
   RELIABILITY_ITEMS,
   ReliabilitySection,
 } from "../components/landing/reliability-section"
@@ -39,13 +38,6 @@ export function LandingPage({
         <Hero />
         <FeaturesSection />
         <PricingSection />
-        <ReliabilitySection
-          id="enterprise"
-          eyebrowKey="landing.enterpriseEyebrow"
-          titleKey="landing.enterpriseTitle"
-          descKey="landing.enterpriseDesc"
-          items={ENTERPRISE_ITEMS}
-        />
         <ReliabilitySection
           id="reliability"
           eyebrowKey="landing.reliabilityEyebrow"

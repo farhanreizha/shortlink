@@ -23,7 +23,6 @@ export const id: Record<MessageKey, string> = {
 
   "nav.features": "Fitur",
   "nav.pricing": "Harga",
-  "nav.enterprise": "Enterprise",
   "nav.resources": "Sumber Daya",
   "nav.signIn": "Masuk",
   "nav.getStarted": "Mulai",
@@ -59,8 +58,8 @@ export const id: Record<MessageKey, string> = {
   "landing.feature3.desc":
     "Lacak klik, analisis data geografis, dan pantau performa dalam antarmuka yang bersih, intuitif, dan bebas gangguan.",
 
-  "pricing.title": "Harga sederhana dan transparan",
-  "pricing.desc": "Mulai gratis. Tingkatkan saat Anda siap berkembang.",
+  "pricing.title": "Gratis selamanya",
+  "pricing.desc": "Tanpa pembayaran. Dapatkan Pro dengan mengajak teman.",
   "pricing.mostPopular": "Paling Populer",
   "pricing.free.name": "Gratis",
   "pricing.free.price": "Rp0",
@@ -72,29 +71,15 @@ export const id: Record<MessageKey, string> = {
   "pricing.free.feat4": "Dukungan komunitas",
   "pricing.free.cta": "Mulai",
   "pricing.pro.name": "Pro",
-  "pricing.pro.price": "Rp49.000",
-  "pricing.pro.period": "/bln",
-  "pricing.pro.tagline": "Untuk kreator dan pemasar yang butuh lebih.",
+  "pricing.pro.price": "Gratis",
+  "pricing.pro.tagline": "Dapatkan dengan mengajak teman.",
   "pricing.pro.feat1": "Semua fitur Gratis",
   "pricing.pro.feat2": "Analitik & grafik real-time",
   "pricing.pro.feat3": "Manajemen kampanye",
-  "pricing.pro.feat4": "Domain bermerek kustom",
-  "pricing.pro.feat5": "Dukungan prioritas",
-  "pricing.pro.cta": "Mulai Uji Coba Gratis",
-  "pricing.enterprise.name": "Enterprise",
-  "pricing.enterprise.price": "Kustom",
-  "pricing.enterprise.tagline": "Untuk tim yang butuh skala dan kontrol.",
-  "pricing.enterprise.feat1": "Semua fitur Pro",
-  "pricing.enterprise.feat2": "SSO & izin tim",
-  "pricing.enterprise.feat3": "Kontrol keamanan lanjutan",
-  "pricing.enterprise.feat4": "Manajer kesuksesan khusus",
-  "pricing.enterprise.feat5": "SLA uptime 99,99%",
-  "pricing.enterprise.cta": "Hubungi Sales",
+  "pricing.pro.feat4": "Kode QR & ekspor CSV",
+  "pricing.pro.feat5": "1 bulan Pro gratis per referral",
+  "pricing.pro.cta": "Mulai",
 
-  "landing.enterpriseEyebrow": "Enterprise",
-  "landing.enterpriseTitle": "Dibangun untuk tim berskala besar",
-  "landing.enterpriseDesc":
-    "Knot Enterprise memberi organisasi Anda kontrol, keamanan, dan dukungan yang dibutuhkan untuk mengelola link dengan percaya diri.",
   "landing.reliabilityEyebrow": "Keandalan",
   "landing.reliabilityTitle": "Dirancang untuk Keandalan",
   "landing.reliabilityDesc":
@@ -105,9 +90,6 @@ export const id: Record<MessageKey, string> = {
   "landing.reliability2.title": "Jaringan Edge Global",
   "landing.reliability2.desc":
     "Pengalihan melalui node edge terdekat untuk kecepatan maksimal.",
-  "landing.reliability3.title": "SSO & Kontrol Tim",
-  "landing.reliability3.desc":
-    "Masuk tunggal, izin berbasis peran, dan log audit lengkap.",
   "landing.resourcesEyebrow": "Sumber Daya",
   "landing.resourcesTitle": "Belajar, membangun, dan dapatkan bantuan",
   "landing.resourcesDesc": "Semua yang Anda butuhkan untuk memaksimalkan Knot.",
