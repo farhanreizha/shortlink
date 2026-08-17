@@ -36,12 +36,28 @@ function escapeHtml(value: string) {
 }
 
 function passwordForm(slug: string, error = false) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Protected link</title>
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Protected link</title>
 <meta name="robots" content="noindex">
-<style>body{font-family:system-ui,sans-serif;background:#0f1115;color:#e6e8eb;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}form{background:#1a1d24;border:1px solid #2b2f38;border-radius:12px;padding:2rem;width:320px}h1{font-size:1.2rem;margin:0 0 .25rem}p{color:#9aa0a6;margin:0 0 1rem;font-size:.9rem}input{width:100%;box-sizing:border-box;padding:.6rem .8rem;border:1px solid #2b2f38;border-radius:8px;background:#0f1115;color:#e6e8eb;font-size:1rem}button{width:100%;margin-top:.8rem;padding:.6rem;border:none;border-radius:8px;background:#3b82f6;color:#fff;font-size:1rem;cursor:pointer}.error{color:#f87171;font-size:.85rem;margin-top:.6rem}</style></head>
-<body><form method="post" action="/r/${escapeHtml(slug)}"><h1>Protected link</h1><p>Enter the password to continue.</p>
-<input type="password" name="password" placeholder="Password" autofocus autocomplete="current-password">
-<button type="submit">Unlock</button>${error ? '<p class="error">Incorrect password. Try again.</p>' : ""}</form></body></html>`
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0052ff;--primary-hover:#003ec7;--border:#c3c5d9;--text:#131b2e;--text-secondary:#5b616e;--error:#df2935;--radius-md:8px;--radius-lg:16px;--radius-btn:12px;--shadow-card:0 4px 20px rgba(15,23,42,.05)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Space Grotesk",system-ui,sans-serif;font-size:16px;line-height:1.5;color:var(--text);background:radial-gradient(1000px 600px at 85% -10%,rgba(0,82,255,.06),transparent 60%),#faf8ff;display:flex;align-items:center;justify-content:center;min-height:100vh;-webkit-font-smoothing:antialiased}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:2rem;width:min(360px,calc(100vw - 2rem))}
+h1{font-size:1.25rem;font-weight:700;margin:0 0 .25rem}
+p.sub{color:var(--text-secondary);font-size:.9rem;margin:0 0 1.25rem}
+label{display:block;font-size:.875rem;font-weight:500;margin-bottom:.4rem}
+input{width:100%;height:44px;padding:0 .8rem;border:1px solid var(--border);border-radius:var(--radius-md);background:#fff;color:var(--text);font:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,82,255,.1)}
+button{width:100%;height:44px;margin-top:1rem;border:none;border-radius:var(--radius-btn);background:var(--primary);color:#fff;font:inherit;font-weight:700;cursor:pointer;transition:background .15s}
+button:hover{background:var(--primary-hover)}
+.error{color:var(--error);font-size:.85rem;margin-top:.6rem}</style></head>
+<body><div class="card"><form method="post" action="/r/${escapeHtml(slug)}"><h1>Protected link</h1><p class="sub">Enter the password to continue.</p>
+<label for="password">Password</label>
+<input type="password" id="password" name="password" placeholder="Enter your password" autofocus autocomplete="current-password">
+<button type="submit">Unlock</button>${error ? '<p class="error">Incorrect password. Try again.</p>' : ""}</form></div></body></html>`
 }
 
 const redirectRoutes = new OpenAPIHono()

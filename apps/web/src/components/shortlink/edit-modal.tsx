@@ -6,6 +6,7 @@ import { ErrorBanner } from "../ui/error-banner"
 import { FormField } from "../ui/form-field"
 import { Modal } from "../ui/modal"
 import { ModalActions } from "../ui/modal-actions"
+import { PasswordField } from "../ui/password-field"
 import { SubmitButton } from "../ui/submit-button"
 
 function toLocalInput(iso: string | null) {
@@ -30,6 +31,7 @@ export function EditModal({
   const [campaignId, setCampaignId] = useState<number | null>(currentCampaign)
   const [expiresAt, setExpiresAt] = useState(toLocalInput(link.expiresAt))
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [title, setTitle] = useState(link.title ?? "")
   const [description, setDescription] = useState(link.description ?? "")
   const [error, setError] = useState("")
@@ -112,25 +114,21 @@ export function EditModal({
             onChange={(e) => setExpiresAt(e.target.value)}
           />
         </FormField>
-        <FormField
+        <PasswordField
+          id="edit-password"
           label={t("modal.password")}
-          htmlFor="edit-password"
+          value={password}
+          onChange={setPassword}
+          placeholder={t("modal.passwordHint")}
+          showPassword={showPassword}
+          onToggle={() => setShowPassword((v) => !v)}
+          showToggle
           trailing={
             link.hasPassword ? (
               <span className="form__hint">{t("modal.passwordSet")}</span>
             ) : undefined
           }
-        >
-          <input
-            id="edit-password"
-            className="input"
-            type="password"
-            placeholder={t("modal.passwordHint")}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-          />
-        </FormField>
+        />
         <FormField label={t("modal.ogTitle")} htmlFor="edit-og-title">
           <input
             id="edit-og-title"
