@@ -18,7 +18,7 @@ import * as schema from "./schema.js"
 //   max: env.NODE_ENV === "test" ? 5 : 10,
 // })
 
-const pool = new neon(env.DATABASE_URL)
+const pool = neon(env.DATABASE_URL)
 
 // Idle clients dropped by the server (common on serverless) emit 'error'
 // on the pool; without a handler Node crashes on unhandled 'error'.
