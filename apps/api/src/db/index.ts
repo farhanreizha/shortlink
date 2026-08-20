@@ -8,11 +8,15 @@ const pool = new pg.Pool({
   max: env.NODE_ENV === "test" ? 5 : 10,
 })
 
+const unpool = new pg.Client({
+  connectionString: env.DATABASE_URL
+})
+
 // Idle clients dropped by the server (common on serverless) emit 'error'
 // on the pool; without a handler Node crashes on unhandled 'error'.
 pool.on("error", (err) => {
   console.error("[db] pool error", err)
 })
 
-export const db = drizzle(pool, { schema })
+export const db = drizzle(env.NODE_ENV === "production" ? unpool : pool, { schema })
 export { pool }
