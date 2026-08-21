@@ -53,6 +53,13 @@ export function rateLimit(opts: {
         },
       })
       .returning({ count: rateLimits.count, resetAt: rateLimits.resetAt })
+      // ponytail: fail open — a rate-limit store outage must not 500 every
+      // request (Neon scale-to-zero cold starts hit this). Empty result falls
+      // through to next() below.
+      .catch((err: unknown) => {
+        console.error("[rate-limit] store unavailable, failing open", err)
+        return []
+      })
 
     const row = result[0]
     if (!row) return next()
@@ -73,7 +80,11 @@ export function rateLimit(opts: {
     }
 
     // Periodic cleanup (1% chance per request)
-    if (Math.random() < 0.01) cleanupExpired()
+    if (Math.random() < 0.01) {
+      cleanupExpired().catch((err: unknown) => {
+        console.error("[rate-limit] cleanup failed", err)
+      })
+    }
 
     return next()
   }

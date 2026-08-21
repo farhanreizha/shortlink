@@ -1,24 +1,13 @@
 import { drizzle } from "drizzle-orm/node-postgres"
 import pg from "pg"
-// import {Pool} from "@neondatabase/serverless"
-// import { neon } from '@neondatabase/serverless';
 import { env } from "../config.js"
 import * as schema from "./schema.js"
 
+// ponytail: sslmode in DATABASE_URL handles TLS; no explicit ssl option needed
 const pool = new pg.Pool({
   connectionString: env.DATABASE_URL,
   max: env.NODE_ENV === "test" ? 5 : 10,
-  ssl: {
-      rejectUnauthorized: true,
-    },
 })
-
-// const pool = new Pool({
-//   connectionString: env.DATABASE_URL,
-//   max: env.NODE_ENV === 'test' ? 5 : 10,
-// });
-
-// const pool = neon(env.DATABASE_URL)
 
 // Idle clients dropped by the server (common on serverless) emit 'error'
 // on the pool; without a handler Node crashes on unhandled 'error'.

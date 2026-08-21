@@ -11,7 +11,9 @@ const envSchema = z.object({
   APP_URL: z.string().default("http://localhost:5173"),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().default(587),
-  SMTP_SECURE: z.coerce.boolean().default(false),
+  // z.coerce.boolean() is Boolean(input), so "false" → true. stringbool parses
+  // the string properly: port 587 needs secure:false (STARTTLS), 465 needs true.
+  SMTP_SECURE: z.stringbool().default(false),
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().default("noreply@knot.dev"),

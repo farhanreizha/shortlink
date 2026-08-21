@@ -18,14 +18,20 @@ import * as referralService from "./referral.service.js"
 
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000
 
-// PostgreSQL error code for unique_violation
+// PostgreSQL error code for unique_violation. drizzle wraps driver errors in
+// DrizzleQueryError, so the pg code lives on .cause — walk the chain.
 function isUniqueViolation(err: unknown): boolean {
-  return (
-    typeof err === "object" &&
-    err !== null &&
-    "code" in err &&
-    (err as { code: string }).code === "23505"
-  )
+  let cur: unknown = err
+  for (
+    let depth = 0;
+    depth < 5 && typeof cur === "object" && cur !== null;
+    depth++
+  ) {
+    if ("code" in cur && (cur as { code: unknown }).code === "23505")
+      return true
+    cur = (cur as { cause?: unknown }).cause
+  }
+  return false
 }
 
 function hashToken(token: string): string {
@@ -88,7 +94,14 @@ export async function register(input: RegisterInput) {
     })
   // biome-ignore lint/style/noNonNullAssertion: returning() always returns inserted row
   const row = rows[0]!
-  await issueVerificationToken(row.id, row.email)
+  // ponytail: the user row is already committed and its email can't be reused
+  // for a retry, so a mail/token failure must not fail registration. Recovery
+  // path is POST /api/auth/resend-verification.
+  try {
+    await issueVerificationToken(row.id, row.email)
+  } catch (err) {
+    console.error("[auth] verification email failed for", row.email, err)
+  }
   const token = await signToken(row.id)
   return {
     token,
