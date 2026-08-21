@@ -39,6 +39,9 @@
 - DB schema in `apps/api/src/db/schema.ts`, connection in `apps/api/src/db/index.ts`
 - `DATABASE_URL` env var needed; default: `postgres://shortlink:shortlink@localhost:5432/shortlink`
 - Handlers must be `async` to use `await db...`; response type conversion: `serial` → `String()`, `timestamp` → `.toISOString()`
+- Route baru WAJIB pakai `OpenAPIHono`, bukan `Hono` — route dengan `Hono` biasa tidak masuk `/api/doc` dan lolos dari test kontrak route
+- Path di `createRoute()` relatif terhadap mount point di `app.ts`; `app.route("/api/x", r)` + `path: "/{id}"` → `/api/x/{id}`
+- Setiap route `/api/*` baru harus ditambahkan ke `packages/shared/src/routes.ts`, ditegakkan oleh `apps/api/src/__tests__/route-contract.test.ts`
 
 ## Do
 - always double-check with linter before calling a feature done

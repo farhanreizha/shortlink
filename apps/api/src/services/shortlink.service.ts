@@ -139,6 +139,20 @@ export async function getBySlug(slug: string) {
   return link
 }
 
+// QR generation needs only ownership + existence, not the full row
+export async function getOwnedIdBySlug(
+  slug: string,
+  userId: number,
+): Promise<number> {
+  const [link] = await db
+    .select({ id: shortlinks.id })
+    .from(shortlinks)
+    .where(and(eq(shortlinks.slug, slug), eq(shortlinks.userId, userId)))
+    .limit(1)
+  if (!link) throw new HTTPException(404, { message: "Shortlink not found" })
+  return link.id
+}
+
 export async function verifyLinkPassword(slug: string, password: string) {
   const [link] = await db
     .select({ password: shortlinks.password })

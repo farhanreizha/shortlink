@@ -1,28 +1,39 @@
-import { eq } from "drizzle-orm"
-import { Hono } from "hono"
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi"
+import { ErrorSchema } from "@knot/shared"
 import QRCode from "qrcode"
-import { db } from "../db/index.js"
-import { shortlinks } from "../db/schema.js"
+import * as shortlinkService from "../services/shortlink.service.js"
 
-const qrRoutes = new Hono<{ Variables: { userId: number } }>()
+const qrRoute = createRoute({
+  method: "get",
+  path: "/{slug}",
+  request: {
+    params: z.object({ slug: z.string() }),
+    query: z.object({
+      size: z.coerce.number().int().min(100).max(1000).default(300),
+    }),
+  },
+  responses: {
+    200: {
+      content: { "image/png": { schema: z.string() } },
+      description: "QR code PNG",
+    },
+    404: {
+      content: { "application/json": { schema: ErrorSchema } },
+      description: "Shortlink not found",
+    },
+  },
+})
 
-qrRoutes.get("/qrcode/:slug", async (c) => {
-  const slug = c.req.param("slug")
-  const size = Number(c.req.query("size") ?? "300")
+const qrRoutes = new OpenAPIHono<{ Variables: { userId: number } }>()
 
-  const link = await db
-    .select({ userId: shortlinks.userId })
-    .from(shortlinks)
-    .where(eq(shortlinks.slug, slug))
-    .limit(1)
-
-  if (!link[0] || link[0].userId !== c.get("userId")) {
-    return c.json({ message: "Link not found" }, 404)
-  }
+qrRoutes.openapi(qrRoute, async (c) => {
+  const { slug } = c.req.valid("param")
+  const { size } = c.req.valid("query")
+  await shortlinkService.getOwnedIdBySlug(slug, c.get("userId"))
 
   const url = `${new URL(c.req.url).origin}/r/${slug}`
   const buffer = await QRCode.toBuffer(url, {
-    width: Math.min(Math.max(size, 100), 1000),
+    width: size,
     margin: 2,
     color: { dark: "#000000", light: "#ffffff" },
   })

@@ -227,4 +227,14 @@ export type AppRoutes = {
       status: 200
     }
   }
+  // Response is a PNG fetched via <img src>, not the RPC client; declared only
+  // so the route-contract test can see it.
+  "/api/qrcode/:slug": {
+    $get: {
+      input: { param: { slug: string }; query: { size?: string } }
+      output: never
+      outputFormat: "text"
+      status: 200
+    }
+  }
 }

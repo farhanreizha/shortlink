@@ -19,28 +19,20 @@ shortlink/
 
 ```
 apps/api/src/
-├── index.ts                  Entry: serve(app)
-├── app.ts                    App factory: create OpenAPIHono, mount middleware + sub-apps, doc()
-├── config.ts                 Env validation (zod) + prod guards
-├── lib/
-│   ├── auth.ts               hashPassword(), verifyPassword(), signToken(), verifyToken()
-│   ├── errors.ts             AppError, NotFoundError, UnauthorizedError, ConflictError
-│   └── rate-limiter.ts       In-memory per-IP rate limiter with TTL cleanup
-├── middleware/
-│   ├── auth.ts               Auth guard (httpOnly cookie JWT -> c.set("userId"))
-│   └── error-handler.ts      Global onError(): catch AppError -> HTTPException
-├── routes/
-│   ├── auth.route.ts         Sub-app: POST /register, POST /login, POST /logout, GET /me, PATCH /me, DELETE /me
-│   ├── shortlink.route.ts    Sub-app: GET /, POST /, GET /{slug}, PATCH /{slug}, DELETE /{slug}
-│   ├── redirect.route.ts     Sub-app: GET /{slug} (with URL scheme validation)
-│   └── health.route.ts       GET /health
-├── services/
-│   ├── auth.service.ts       register(), login(), getMe(), updateUser(), deleteAccount()
-│   └── shortlink.service.ts  list() (paginated+searchable), create(), getBySlug(), getDetail(), update(), remove(), incrementVisits()
-└── db/
-    ├── index.ts              Drizzle connection
-    └── schema.ts             Drizzle schema (users, shortlinks with index on user_id)
+├── index.ts        Entry: serve(app)
+├── app.ts          App factory: create OpenAPIHono, mount middleware + sub-apps, doc()
+├── config.ts       Env validation (zod) + prod guards
+├── lib/            auth (hash/JWT), mailer, rate-limiter (DB-backed), url-safety
+├── middleware/     auth (cookie JWT -> c.set("userId")), error-handler, security-headers
+├── routes/         One OpenAPIHono sub-app per resource (auth, shortlink, redirect,
+│                   campaign, analytics, notification, referral, qrcode, health)
+├── services/       Business logic per resource (auth, shortlink, campaign, click,
+│                   analytics, notification, referral)
+└── db/             index.ts (Drizzle connection), schema.ts (all tables + indexes)
 ```
+
+The authoritative route list is the generated OpenAPI spec at `GET /api/doc`.
+File trees drift; the spec does not.
 
 ### Data flow
 
@@ -57,9 +49,10 @@ Request
 
 - **Handler tetap di file route** (Hono recommendation: no separate Controller layer)
 - Handler hanya: validasi input, panggil service, return response
-- Service me-return data atau throw `AppError`
-- Semua `AppError` di-catch oleh `error-handler.ts` middleware
+- Service me-return data atau throw `HTTPException` (dari `hono/http-exception`)
+- Semua `HTTPException` diteruskan oleh `error-handler.ts` middleware; error lain -> 500
 - Path di `createRoute()` relatif terhadap mount point
+- Route baru WAJIB pakai `OpenAPIHono` (bukan `Hono`) agar muncul di `/api/doc`
 
 ### Routes mapping
 
@@ -71,11 +64,27 @@ Request
 | GET    | /api/auth/me               | /api/auth -> /    | /me              | authService.getMe              |
 | PATCH  | /api/auth/me               | /api/auth -> /    | /me              | authService.updateUser         |
 | DELETE | /api/auth/me               | /api/auth -> /    | /me              | authService.deleteAccount      |
+| POST   | /api/auth/forgot-password  | /api/auth -> /    | /forgot-password | authService.requestPasswordReset |
+| POST   | /api/auth/reset-password   | /api/auth -> /    | /reset-password  | authService.resetPassword      |
+| GET    | /api/auth/verify-email     | /api/auth -> /    | /verify-email    | authService.verifyEmail        |
+| POST   | /api/auth/resend-verification | /api/auth -> / | /resend-verification | authService.resendVerification |
 | GET    | /api/shortlinks            | /api/shortlinks   | /                | shortlinkService.list          |
 | POST   | /api/shortlinks            | /api/shortlinks   | /                | shortlinkService.create        |
+| POST   | /api/shortlinks/bulk-delete | /api/shortlinks  | /bulk-delete     | shortlinkService.bulkRemove    |
+| POST   | /api/shortlinks/bulk-update | /api/shortlinks  | /bulk-update     | shortlinkService.bulkUpdate    |
 | GET    | /api/shortlinks/{slug}     | /api/shortlinks   | /{slug}          | shortlinkService.getDetail     |
 | PATCH  | /api/shortlinks/{slug}     | /api/shortlinks   | /{slug}          | shortlinkService.update        |
 | DELETE | /api/shortlinks/{slug}     | /api/shortlinks   | /{slug}          | shortlinkService.remove        |
+| GET    | /api/campaigns             | /api/campaigns    | /                | campaignService.list           |
+| POST   | /api/campaigns             | /api/campaigns    | /                | campaignService.create         |
+| PATCH  | /api/campaigns/{id}        | /api/campaigns    | /{id}            | campaignService.update         |
+| DELETE | /api/campaigns/{id}        | /api/campaigns    | /{id}            | campaignService.remove         |
+| GET    | /api/analytics/overview    | /api/analytics    | /overview        | analyticsService.overview      |
+| GET    | /api/analytics/links/{slug}| /api/analytics    | /links/{slug}    | analyticsService.linkOverview  |
+| GET    | /api/notifications         | /api/notifications| /                | notificationService.list       |
+| POST   | /api/notifications/read    | /api/notifications| /read            | notificationService.markRead   |
+| GET    | /api/referral              | /api/referral     | /                | referralService.getOverview    |
+| GET    | /api/qrcode/{slug}         | /api/qrcode       | /{slug}          | shortlinkService.getOwnedIdBySlug |
 | GET    | /r/{slug}                  | /r                | /{slug}          | shortlinkService.getBySlug     |
 | GET    | /api/health                | /api              | /health          | (DB ping)                      |
 | GET    | /api/doc                   | /api              | /doc             | OpenAPI spec                   |
@@ -90,54 +99,30 @@ Request
 | sortBy  | string  | createdAt   | Sort field (createdAt, visits) |
 | order   | string  | desc        | Sort direction (asc, desc)     |
 
-### Error classes
+### Error handling
 
-| Class               | Status | Usage                    |
-|---------------------|--------|--------------------------|
-| `AppError`          | -      | Base class               |
-| `NotFoundError`     | 404    | Resource not found       |
-| `UnauthorizedError` | 401    | Invalid/missing token    |
-| `ConflictError`     | 409    | Duplicate slug/email     |
+Services throw `HTTPException(status, { message })` from `hono/http-exception`.
+`middleware/error-handler.ts` forwards that status and message as-is; any other
+thrown error is logged and returned as a 500 `{ message: "Internal server error" }`.
 
 ## Web — Component Architecture
 
 ```
 apps/web/src/
-├── main.tsx                  Entry: render <App />
-├── app.tsx                   Root: session check + wouter routes
-├── hono-client.ts            Typed hc() RPC client (cookie-based auth, 401 redirect)
-├── index.css                 Global styles
-├── hooks/
-│   ├── use-auth.ts           login(), logout(), user state (cookie-based)
-│   ├── use-shortlinks.ts     list() with query, create(), remove(), update()
-│   └── use-toast.tsx         Toast notification context + portal
-├── lib/
-│   └── storage.ts            Removed (migrated to httpOnly cookies)
-├── pages/
-│   ├── auth-page.tsx         Login/register toggle + forms
-│   ├── dashboard-page.tsx    Navbar + search + create form + link list
-│   ├── settings-page.tsx     Change password, update email, delete account
-│   ├── landing-page.tsx      Public landing page
-│   └── not-found-page.tsx    404 page
-└── components/
-    ├── auth/
-    │   ├── login-form.tsx
-    │   └── register-form.tsx
-    ├── shortlink/
-    │   ├── create-form.tsx
-    │   ├── edit-modal.tsx
-    │   └── link-card.tsx
-    └── ui/
-        ├── confirm-modal.tsx
-        ├── error-banner.tsx
-        ├── error-boundary.tsx
-        ├── feature-card.tsx
-        ├── form-field.tsx
-        ├── footer.tsx
-        ├── navbar.tsx
-        ├── password-field.tsx
-        ├── password-strength.tsx
-        └── skeleton.tsx
+├── main.tsx        Entry: render <App />
+├── app.tsx         Root: session check + wouter routes
+├── hono-client.ts  Typed hc() RPC client (cookie-based auth, 401 redirect)
+├── index.css       Global stylesheet entry (@imports styles/*)
+├── hooks/          use-auth, use-shortlinks, use-campaigns, use-analytics,
+│                   use-link-analytics, use-notifications, use-referral,
+│                   use-toast, use-debounced-value, use-escape-key, loading-screen
+├── lib/            i18n (+ i18n/en.ts, i18n/id.ts), csv, date, form, format, seo, slug
+├── constants/      Static page/config data (analytics, campaigns, custom-links,
+│                   landing, legal, settings, support)
+├── styles/         13 plain CSS files; variables.css holds the design tokens
+├── pages/          One component per route (auth, dashboard, settings, analytics,
+│                   campaigns, custom-links, landing, legal, support, verify-email, ...)
+└── components/     auth/, shortlink/, campaign/, analytics/, landing/, settings/, ui/
 ```
 
 ### Key patterns

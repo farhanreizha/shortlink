@@ -328,7 +328,9 @@ async function aggregateInSQL(
   return {
     totalClicks,
     uniqueVisitors: uniqueVisitors[0]?.count ?? 0,
-    topReferral: topReferral[0]?.referrer ?? "-",
+    // `??` doesn't catch the empty string; align with the JS path (:116) which
+    // maps a blank referrer to "Direct"
+    topReferral: topReferral[0]?.referrer || "Direct",
     clicksByDevice,
     clicksByLocation,
     clicksOverTime,
